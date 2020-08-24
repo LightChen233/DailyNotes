@@ -1,0 +1,1067 @@
+<!DOCTYPE html><html><head>
+      <title>BasicNetwork</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({"extensions":["tex2jax.js"],"jax":["input/TeX","output/HTML-CSS"],"messageStyle":"none","tex2jax":{"processEnvironments":false,"processEscapes":true,"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"TeX":{"extensions":["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]},"HTML-CSS":{"availableFonts":["TeX"]}});
+        </script>
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <h1 class="mume-header" id="%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">&#x795E;&#x7ECF;&#x7F51;&#x7EDC;</h1>
+
+<h2 class="mume-header" id="%E7%A5%9E%E7%BB%8F%E5%85%83">&#x795E;&#x7ECF;&#x5143;</h2>
+
+<img src="img/QQ&#x622A;&#x56FE;20200809224241.jpg" style="zoom:67%;">
+<h2 class="mume-header" id="%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C-1">&#x795E;&#x7ECF;&#x7F51;&#x7EDC;</h2>
+
+<img src="img/QQ&#x622A;&#x56FE;20200810201510.jpg" style="zoom:50%;">
+<p>&#x6CE8;&#x610F;&#xFF1A;&#x7EF4;&#x5EA6;&#x95F4;&#x7684;&#x8F6C;&#x6362;</p>
+<p>&#x5982;&#x679C;&#x4EC5;&#x6709;3&#x5C42;&#xFF0C;&#x7EF4;&#x5EA6;&#x8F6C;&#x6362;&#x4E3A;&#xFF1A;</p>
+<p>&#x8F93;&#x5165;&#x5C42; 3&#xD7;1-&gt;&#x9690;&#x85CF;&#x5C42; 4&#xD7;1-&gt;&#x8F93;&#x51FA;&#x5C42; 1&#xD7;1</p>
+<p>&#x9690;&#x85CF;&#x5C42;&#x6709;&#x4E24;&#x4E2A;&#x76F8;&#x5173;&#x53C2;&#x6570;<span class="mathjax-exps">$W^{[1]}_{4&#xD7;3}&#xFF0C;B^{[1]}_{4&#xD7;1}$</span></p>
+<p>&#x8F93;&#x51FA;&#x5C42;&#x4E5F;&#x6709;&#x7C7B;&#x4F3C;&#x7684;&#x76F8;&#x5173;&#x53C2;&#x6570;<span class="mathjax-exps">$W^{[2]}_{1&#xD7;4}&#x3010;&#x9690;&#x85CF;&#x5C42;&#x6709;&#x56DB;&#x4E2A;&#x9690;&#x85CF;&#x5355;&#x5143;&#x3011;&#xFF0C;B^{[2]}_{1&#xD7;1}$</span></p>
+<h2 class="mume-header" id="%E7%A5%9E%E7%BB%8F%E5%B1%82">&#x795E;&#x7ECF;&#x5C42;</h2>
+
+<p></p><div class="mathjax-exps">$$z=w^Tx+b\ -&gt;\ a=\sigma(Z)\ -&gt;\ L(a,y)$$</div><p></p>
+<h3 class="mume-header" id="%E8%AE%A1%E7%AE%97%E8%BF%87%E7%A8%8B">&#x8BA1;&#x7B97;&#x8FC7;&#x7A0B;</h3>
+
+<p>&#x591A;&#x4E2A;x&#x4E2D;&#x4F5C;&#x7528;&#x4E8E;&#x540C;&#x4E00;&#x4E2A;&#x795E;&#x7ECF;&#x5143;&#x4ECE;&#x800C;&#x83B7;&#x5F97;<span class="mathjax-exps">$\hat y$</span></p>
+<p><span class="mathjax-exps">$X-&gt;(Z=W^TX+B-&gt;\sigma(Z))-&gt;\hat y$</span></p>
+<h1 class="mume-header" id="%E6%B5%85%E5%B1%82%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C">&#x6D45;&#x5C42;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;</h1>
+
+<p>&#x53EA;&#x6709;&#x4E00;&#x5C42;&#x6216;&#x5C11;&#x91CF;&#x5C42;&#x6570;&#x7684;&#x795E;&#x7ECF;&#x5143;&#x3002;</p>
+<h2 class="mume-header" id="%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8%E9%9D%9E%E7%BA%BF%E6%80%A7%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0">&#x4E3A;&#x4EC0;&#x4E48;&#x5FC5;&#x987B;&#x4F7F;&#x7528;&#x975E;&#x7EBF;&#x6027;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#xFF1F;</h2>
+
+<p></p><div class="mathjax-exps">$$\hat y=W_2(W_1X+b_1)+b_2$$</div><p></p>
+<p></p><div class="mathjax-exps">$$=W_2&#xB7;W_1&#xB7;X+(W_2&#xB7;b_1+b_2)$$</div><p></p>
+<p></p><div class="mathjax-exps">$$=W&#xB7;X+b$$</div><p></p>
+<p>&#x7531;&#x4E0A;&#x6587;&#xFF0C;&#x7EBF;&#x6027;&#x53CD;&#x590D;&#x8FED;&#x4EE3;&#x53EA;&#x80FD;&#x7684;&#x5230;&#x7EBF;&#x6027;&#x3002;&#x548C;&#x8FED;&#x4EE3;&#x4E00;&#x6B21;&#x6548;&#x679C;&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x6C38;&#x8FDC;&#x90FD;&#x662F;&#x7EBF;&#x6027;&#x7EC4;&#x5408;&#xFF0C;&#x8FD8;&#x96BE;&#x4EE5;&#x505A;&#x5230;&#x4FEE;&#x6B63;&#x7684;&#x6548;&#x679C;&#x3002;</p>
+<p>&#x8FD9;&#x6837;&#x4E0D;&#x5982;&#x76F4;&#x63A5;&#x53BB;&#x6389;&#x9690;&#x85CF;&#x5C42;&#xFF0C;&#x56E0;&#x4E3A;&#x4E0D;&#x7BA1;&#x591A;&#x5C11;&#x5C42;&#x7F51;&#x7EDC;&#x90FD;&#x5F97;&#x5230;&#x7684;&#x53EA;&#x80FD;&#x662F;&#x7EBF;&#x6027;&#x51FD;&#x6570;&#xFF0C;&#x65E0;&#x6CD5;&#x5F97;&#x5230;&#x975E;&#x7EBF;&#x6027;&#x7684;&#x3002;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5730;&#x65B9;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x7EBF;&#x6027;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#xFF0C;&#x5982;&#x679C;g(z)=z&#x5C31;&#x662F;&#x4F60;&#x8981;&#x673A;&#x5668;&#x5B66;&#x4E60;&#x7684;&#x662F;&#x56DE;&#x5F52;&#x95EE;&#x9898;&#x3002;&#x6240;&#x4EE5;y&#x662F;&#x4E00;&#x4E2A;&#x5B9E;&#x6570;&#xFF0C;&#x6BD4;&#x5982;&#x8BF4;&#x4F60;&#x60F3;&#x9884;&#x6D4B;&#x623F;&#x5730;&#x4EA7;&#x4EF7;&#x683C;&#xFF0C;&#x800C;y&#x4E0D;&#x662F;0&#x548C;1&#xFF0C;&#x800C;&#x662F;&#x4E00;&#x4E2A;&#x5B9E;&#x6570;&#x3002;&#x8FD9;&#x6837;&#x7EBF;&#x6027;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#x4E5F;&#x8BB8;&#x662F;&#x53EF;&#x884C;&#x7684;&#xFF0C;&#x4F60;&#x7684;&#x8F93;&#x5165;&#x8F93;&#x51FA;&#x4E5F;&#x90FD;&#x5C5E;&#x4E8E;R&#x3002;&#x6240;&#x4EE5;&#x901A;&#x5E38;&#x53EA;&#x80FD;&#x5728;&#x8F93;&#x51FA;&#x5C42;&#x4F7F;&#x7528;&#x3002;</p>
+<h2 class="mume-header" id="%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0">&#x6FC0;&#x6D3B;&#x51FD;&#x6570;</h2>
+
+<h3 class="mume-header" id="sigmoid%E5%87%BD%E6%95%B0">sigmoid&#x51FD;&#x6570;</h3>
+
+<p><span class="mathjax-exps">$\sigma(z)=\frac {1}{1+e^{-z}}$</span></p>
+<img src="img/QQ&#x622A;&#x56FE;20200813102515.jpg" style="zoom:50%;">
+<h4 class="mume-header" id="%E4%BC%98%E7%82%B9">&#x4F18;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x5728;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x4E2D;&#xFF0C;&#x4E2D;&#x90E8;&#x7684;&#x5BFC;&#x6570;&#x662F;&#x6BD4;&#x8F83;&#x5927;&#x7684;&#xFF0C;&#x80FD;&#x591F;&#x8FDB;&#x884C;&#x6709;&#x6548;&#x7684;&#x66F4;&#x65B0;&#x3002;</p>
+<h4 class="mume-header" id="%E7%BC%BA%E7%82%B9">&#x7F3A;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x4F46;&#x662F;&#x5982;&#x679C;x&#x63A5;&#x8FD1;&#x65E0;&#x7A77;&#xFF0C;&#x5219;&#x5BFC;&#x6570;&#x4F1A;&#x65E0;&#x9650;&#x8D8B;&#x8FD1;&#x4E8E;0&#xFF0C;&#x5219;&#x66F4;&#x65B0;&#x4F1A;&#x505C;&#x6EDE;&#x3002;&#x800C;&#x4E14;&#x7531;&#x4E0B;&#x6587;&#x7684;&#x6027;&#x8D28;&#xFF0C;a&#x8D8B;&#x4E8E;0&#xFF0C;&#x68AF;&#x5EA6;&#x4E5F;&#x4F1A;&#x8D8B;&#x4E8E;&#x96F6;&#x4ECE;&#x800C;&#x505C;&#x6EDE;</p>
+<h4 class="mume-header" id="%E6%80%A7%E8%B4%A8">&#x6027;&#x8D28;&#xFF1A;</h4>
+
+<p>&#x8BBE;g(z)=a</p>
+<p><span class="mathjax-exps">$dg(z)=a(1-a)$</span>&#x3002;</p>
+<h3 class="mume-header" id="tanh%E5%87%BD%E6%95%B0">tanh&#x51FD;&#x6570;</h3>
+
+<p><span class="mathjax-exps">$tanh(z)=\frac{e^z-e^{-z}}{e^z+e^{-z}}$</span></p>
+<img src="img/QQ&#x622A;&#x56FE;20200813101143.jpg" style="zoom:50%;">
+<h4 class="mume-header" id="%E4%BC%98%E7%82%B9-1">&#x4F18;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x4E0A;&#x6587;&#x6709;&#x8BF4;&#x660E;&#x4E3A;&#x4EC0;&#x4E48;sigmoid&#x51FD;&#x6570;&#xFF08;&#x3C3;&#x51FD;&#x6570;&#xFF09;&#x6548;&#x679C;&#x4E0D;&#x4F73;&#x3002;</p>
+<p>&#x5728;(-1,1)&#x8303;&#x56F4;&#x5185;tanh&#x51FD;&#x6570;&#x6BD4;&#x3C3;&#x51FD;&#x6570;&#x6709;&#x7740;&#x66F4;&#x597D;&#x7684;&#x6548;&#x679C;&#xFF0C;&#x800C;&#x4E14;&#x8FD8;&#x6709;&#x4E00;&#x79CD;&#x7C7B;&#x4F3C;&#x4E8E;&#x6570;&#x636E;&#x4E2D;&#x5FC3;&#x5316;&#x7684;&#x6548;&#x679C;&#xFF0C;&#x4F7F;&#x5F97;&#x6570;&#x636E;&#x7684;&#x5E73;&#x5747;&#x503C;&#x63A5;&#x8FD1;0&#xFF0C;&#x5B9E;&#x9645;&#x4E0A;&#x8BA9;&#x4E0B;&#x4E00;&#x5C42;&#x7684;&#x5B66;&#x4E60;&#x66F4;&#x52A0;&#x65B9;&#x4FBF;&#x3002;&#xFF08;&#x51E0;&#x4E4E;&#x5728;&#x6240;&#x6709;&#x573A;&#x5408;&#x90FD;&#x66F4;&#x4F18;&#x8D8A;&#xFF09;&#x3002;&#x4E00;&#x4E2A;&#x4F8B;&#x5916;&#x662F;&#x8F93;&#x51FA;&#x5C42;&#x3002;&#x56E0;&#x4E3A;&#x5982;&#x679C;y&#x662F;0&#x6216;1&#xFF0C;&#x90A3;&#x4E48;&#x4F60;&#x5E0C;&#x671B;<span class="mathjax-exps">$\hat y&#x2208;(0,1)$</span>&#x4E4B;&#x95F4;&#x66F4;&#x5408;&#x7406;&#x3002;&#x800C;&#x4E0D;&#x662F;<span class="mathjax-exps">$(-1,1)$</span>&#x3002;&#x6240;&#x4EE5;&#x5F80;&#x5F80;&#x53EA;&#x5728;<strong>&#x4E8C;&#x5143;&#x5206;&#x7C7B;</strong>(&#x4E8C;&#x5143;&#x51B3;&#x7B56;&#x95EE;&#x9898;)&#x7528;<strong>&#x3C3;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;</strong>&#xFF0C;&#x8FD9;&#x91CC;&#x5C06;&#x8BE5;&#x51FD;&#x6570;&#x4F5C;&#x4E3A;&#x8F93;&#x51FA;&#x5C42;&#x7684;&#x51FD;&#x6570;&#x3002;</p>
+<h4 class="mume-header" id="%E7%BC%BA%E7%82%B9-1">&#x7F3A;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x4E0D;&#x8FC7;&#x8FD9;&#x4E24;&#x4E2A;&#x51FD;&#x6570;&#x90FD;&#x6709;&#x4E00;&#x4E2A;&#x7F3A;&#x70B9;&#xFF1A;&#x5F53;z&#x7279;&#x522B;&#x5927;&#x6216;&#x8005;&#x7279;&#x522B;&#x5C0F;&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#x7684;&#x659C;&#x7387;&#x53EF;&#x80FD;&#x5F88;&#x5C0F;&#xFF0C;&#x8D8B;&#x4E8E;0&#x3002;</p>
+<h4 class="mume-header" id="%E6%80%A7%E8%B4%A8-1">&#x6027;&#x8D28;&#xFF1A;</h4>
+
+<p>&#x8BBE;g(z)=a</p>
+<p><span class="mathjax-exps">$dg(z)=1-a^2$</span>&#x3002;</p>
+<h3 class="mume-header" id="relu%E5%87%BD%E6%95%B0">ReLU&#x51FD;&#x6570;&#xFF1A;</h3>
+
+<p><span class="mathjax-exps">$ReLU(z)=max(0,z)$</span>&#x3002;</p>
+<img src="img/QQ&#x622A;&#x56FE;20200813101517.jpg" style="zoom:50%;">
+<h4 class="mume-header" id="%E4%BC%98%E7%82%B9-2">&#x4F18;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x6240;&#x4EE5;&#x5728;&#x673A;&#x5668;&#x5B66;&#x4E60;&#x4E2D;&#x6709;&#x4E2A;&#x5F88;&#x6709;&#x8DA3;&#x7684;&#x73A9;&#x5177;&#xFF0C;&#x5373;ReLU&#x51FD;&#x6570;&#xFF0C;&#x516C;&#x5F0F;&#x4E3A;a=max(0,z)&#x3002;&#x6240;&#x8C13;&#x7684;&#x4FEE;&#x6B63;&#x7EBF;&#x6027;&#x5355;&#x5143;&#x3002;&#x73B0;&#x5728;&#x5DF2;&#x7ECF;&#x53D8;&#x6210;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#x7684;&#x9ED8;&#x8BA4;&#x9009;&#x62E9;&#x4E86;&#x3002;&#x3010;&#x4E0D;&#x77E5;&#x9053;&#x7528;&#x5565;&#x65F6;&#xFF0C;&#x5C31;&#x7528;&#x5B83;&#x5C31;ok&#x3011;&#x3002;</p>
+<h4 class="mume-header" id="%E7%BC%BA%E7%82%B9-2">&#x7F3A;&#x70B9;&#xFF1A;</h4>
+
+<p>&#x552F;&#x4E00;&#x7684;&#x7F3A;&#x70B9;&#x662F;&#x5F53;z&lt;0&#x65F6;&#x5BFC;&#x6570;&#x7B49;&#x4E8E;0&#x3002;</p>
+<h3 class="mume-header" id="leaky-relu%E5%87%BD%E6%95%B0">leaky ReLU&#x51FD;&#x6570;</h3>
+
+<p><span class="mathjax-exps">$ReLU(z)=max(0.01z,z)$</span>&#x3002;</p>
+<p>&#x6240;&#x4EE5;&#xFF0C;&#x4ED6;&#x6709;&#x4E2A;&#x4E00;&#x79CD;&#x6539;&#x8FDB;&#x53EB;&#x505A;&#x5E26;&#x6CC4;&#x9732;&#x7684;ReLU(leaky ReLU)&#xFF0C;&#x5728;z&lt;0&#x65F6;&#xFF0C;&#x6709;&#x4E00;&#x4E2A;&#x5F88;&#x5E73;&#x7F13;&#x7684;&#x659C;&#x7387;&#x3002;</p>
+<img src="img/QQ&#x622A;&#x56FE;20200813101636.jpg" style="zoom:45%;">
+<h2 class="mume-header" id="%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD%E7%AE%97%E6%B3%95">&#x53CD;&#x5411;&#x4F20;&#x64AD;&#x7B97;&#x6CD5;</h2>
+
+<h3 class="mume-header" id="%E7%A4%BA%E6%84%8F%E5%9B%BE">&#x793A;&#x610F;&#x56FE;</h3>
+
+<p><img src="img/QQ%E6%88%AA%E5%9B%BE20200813110154.jpg" alt></p>
+<h3 class="mume-header" id="%E5%85%B7%E4%BD%93%E6%93%8D%E4%BD%9C">&#x5177;&#x4F53;&#x64CD;&#x4F5C;</h3>
+
+<p><img src="../img/QQ%E6%88%AA%E5%9B%BE20200807173149.jpg" alt></p>
+<h2 class="mume-header" id="%E5%88%9D%E5%A7%8B%E5%8C%96">&#x521D;&#x59CB;&#x5316;</h2>
+
+<h3 class="mume-header" id="%E6%B3%95%E4%B8%80%E5%85%A8%E9%83%A8%E7%BD%AE0">&#x6CD5;&#x4E00;&#xFF1A;&#x5168;&#x90E8;&#x7F6E;0</h3>
+
+<p></p><div class="mathjax-exps">$$W^{[1]}=\left[  \begin{matrix}    0 &amp; 0 \\    0 &amp; 0 \\   \end{matrix}  \right]$$</div><p></p>
+<p>&#x7ED9;&#x7F51;&#x7EDC;&#x8F93;&#x5165;&#x4EFB;&#x4F55;&#x6837;&#x672C;&#xFF0C;<span class="mathjax-exps">$a^{[1]}_1$</span>&#x548C;<span class="mathjax-exps">$a^{[1]}_2$</span>&#x662F;&#x4E00;&#x6837;&#x7684;&#xFF0C;&#x5373;&#x4E24;&#x4E2A;&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#x5B8C;&#x5168;&#x4E00;&#x6837;&#xFF0C;&#x5BF9;&#x4E8E;&#x53CD;&#x5411;&#x4F20;&#x64AD;&#xFF0C;&#x4E8B;&#x5B9E;&#x8BC1;&#x660E;&#xFF0C;&#x5904;&#x4E8E;&#x5BF9;&#x79F0;&#x6027;&#xFF0C;<span class="mathjax-exps">$dz^{[1]}_1$</span>&#x548C;<span class="mathjax-exps">$dz^{[1]}_2$</span>&#x4E5F;&#x662F;&#x76F8;&#x540C;&#x7684;&#x3002;&#x6240;&#x4EE5;&#xFF0C;<br>
+</p><div class="mathjax-exps">$$W^{[2]}=\left[  \begin{matrix}    0 &amp; 0 \\   \end{matrix}  \right]$$</div><p></p>
+<p><span class="mathjax-exps">$a^{[1]}_1$</span>&#x548C;<span class="mathjax-exps">$a^{[1]}_2$</span>&#x8282;&#x70B9;&#x8BA1;&#x7B97;&#x5B8C;&#x5168;&#x4E00;&#x6837;&#x7684;&#x51FD;&#x6570;&#xFF0C;&#x79F0;&#x4E4B;&#x4E3A;&#x5B8C;&#x5168;&#x5BF9;&#x79F0;&#x3002;</p>
+<p></p><div class="mathjax-exps">$$dW=\left[  \begin{matrix}    u &amp; v \\    u &amp; v \\   \end{matrix}  \right]$$</div><p></p>
+<p><span class="mathjax-exps">$W^{[1]}=W^{[1]}-\alpha dW$</span>&#x7531;&#x6570;&#x5B66;&#x5F52;&#x7EB3;&#x53CD;&#x590D;&#x8FED;&#x4EE3;&#x53EF;&#x4EE5;&#x8BC1;&#x660E;&#x662F;&#x5B8C;&#x5168;&#x5BF9;&#x79F0;&#x7684;&#x3002;&#x4E0D;&#x7BA1;&#x68AF;&#x5EA6;&#x5982;&#x4F55;&#x4E0B;&#x964D;&#xFF0C;&#x90FD;&#x5728;&#x8BA1;&#x7B97;&#x5B8C;&#x5168;&#x4E00;&#x6837;&#x7684;&#x51FD;&#x6570;&#x3002;</p>
+<img src="../img/QQ&#x622A;&#x56FE;20200807175533.jpg" style="zoom:33%;">
+<h3 class="mume-header" id="%E6%B3%95%E4%BA%8C%E9%9A%8F%E6%9C%BA%E5%88%9D%E5%A7%8B%E5%8C%96">&#x6CD5;&#x4E8C;&#xFF1A;&#x968F;&#x673A;&#x521D;&#x59CB;&#x5316;</h3>
+
+<p>&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x7684;&#x89E3;&#x51B3;&#x65B9;&#x6848;&#x5C31;&#x662F;&#x968F;&#x673A;&#x521D;&#x59CB;&#x5316;&#x6240;&#x6709;&#x53C2;&#x6570;&#x3002;</p>
+<p>&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4EE4;<span class="mathjax-exps">$W^{[1]}=np.random.randn((2,2))*0.01$</span></p>
+<pre data-role="codeBlock" data-info="python" class="language-python">rd<span class="token operator">=</span>np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#&#x4EA7;&#x751F;&#x53C2;&#x6570;&#x4E3A;(2,2)&#x77E9;&#x9635;&#x7684;&#x9AD8;&#x65AF;&#x5206;&#x5E03;&#x968F;&#x673A;&#x53D8;&#x91CF;&#x3002;</span>
+W1<span class="token operator">=</span>rd<span class="token operator">*</span><span class="token number">0.01</span><span class="token comment">#&#x5C06;&#x6743;&#x91CD;&#x521D;&#x59CB;&#x5316;&#x6210;&#x5F88;&#x5C0F;&#x7684;&#x968F;&#x673A;&#x6570;,&#x7531;&#x4E8E;&#x662F;&#x7528;sigmoid&#x6216;tanh&#x6FC0;&#x6D3B;&#x51FD;&#x6570;&#xFF0C;&#x5982;&#x679C;&#x6743;&#x91CD;&#x592A;&#x5927;&#xFF0C;&#x5C31;&#x4F1A;&#x8DD1;&#x5230;&#x5BFC;&#x6570;&#x8D8B;&#x4E8E;0&#x7684;&#x70B9;&#xFF0C;&#x5C31;&#x4F1A;&#x5F88;&#x6162;&#x3002;&#x66F4;&#x6DF1;&#x7684;&#x6DF1;&#x5EA6;&#x5B66;&#x4E60;&#x65F6;&#x53EF;&#x80FD;&#x9700;&#x8981;0.01&#x4EE5;&#x5916;&#x7684;&#x5E38;&#x6570;</span>
+b1<span class="token operator">=</span>np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token comment">#b1&#x4E0D;&#x5F71;&#x54CD;&#x5BF9;&#x79F0;&#x6027;&#xFF0C;&#x6240;&#x4EE5;&#x7F6E;&#x96F6;&#x5373;&#x53EF;</span>
+W2<span class="token operator">=</span>np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">0.01</span>
+b2<span class="token operator">=</span><span class="token number">0</span>
+</pre><h2 class="mume-header" id="%E4%BB%A3%E7%A0%81%E5%BA%94%E7%94%A8">&#x4EE3;&#x7801;&#x5E94;&#x7528;</h2>
+
+<p>&#x5EFA;&#x7ACB;&#x4F60;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#xFF0C;&#x5B83;&#x5C06;&#x6709;&#x4E00;&#x4E2A;&#x9690;&#x85CF;&#x7684;&#x5C42;&#x3002;</p>
+<p><strong>&#x8981;&#x70B9;&#xFF1A;</strong></p>
+<ul>
+<li>&#x5B9E;&#x73B0;&#x5177;&#x6709;&#x5355;&#x4E2A;&#x9690;&#x85CF;&#x5C42;&#x7684;2&#x7C7B;&#x5206;&#x7C7B;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;</li>
+<li>&#x4F7F;&#x7528;&#x5177;&#x6709;&#x975E;&#x7EBF;&#x6027;&#x6FC0;&#x6D3B;&#x529F;&#x80FD;&#x7684;&#x5355;&#x4F4D;&#xFF0C;&#x4F8B;&#x5982;tanh</li>
+<li>&#x8BA1;&#x7B97;&#x4EA4;&#x53C9;&#x71B5;&#x635F;&#x5931;</li>
+<li>&#x5B9E;&#x73B0;&#x5411;&#x524D;&#x548C;&#x5411;&#x540E;&#x4F20;&#x64AD;</li>
+</ul>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x5BFC;&#x5305;</span>
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">from</span> testCases <span class="token keyword">import</span> <span class="token operator">*</span>
+<span class="token keyword">import</span> sklearn
+<span class="token keyword">import</span> sklearn<span class="token punctuation">.</span>datasets
+<span class="token keyword">import</span> sklearn<span class="token punctuation">.</span>linear_model
+<span class="token keyword">from</span> planar_utils <span class="token keyword">import</span> plot_decision_boundary<span class="token punctuation">,</span> sigmoid<span class="token punctuation">,</span> load_planar_dataset<span class="token punctuation">,</span> load_extra_datasets
+
+<span class="token operator">%</span>matplotlib inline
+
+np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token comment"># &#x8BBE;&#x7F6E;&#x56FA;&#x5B9A;&#x79CD;&#x5B50;</span>
+</pre><p>&#x5982;&#x679C;&#x4E0D;&#x5728;Coursera&#x4E0A;&#x7EC3;&#x4E60;&#x6CA1;&#x6709;&#x5305;&#xFF0C;&#x6211;&#x628A;&#x5305;&#x4EE3;&#x7801;&#x8D34;&#x5728;&#x4E0B;&#x65B9;&#x4F9B;&#x53C2;&#x8003;&#xFF1A;</p>
+<h3 class="mume-header" id="planar_utils"><strong>planar_utils</strong></h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">import</span> matplotlib<span class="token punctuation">.</span>pyplot <span class="token keyword">as</span> plt
+<span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">import</span> sklearn
+<span class="token keyword">import</span> sklearn<span class="token punctuation">.</span>datasets
+<span class="token keyword">import</span> sklearn<span class="token punctuation">.</span>linear_model
+ 
+<span class="token keyword">def</span> <span class="token function">plot_decision_boundary</span><span class="token punctuation">(</span>model<span class="token punctuation">,</span> X<span class="token punctuation">,</span> y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># Set min and max values and give it some padding</span>
+    x_min<span class="token punctuation">,</span> x_max <span class="token operator">=</span> X<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">min</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">max</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
+    y_min<span class="token punctuation">,</span> y_max <span class="token operator">=</span> X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">min</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token builtin">max</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token number">1</span>
+    h <span class="token operator">=</span> <span class="token number">0.01</span>
+    <span class="token comment"># Generate a grid of points with distance h between them</span>
+    xx<span class="token punctuation">,</span> yy <span class="token operator">=</span> np<span class="token punctuation">.</span>meshgrid<span class="token punctuation">(</span>np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span>x_min<span class="token punctuation">,</span> x_max<span class="token punctuation">,</span> h<span class="token punctuation">)</span><span class="token punctuation">,</span> np<span class="token punctuation">.</span>arange<span class="token punctuation">(</span>y_min<span class="token punctuation">,</span> y_max<span class="token punctuation">,</span> h<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token comment"># Predict the function value for the whole grid</span>
+    Z <span class="token operator">=</span> model<span class="token punctuation">(</span>np<span class="token punctuation">.</span>c_<span class="token punctuation">[</span>xx<span class="token punctuation">.</span>ravel<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> yy<span class="token punctuation">.</span>ravel<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    Z <span class="token operator">=</span> Z<span class="token punctuation">.</span>reshape<span class="token punctuation">(</span>xx<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    <span class="token comment"># Plot the contour and training examples</span>
+    plt<span class="token punctuation">.</span>contourf<span class="token punctuation">(</span>xx<span class="token punctuation">,</span> yy<span class="token punctuation">,</span> Z<span class="token punctuation">,</span> cmap<span class="token operator">=</span>plt<span class="token punctuation">.</span>cm<span class="token punctuation">.</span>Spectral<span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">&apos;x2&apos;</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>xlabel<span class="token punctuation">(</span><span class="token string">&apos;x1&apos;</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span>y<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> cmap<span class="token operator">=</span>plt<span class="token punctuation">.</span>cm<span class="token punctuation">.</span>Spectral<span class="token punctuation">)</span>
+ 
+<span class="token keyword">def</span> <span class="token function">sigmoid</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Compute the sigmoid of x
+    Arguments:
+    x -- A scalar or numpy array of any size.
+    Return:
+    s -- sigmoid(x)
+    &quot;&quot;&quot;</span>
+    s <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">+</span>np<span class="token punctuation">.</span>exp<span class="token punctuation">(</span><span class="token operator">-</span>x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> s
+ 
+<span class="token keyword">def</span> <span class="token function">load_planar_dataset</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    m <span class="token operator">=</span> <span class="token number">400</span> <span class="token comment"># number of examples</span>
+    N <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>m<span class="token operator">/</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token comment"># number of points per class</span>
+    D <span class="token operator">=</span> <span class="token number">2</span> <span class="token comment"># dimensionality</span>
+    X <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span>D<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token comment"># data matrix where each row is a single example</span>
+    Y <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>m<span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">,</span> dtype<span class="token operator">=</span><span class="token string">&apos;uint8&apos;</span><span class="token punctuation">)</span> <span class="token comment"># labels vector (0 for red, 1 for blue)</span>
+    a <span class="token operator">=</span> <span class="token number">4</span> <span class="token comment"># maximum ray of the flower</span>
+ 
+    <span class="token keyword">for</span> j <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        ix <span class="token operator">=</span> <span class="token builtin">range</span><span class="token punctuation">(</span>N<span class="token operator">*</span>j<span class="token punctuation">,</span>N<span class="token operator">*</span><span class="token punctuation">(</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+        t <span class="token operator">=</span> np<span class="token punctuation">.</span>linspace<span class="token punctuation">(</span>j<span class="token operator">*</span><span class="token number">3.12</span><span class="token punctuation">,</span><span class="token punctuation">(</span>j<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">3.12</span><span class="token punctuation">,</span>N<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span>N<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">0.2</span> <span class="token comment"># theta</span>
+        r <span class="token operator">=</span> a<span class="token operator">*</span>np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span><span class="token number">4</span><span class="token operator">*</span>t<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span>N<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">0.2</span> <span class="token comment"># radius</span>
+        X<span class="token punctuation">[</span>ix<span class="token punctuation">]</span> <span class="token operator">=</span> np<span class="token punctuation">.</span>c_<span class="token punctuation">[</span>r<span class="token operator">*</span>np<span class="token punctuation">.</span>sin<span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">,</span> r<span class="token operator">*</span>np<span class="token punctuation">.</span>cos<span class="token punctuation">(</span>t<span class="token punctuation">)</span><span class="token punctuation">]</span>
+        Y<span class="token punctuation">[</span>ix<span class="token punctuation">]</span> <span class="token operator">=</span> j
+        
+    X <span class="token operator">=</span> X<span class="token punctuation">.</span>T
+    Y <span class="token operator">=</span> Y<span class="token punctuation">.</span>T
+ 
+    <span class="token keyword">return</span> X<span class="token punctuation">,</span> Y
+<span class="token keyword">def</span> <span class="token function">load_extra_datasets</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>  
+    N <span class="token operator">=</span> <span class="token number">200</span>
+    noisy_circles <span class="token operator">=</span> sklearn<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>make_circles<span class="token punctuation">(</span>n_samples<span class="token operator">=</span>N<span class="token punctuation">,</span> factor<span class="token operator">=</span><span class="token number">.5</span><span class="token punctuation">,</span> noise<span class="token operator">=</span><span class="token number">.3</span><span class="token punctuation">)</span>
+    noisy_moons <span class="token operator">=</span> sklearn<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>make_moons<span class="token punctuation">(</span>n_samples<span class="token operator">=</span>N<span class="token punctuation">,</span> noise<span class="token operator">=</span><span class="token number">.2</span><span class="token punctuation">)</span>
+    blobs <span class="token operator">=</span> sklearn<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>make_blobs<span class="token punctuation">(</span>n_samples<span class="token operator">=</span>N<span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token number">5</span><span class="token punctuation">,</span> n_features<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span> centers<span class="token operator">=</span><span class="token number">6</span><span class="token punctuation">)</span>
+    gaussian_quantiles <span class="token operator">=</span> sklearn<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>make_gaussian_quantiles<span class="token punctuation">(</span>mean<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> cov<span class="token operator">=</span><span class="token number">0.5</span><span class="token punctuation">,</span> n_samples<span class="token operator">=</span>N<span class="token punctuation">,</span> n_features<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span> n_classes<span class="token operator">=</span><span class="token number">2</span><span class="token punctuation">,</span> shuffle<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> random_state<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span>
+    no_structure <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>rand<span class="token punctuation">(</span>N<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">,</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>rand<span class="token punctuation">(</span>N<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> noisy_circles<span class="token punctuation">,</span> noisy_moons<span class="token punctuation">,</span> blobs<span class="token punctuation">,</span> gaussian_quantiles<span class="token punctuation">,</span> no_structure
+
+</pre><h3 class="mume-header" id="testcases">testCases</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">layer_sizes_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    X_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    Y_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> X_assess<span class="token punctuation">,</span> Y_assess
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">initialize_parameters_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">1</span>
+    <span class="token keyword">return</span> n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">forward_propagation_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    X_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+ 
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00416758</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00056267</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02136196</span><span class="token punctuation">,</span> <span class="token number">0.01640271</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01793436</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00841747</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0.00502881</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01245288</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;W2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01057952</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00909008</span><span class="token punctuation">,</span> <span class="token number">0.00551454</span><span class="token punctuation">,</span> <span class="token number">0.02292208</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+ 
+    <span class="token keyword">return</span> X_assess<span class="token punctuation">,</span> parameters
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">compute_cost_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    Y_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00416758</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00056267</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02136196</span><span class="token punctuation">,</span> <span class="token number">0.01640271</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01793436</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00841747</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0.00502881</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01245288</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;W2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01057952</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00909008</span><span class="token punctuation">,</span> <span class="token number">0.00551454</span><span class="token punctuation">,</span> <span class="token number">0.02292208</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+ 
+    a2 <span class="token operator">=</span> <span class="token punctuation">(</span>np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0.5002307</span><span class="token punctuation">,</span> <span class="token number">0.49985831</span><span class="token punctuation">,</span> <span class="token number">0.50023963</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+ 
+    <span class="token keyword">return</span> a2<span class="token punctuation">,</span> Y_assess<span class="token punctuation">,</span> parameters
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">backward_propagation_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    X_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    Y_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00416758</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00056267</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02136196</span><span class="token punctuation">,</span> <span class="token number">0.01640271</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01793436</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00841747</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0.00502881</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01245288</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;W2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.01057952</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00909008</span><span class="token punctuation">,</span> <span class="token number">0.00551454</span><span class="token punctuation">,</span> <span class="token number">0.02292208</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">.</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+ 
+    cache <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;A1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00616578</span><span class="token punctuation">,</span> <span class="token number">0.0020626</span><span class="token punctuation">,</span> <span class="token number">0.00349619</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.05225116</span><span class="token punctuation">,</span> <span class="token number">0.02725659</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.02646251</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02009721</span><span class="token punctuation">,</span> <span class="token number">0.0036869</span><span class="token punctuation">,</span> <span class="token number">0.02883756</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token number">0.02152675</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01385234</span><span class="token punctuation">,</span> <span class="token number">0.02599885</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;A2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0.5002307</span><span class="token punctuation">,</span> <span class="token number">0.49985831</span><span class="token punctuation">,</span> <span class="token number">0.50023963</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;Z1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00616586</span><span class="token punctuation">,</span> <span class="token number">0.0020626</span><span class="token punctuation">,</span> <span class="token number">0.0034962</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.05229879</span><span class="token punctuation">,</span> <span class="token number">0.02726335</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.02646869</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02009991</span><span class="token punctuation">,</span> <span class="token number">0.00368692</span><span class="token punctuation">,</span> <span class="token number">0.02884556</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                             <span class="token punctuation">[</span><span class="token number">0.02153007</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01385322</span><span class="token punctuation">,</span> <span class="token number">0.02600471</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;Z2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0.00092281</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00056678</span><span class="token punctuation">,</span> <span class="token number">0.00095853</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+    <span class="token keyword">return</span> parameters<span class="token punctuation">,</span> cache<span class="token punctuation">,</span> X_assess<span class="token punctuation">,</span> Y_assess
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">update_parameters_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00615039</span><span class="token punctuation">,</span> <span class="token number">0.0169021</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02311792</span><span class="token punctuation">,</span> <span class="token number">0.03137121</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.0169217</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01752545</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0.00935436</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.05018221</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;W2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.0104319</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.04019007</span><span class="token punctuation">,</span> <span class="token number">0.01607211</span><span class="token punctuation">,</span> <span class="token number">0.04440255</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">8.97523455e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">8.15562092e-06</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">6.04810633e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2.54560700e-06</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">9.14954378e-05</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+ 
+    grads <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;dW1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">0.00023322</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00205423</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token number">0.00082222</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.00700776</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00031831</span><span class="token punctuation">,</span> <span class="token number">0.0028636</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00092857</span><span class="token punctuation">,</span> <span class="token number">0.00809933</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;dW2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1.75740039e-05</span><span class="token punctuation">,</span> <span class="token number">3.70231337e-03</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">1.25683095e-03</span><span class="token punctuation">,</span>
+                               <span class="token operator">-</span><span class="token number">2.55715317e-03</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;db1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1.05570087e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">3.81814487e-06</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1.90155145e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                              <span class="token punctuation">[</span><span class="token number">5.46467802e-07</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+             <span class="token string">&apos;db2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">1.08923140e-05</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+    <span class="token keyword">return</span> parameters<span class="token punctuation">,</span> grads
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">nn_model_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    X_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    Y_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> X_assess<span class="token punctuation">,</span> Y_assess
+ 
+ 
+<span class="token keyword">def</span> <span class="token function">predict_test_case</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+    X_assess <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.00615039</span><span class="token punctuation">,</span> <span class="token number">0.0169021</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.02311792</span><span class="token punctuation">,</span> <span class="token number">0.03137121</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.0169217</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.01752545</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">0.00935436</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.05018221</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;W2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">0.0104319</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">0.04019007</span><span class="token punctuation">,</span> <span class="token number">0.01607211</span><span class="token punctuation">,</span> <span class="token number">0.04440255</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b1&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">8.97523455e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">8.15562092e-06</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token number">6.04810633e-07</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+                                  <span class="token punctuation">[</span><span class="token operator">-</span><span class="token number">2.54560700e-06</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                  <span class="token string">&apos;b2&apos;</span><span class="token punctuation">:</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">9.14954378e-05</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">}</span>
+    <span class="token keyword">return</span> parameters<span class="token punctuation">,</span> X_assess
+
+</pre><h3 class="mume-header" id="%E5%87%86%E5%A4%87%E6%95%B0%E6%8D%AE%E9%9B%86">&#x51C6;&#x5907;&#x6570;&#x636E;&#x96C6;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">X<span class="token punctuation">,</span> Y <span class="token operator">=</span> load_planar_dataset<span class="token punctuation">(</span><span class="token punctuation">)</span> 
+<span class="token comment"># &#x753B;&#x51FA;data&#x7684;&#x5206;&#x5E03;:</span>
+plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span>Y<span class="token punctuation">,</span> s<span class="token operator">=</span><span class="token number">40</span><span class="token punctuation">,</span> cmap<span class="token operator">=</span>plt<span class="token punctuation">.</span>cm<span class="token punctuation">.</span>Spectral<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C">&#x7ED3;&#x679C;&#xFF1A;</h4>
+
+<img src="img/QQ&#x622A;&#x56FE;20200813210227.jpg" style="zoom:67%;">
+<h3 class="mume-header" id="%E4%BA%86%E8%A7%A3%E6%A0%B7%E6%9C%AC">&#x4E86;&#x89E3;&#x6837;&#x672C;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment">### START CODE HERE ### (&#x2248; 3 lines of code)</span>
+shape_X <span class="token operator">=</span> X<span class="token punctuation">.</span>shape
+shape_Y <span class="token operator">=</span> Y<span class="token punctuation">.</span>shape
+m <span class="token operator">=</span> shape_X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>  <span class="token comment"># &#x8BAD;&#x7EC3;&#x96C6;&#x7684;size</span>
+<span class="token comment">### END CODE HERE ###</span>
+
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&apos;The shape of X is: &apos;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>shape_X<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&apos;The shape of Y is: &apos;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>shape_Y<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&apos;I have m = %d training examples!&apos;</span> <span class="token operator">%</span> <span class="token punctuation">(</span>m<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-1">&#x7ED3;&#x679C;&#xFF1A;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>The shape of X is: (2, 400)
+The shape of Y is: (1, 400)
+I have m = 400 training examples!
+</code></pre><h3 class="mume-header" id="%E7%AE%80%E5%8D%95%E7%9A%84%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92">&#x7B80;&#x5355;&#x7684;&#x903B;&#x8F91;&#x56DE;&#x5F52;</h3>
+
+<p>&#x5728;&#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x5B8C;&#x6574;&#x7684;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x4E4B;&#x524D;&#xFF0C;&#x5148;&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x770B;&#x903B;&#x8F91;&#x56DE;&#x5F52;&#x5728;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#x4E0A;&#x662F;&#x5982;&#x4F55;&#x6267;&#x884C;&#x7684;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;sklearn&#x7684;&#x5185;&#x7F6E;&#x51FD;&#x6570;&#x6765;&#x505A;&#x5230;&#x8FD9;&#x4E00;&#x70B9;&#x3002;&#x8FD0;&#x884C;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x6765;&#x8BAD;&#x7EC3;&#x6570;&#x636E;&#x96C6;&#x4E0A;&#x7684;&#x903B;&#x8F91;&#x56DE;&#x5F52;&#x5206;&#x7C7B;&#x5668;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x8BAD;&#x7EC3;logistic&#x56DE;&#x5F52;&#x5206;&#x7C7B;&#x5668;</span>
+clf <span class="token operator">=</span> sklearn<span class="token punctuation">.</span>linear_model<span class="token punctuation">.</span>LogisticRegressionCV<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+clf<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">.</span>T<span class="token punctuation">,</span> Y<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</pre><p>&#x4E0A;&#x8FF0;&#x4EE3;&#x7801;&#x53EF;&#x80FD;&#x4F1A;&#x6709;&#x8B66;&#x544A;&#xFF0C;&#x5FFD;&#x7565;&#x5C31;&#x597D;&#xFF0C;&#x5B9E;&#x5728;&#x770B;&#x4E0D;&#x987A;&#x773C;&#xFF0C;&#x628A;Y&#x6539;&#x6210;(*,)&#x7684;shape&#x5373;&#x53EF;&#x3002;</p>
+<p>&#x73B0;&#x5728;&#x4F60;&#x5C31;&#x80FD;&#x521D;&#x6B65;&#x7ED8;&#x5236;&#x8FD9;&#x4E9B;&#x6A21;&#x578B;&#x7684;&#x51B3;&#x7B56;&#x8FB9;&#x754C;&#x3002;</p>
+<h3 class="mume-header" id="%E7%BB%98%E5%88%B6%E5%88%9D%E6%AD%A5%E5%86%B3%E7%AD%96%E8%BE%B9%E7%95%8C">&#x7ED8;&#x5236;&#x521D;&#x6B65;&#x51B3;&#x7B56;&#x8FB9;&#x754C;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># Plot&#x753B;&#x51FA;logistic&#x56DE;&#x5F52;&#x7684;&#x5206;&#x754C;&#x7EBF;</span>
+plot_decision_boundary<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> clf<span class="token punctuation">.</span>predict<span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">&quot;Logistic Regression&quot;</span><span class="token punctuation">)</span>
+
+<span class="token comment"># &#x6253;&#x5370;&#x51C6;&#x786E;&#x5EA6;</span>
+LR_predictions <span class="token operator">=</span> clf<span class="token punctuation">.</span>predict<span class="token punctuation">(</span>X<span class="token punctuation">.</span>T<span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&apos;Accuracy of logistic regression: %d &apos;</span> <span class="token operator">%</span> <span class="token builtin">float</span><span class="token punctuation">(</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>Y<span class="token punctuation">,</span>LR_predictions<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>Y<span class="token punctuation">,</span><span class="token number">1</span><span class="token operator">-</span>LR_predictions<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token builtin">float</span><span class="token punctuation">(</span>Y<span class="token punctuation">.</span>size<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+       <span class="token string">&apos;% &apos;</span> <span class="token operator">+</span> <span class="token string">&quot;(percentage of correctly labelled datapoints)&quot;</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-2">&#x7ED3;&#x679C;&#xFF1A;</h4>
+
+<p><img src="img/QQ%E6%88%AA%E5%9B%BE20200813211951.jpg" alt></p>
+<h3 class="mume-header" id="%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B">&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x6A21;&#x578B;</h3>
+
+<p>&#x6211;&#x4EEC;&#x4E0A;&#x9762;&#x53EF;&#x4EE5;&#x770B;&#x51FA;&#xFF0C;logistic&#x56DE;&#x5F52;&#x6A21;&#x578B;&#x53EA;&#x80FD;&#x8F83;&#x597D;&#x7684;&#x89E3;&#x51B3;&#x4E8C;&#x5206;&#x7C7B;&#x95EE;&#x9898;&#xFF0C;&#x4F46;&#x662F;&#x5BF9;&#x4E8E;&#x82B1;&#x74E3;&#x8FD9;&#x79CD;&#x591A;&#x5206;&#x7C7B;&#x95EE;&#x9898;&#x5C31;&#x6CA1;&#x90A3;&#x4E48;&#x4F18;&#x79C0;&#x4E86;&#x3002;&#x6240;&#x4EE5;&#x4F7F;&#x7528;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x6A21;&#x578B;&#xFF0C;&#x5957;&#x7528;&#x4EE5;&#x4E0B;&#x7684;&#x516C;&#x5F0F;&#xFF1A;</p>
+<p>&#x8BBE; <span class="mathjax-exps">$x^{(i)}$</span>:<br>
+</p><div class="mathjax-exps">$$z^{[1] (i)} =  W^{[1]} x^{(i)} + b^{[1] (i)}$$</div><p></p>
+<p></p><div class="mathjax-exps">$$a^{[1] (i)} = \tanh(z^{[1] (i)})$$</div><p></p>
+<p></p><div class="mathjax-exps">$$z^{[2] (i)} = W^{[2]} a^{[1] (i)} + b^{[2] (i)}$$</div><p></p>
+<p></p><div class="mathjax-exps">$$\hat{y}^{(i)} = a^{[2] (i)} = \sigma(z^{ [2] (i)})$$</div><p></p>
+<p></p><div class="mathjax-exps">$$y^{(i)}_{prediction} = \begin{cases} 1 &amp; \mbox{if } a^{[2](i)} &gt; 0.5 \\ 0 &amp; \mbox{otherwise } \end{cases}$$</div><p></p>
+<p>&#x7ED9;&#x51FA;&#x6240;&#x6709;&#x4F8B;&#x5B50;&#x7684;&#x9884;&#x6D4B;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x7528;&#x5982;&#x4E0B;&#x65B9;&#x5F0F;&#x8BA1;&#x7B97;&#x6210;&#x672C; <span class="mathjax-exps">$J$</span>:<br>
+</p><div class="mathjax-exps">$$J = - \frac{1}{m} \sum\limits_{i = 0}^{m} \large\left(\small y^{(i)}\log\left(a^{[2] (i)}\right) + (1-y^{(i)})\log\left(1- a^{[2] (i)}\right)  \large  \right) \small$$</div><p></p>
+<h3 class="mume-header" id="%E5%AE%9A%E4%B9%89%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84">&#x5B9A;&#x4E49;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x7ED3;&#x6784;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: layer_sizes</span>
+
+<span class="token keyword">def</span> <span class="token function">layer_sizes</span><span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Arguments:
+    X -- input dataset of shape (input size, number of examples)
+    Y -- labels of shape (output size, number of examples)
+    
+    Returns:
+    n_x -- the size of the input layer
+    n_h -- the size of the hidden layer
+    n_y -- the size of the output layer
+    &quot;&quot;&quot;</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 3 lines of code)</span>
+    n_x <span class="token operator">=</span> X<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment"># &#x8F93;&#x5165;&#x5C42;size</span>
+    n_h <span class="token operator">=</span> <span class="token number">4</span>
+    n_y <span class="token operator">=</span> Y<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token comment"># &#x8F93;&#x51FA;&#x5C42;size</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y<span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E6%B5%8B%E8%AF%95">&#x6D4B;&#x8BD5;</h4>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">X_assess<span class="token punctuation">,</span> Y_assess <span class="token operator">=</span> layer_sizes_test_case<span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">(</span>n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y<span class="token punctuation">)</span> <span class="token operator">=</span> layer_sizes<span class="token punctuation">(</span>X_assess<span class="token punctuation">,</span> Y_assess<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;The size of the input layer is: n_x = &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>n_x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;The size of the hidden layer is: n_h = &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>n_h<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;The size of the output layer is: n_y = &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span>n_y<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-3">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>The size of the input layer is: n_x = 5
+The size of the hidden layer is: n_h = 4
+The size of the output layer is: n_y = 2
+</code></pre><h3 class="mume-header" id="%E5%88%9D%E5%A7%8B%E5%8C%96%E6%A8%A1%E5%9E%8B%E5%8F%82%E6%95%B0">&#x521D;&#x59CB;&#x5316;&#x6A21;&#x578B;&#x53C2;&#x6570;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: initialize_parameters</span>
+
+<span class="token keyword">def</span> <span class="token function">initialize_parameters</span><span class="token punctuation">(</span>n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Argument:
+    n_x -- size of the input layer
+    n_h -- size of the hidden layer
+    n_y -- size of the output layer
+    
+    Returns:
+    params -- python dictionary containing your parameters:
+                    W1 -- weight matrix of shape (n_h, n_x)
+                    b1 -- bias vector of shape (n_h, 1)
+                    W2 -- weight matrix of shape (n_y, n_h)
+                    b2 -- bias vector of shape (n_y, 1)
+    &quot;&quot;&quot;</span>
+    
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token comment"># &#x5C3D;&#x7BA1;&#x521D;&#x59CB;&#x5316;&#x662F;&#x968F;&#x673A;&#x7684;&#xFF0C;&#x4F46;&#x662F;&#x6211;&#x4EEC;&#x5EFA;&#x7ACB;&#x4E86;&#x4E00;&#x4E2A;&#x79CD;&#x5B50;&#xFF0C;&#x4EE5;&#x4FBF;&#x8F93;&#x51FA;&#x4E0E;&#x6211;&#x4EEC;&#x7684;&#x7ED3;&#x679C;&#x5339;&#x914D;</span>
+    
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    W1 <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span>n_h<span class="token punctuation">,</span> n_x<span class="token punctuation">)</span><span class="token operator">*</span> <span class="token number">0.01</span>
+    b1 <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>n_h<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    W2 <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randn<span class="token punctuation">(</span>n_y<span class="token punctuation">,</span> n_h<span class="token punctuation">)</span><span class="token operator">*</span> <span class="token number">0.01</span>
+    b2 <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span>n_y<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x6DF1;&#x5EA6;&#x5B66;&#x4E60;&#x5E38;&#x89C1;&#x7684;bug&#x5C31;&#x662F;&#x7EF4;&#x5EA6;&#x5F02;&#x5E38;</span>
+    <span class="token comment"># &#x5434;&#x6069;&#x8FBE;&#x7684;&#x7ECF;&#x9A8C;&#xFF1A;&#x7F16;&#x7801;&#x4E2D;&#x5D4C;&#x5165;assert&#x4EE3;&#x7801;&#xFF0C;&#x68C0;&#x6D4B;&#x7EF4;&#x5EA6;</span>
+    <span class="token keyword">assert</span> <span class="token punctuation">(</span>W1<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span>n_h<span class="token punctuation">,</span> n_x<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token punctuation">(</span>b1<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span>n_h<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token punctuation">(</span>W2<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span>n_y<span class="token punctuation">,</span> n_h<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token keyword">assert</span> <span class="token punctuation">(</span>b2<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span>n_y<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;W1&quot;</span><span class="token punctuation">:</span> W1<span class="token punctuation">,</span>
+                  <span class="token string">&quot;b1&quot;</span><span class="token punctuation">:</span> b1<span class="token punctuation">,</span>
+                  <span class="token string">&quot;W2&quot;</span><span class="token punctuation">:</span> W2<span class="token punctuation">,</span>
+                  <span class="token string">&quot;b2&quot;</span><span class="token punctuation">:</span> b2<span class="token punctuation">}</span>
+    
+    <span class="token keyword">return</span> parameters
+</pre><h2 class="mume-header" id="%E5%BE%AA%E7%8E%AF"><strong>&#x5FAA;&#x73AF;</strong></h2>
+
+<h3 class="mume-header" id="%E6%AD%A3%E5%90%91%E4%BC%A0%E6%92%AD">&#x6B63;&#x5411;&#x4F20;&#x64AD;</h3>
+
+<ul>
+<li>&#x8BF7;&#x770B;&#x4E0A;&#x9762;&#x5206;&#x7C7B;&#x5668;&#x7684;&#x6570;&#x5B66;&#x8868;&#x8FBE;&#x5F0F;.</li>
+<li>&#x4F7F;&#x7528;<code>sigmoid()</code>.</li>
+<li>&#x4F7F;&#x7528; <code>np.tanh()</code>.</li>
+<li>&#x60A8;&#x5FC5;&#x987B;&#x5B8C;&#x6210;&#x7684;&#x6B65;&#x9AA4;&#x662F;&#xFF1A;
+<ol>
+<li>&#x901A;&#x8FC7;&#x4F7F;&#x7528; <code>parameters[&quot;..&quot;]</code>&#x4ECE;&#x5B57;&#x5178;&quot;parameters&quot;&#x4E2D;&#x68C0;&#x7D22;&#x53C2;&#x6570; ( <code>initialize_parameters()</code>&#x7684;&#x8F93;&#x51FA;) .</li>
+<li>&#x8BA1;&#x7B97; <span class="mathjax-exps">$Z^{[1]}, A^{[1]}, Z^{[2]}$</span> &#x548C;<span class="mathjax-exps">$A^{[2]}$</span> (&#x5411;&#x91CF;&#x8FD0;&#x7B97;).</li>
+</ol>
+</li>
+<li>**&#x53CD;&#x5411;&#x4F20;&#x64AD;&#x6240;&#x9700;&#x7684;&#x503C;&#x5B58;&#x50A8;&#x5728;&#x201C; cache&#x201D;&#x4E2D;. **</li>
+</ul>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: forward_propagation</span>
+
+<span class="token keyword">def</span> <span class="token function">forward_propagation</span><span class="token punctuation">(</span>X<span class="token punctuation">,</span> parameters<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Argument:
+    X -- input data of size (n_x, m)
+    parameters -- python dictionary containing your parameters (output of initialization function)
+    
+    Returns:
+    A2 -- The sigmoid output of the second activation
+    cache -- a dictionary containing &quot;Z1&quot;, &quot;A1&quot;, &quot;Z2&quot; and &quot;A2&quot;
+    &quot;&quot;&quot;</span>
+    <span class="token comment"># &#x68C0;&#x7D22;&#x53C2;&#x6570;</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    W1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">]</span>
+    b1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b1&apos;</span><span class="token punctuation">]</span>
+    W2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W2&apos;</span><span class="token punctuation">]</span>
+    b2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b2&apos;</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x5411;&#x524D;&#x4F20;&#x64AD;&#x8BA1;&#x7B97;A2 (&#x53EF;&#x80FD;&#x6027;)</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    Z1 <span class="token operator">=</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>W1<span class="token punctuation">,</span> X<span class="token punctuation">)</span> <span class="token operator">+</span> b1
+    A1 <span class="token operator">=</span> np<span class="token punctuation">.</span>tanh<span class="token punctuation">(</span>Z1<span class="token punctuation">)</span>
+    Z2 <span class="token operator">=</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>W2<span class="token punctuation">,</span> A1<span class="token punctuation">)</span> <span class="token operator">+</span> b2
+    A2 <span class="token operator">=</span> sigmoid<span class="token punctuation">(</span>Z2<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token keyword">assert</span><span class="token punctuation">(</span>A2<span class="token punctuation">.</span>shape <span class="token operator">==</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> X<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    
+    cache <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;Z1&quot;</span><span class="token punctuation">:</span> Z1<span class="token punctuation">,</span>
+             <span class="token string">&quot;A1&quot;</span><span class="token punctuation">:</span> A1<span class="token punctuation">,</span>
+             <span class="token string">&quot;Z2&quot;</span><span class="token punctuation">:</span> Z2<span class="token punctuation">,</span>
+             <span class="token string">&quot;A2&quot;</span><span class="token punctuation">:</span> A2<span class="token punctuation">}</span>
+    
+    <span class="token keyword">return</span> A2<span class="token punctuation">,</span> cache
+</pre><h3 class="mume-header" id="%E8%AE%A1%E7%AE%97%E6%88%90%E6%9C%AC">&#x8BA1;&#x7B97;&#x6210;&#x672C;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: compute_cost</span>
+
+<span class="token keyword">def</span> <span class="token function">compute_cost</span><span class="token punctuation">(</span>A2<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> parameters<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Computes the cross-entropy cost given in equation (13)
+    
+    Arguments:
+    A2 -- The sigmoid output of the second activation, of shape (1, number of examples)
+    Y -- &quot;true&quot; labels vector of shape (1, number of examples)
+    parameters -- python dictionary containing your parameters W1, b1, W2 and b2
+    
+    Returns:
+    cost -- cross-entropy cost given equation (13)
+    &quot;&quot;&quot;</span>
+    
+    m <span class="token operator">=</span> Y<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span> <span class="token comment"># number of example</span>
+
+    <span class="token comment"># &#x8BA1;&#x7B97;&#x4EA4;&#x53C9;&#x71B5;&#x635F;&#x5931;</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 2 lines of code)</span>
+    logprobs <span class="token operator">=</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span>np<span class="token punctuation">.</span>log<span class="token punctuation">(</span>A2<span class="token punctuation">)</span><span class="token punctuation">,</span>Y<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>multiply<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>Y<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>np<span class="token punctuation">.</span>log<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>A2<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    cost <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token operator">/</span>m <span class="token operator">*</span> np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>logprobs<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    cost <span class="token operator">=</span> np<span class="token punctuation">.</span>squeeze<span class="token punctuation">(</span>cost<span class="token punctuation">)</span>     <span class="token comment"># &#x786E;&#x4FDD;&#x6210;&#x672C;cost&#x7684;&#x7EF4;&#x5EA6;</span>
+                                <span class="token comment"># E.g., turns [[17]] into 17 </span>
+    <span class="token keyword">assert</span><span class="token punctuation">(</span><span class="token builtin">isinstance</span><span class="token punctuation">(</span>cost<span class="token punctuation">,</span> <span class="token builtin">float</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> cost
+</pre><h3 class="mume-header" id="%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD">&#x53CD;&#x5411;&#x4F20;&#x64AD;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: backward_propagation</span>
+
+<span class="token keyword">def</span> <span class="token function">backward_propagation</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> cache<span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Implement the backward propagation using the instructions above.
+    
+    Arguments:
+    parameters -- python dictionary containing our parameters 
+    cache -- a dictionary containing &quot;Z1&quot;, &quot;A1&quot;, &quot;Z2&quot; and &quot;A2&quot;.
+    X -- input data of shape (2, number of examples)
+    Y -- &quot;true&quot; labels vector of shape (1, number of examples)
+    
+    Returns:
+    grads -- python dictionary containing your gradients with respect to different parameters
+    &quot;&quot;&quot;</span>
+    m <span class="token operator">=</span> X<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+    
+    <span class="token comment"># &#x9996;&#x5148;&#xFF0C;&#x4ECE;&quot;parameters&quot;&#x4E2D;&#x67E5;&#x8BE2;W1&#xFF0C;W2</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 2 lines of code)</span>
+    W1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">]</span>
+    W2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W2&apos;</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+        
+    <span class="token comment"># &#x7136;&#x540E;&#xFF0C;&#x4ECE;&quot;cache&quot;&#x4E2D;&#x67E5;&#x8BE2;A1&#xFF0C;A2</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 2 lines of code)</span>
+    A1 <span class="token operator">=</span> cache<span class="token punctuation">[</span><span class="token string">&apos;A1&apos;</span><span class="token punctuation">]</span>
+    A2 <span class="token operator">=</span> cache<span class="token punctuation">[</span><span class="token string">&apos;A2&apos;</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x53CD;&#x5411;&#x4F20;&#x64AD;: &#x8BA1;&#x7B97; dW1, db1, dW2, db2. </span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 6 lines of code, corresponding to 6 equations on slide above)</span>
+    dZ2 <span class="token operator">=</span> A2 <span class="token operator">-</span> Y
+    dW2 <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span>m <span class="token operator">*</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>dZ2<span class="token punctuation">,</span> A1<span class="token punctuation">.</span>T<span class="token punctuation">)</span>
+    db2 <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span>m <span class="token operator">*</span> np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>dZ2<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> keepdims<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    dZ1 <span class="token operator">=</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>W2<span class="token punctuation">.</span>T<span class="token punctuation">,</span> dZ2<span class="token punctuation">)</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span> <span class="token operator">-</span> np<span class="token punctuation">.</span>power<span class="token punctuation">(</span>A1<span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    dW1 <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span>m <span class="token operator">*</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>dZ1<span class="token punctuation">,</span> X<span class="token punctuation">.</span>T<span class="token punctuation">)</span>
+    db1 <span class="token operator">=</span> <span class="token number">1</span><span class="token operator">/</span>m <span class="token operator">*</span> np<span class="token punctuation">.</span><span class="token builtin">sum</span><span class="token punctuation">(</span>dZ1<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> keepdims<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    grads <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;dW1&quot;</span><span class="token punctuation">:</span> dW1<span class="token punctuation">,</span>
+             <span class="token string">&quot;db1&quot;</span><span class="token punctuation">:</span> db1<span class="token punctuation">,</span>
+             <span class="token string">&quot;dW2&quot;</span><span class="token punctuation">:</span> dW2<span class="token punctuation">,</span>
+             <span class="token string">&quot;db2&quot;</span><span class="token punctuation">:</span> db2<span class="token punctuation">}</span>
+    
+    <span class="token keyword">return</span> grads
+</pre><h3 class="mume-header" id="%E6%9B%B4%E6%96%B0%E5%8F%82%E6%95%B0%E4%BC%98%E5%8C%96">&#x66F4;&#x65B0;&#x53C2;&#x6570;&#x3010;&#x4F18;&#x5316;&#x3011;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: update_parameters</span>
+
+<span class="token keyword">def</span> <span class="token function">update_parameters</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> grads<span class="token punctuation">,</span> learning_rate <span class="token operator">=</span> <span class="token number">1.2</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Updates parameters using the gradient descent update rule given above
+    
+    Arguments:
+    parameters -- python dictionary containing your parameters 
+    grads -- python dictionary containing your gradients 
+    
+    Returns:
+    parameters -- python dictionary containing your updated parameters 
+    &quot;&quot;&quot;</span>
+    <span class="token comment"># &#x4ECE;&quot;parameters&quot;&#x4E2D;&#x67E5;&#x8BE2;W1&#xFF0C;b1&#xFF0C;W2,b2</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    W1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">]</span>
+    b1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b1&apos;</span><span class="token punctuation">]</span>
+    W2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W2&apos;</span><span class="token punctuation">]</span>
+    b2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b2&apos;</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x4ECE;&quot;grads&quot;&#x4E2D;&#x67E5;&#x8BE2;dW1&#xFF0C;db1&#xFF0C;dW2,d/b2</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    dW1 <span class="token operator">=</span> grads<span class="token punctuation">[</span><span class="token string">&quot;dW1&quot;</span><span class="token punctuation">]</span>
+    db1 <span class="token operator">=</span> grads<span class="token punctuation">[</span><span class="token string">&quot;db1&quot;</span><span class="token punctuation">]</span>
+    dW2 <span class="token operator">=</span> grads<span class="token punctuation">[</span><span class="token string">&quot;dW2&quot;</span><span class="token punctuation">]</span>
+    db2 <span class="token operator">=</span> grads<span class="token punctuation">[</span><span class="token string">&quot;db2&quot;</span><span class="token punctuation">]</span>
+    <span class="token comment">## END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x66F4;&#x65B0;W1&#xFF0C;b1&#xFF0C;W2,b2</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+    W1 <span class="token operator">-=</span> learning_rate <span class="token operator">*</span> dW1
+    b1 <span class="token operator">-=</span> learning_rate <span class="token operator">*</span> db1
+    W2 <span class="token operator">-=</span> learning_rate <span class="token operator">*</span> dW2
+    b2 <span class="token operator">-=</span> learning_rate <span class="token operator">*</span> db2
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    parameters <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;W1&quot;</span><span class="token punctuation">:</span> W1<span class="token punctuation">,</span>
+                  <span class="token string">&quot;b1&quot;</span><span class="token punctuation">:</span> b1<span class="token punctuation">,</span>
+                  <span class="token string">&quot;W2&quot;</span><span class="token punctuation">:</span> W2<span class="token punctuation">,</span>
+                  <span class="token string">&quot;b2&quot;</span><span class="token punctuation">:</span> b2<span class="token punctuation">}</span>
+    
+    <span class="token keyword">return</span> parameters
+</pre><h3 class="mume-header" id="%E5%BB%BA%E7%AB%8B%E7%A5%9E%E7%BB%8F%E6%A8%A1%E5%9E%8B">&#x5EFA;&#x7ACB;&#x795E;&#x7ECF;&#x6A21;&#x578B;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: nn_model</span>
+
+<span class="token keyword">def</span> <span class="token function">nn_model</span><span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> num_iterations <span class="token operator">=</span> <span class="token number">10000</span><span class="token punctuation">,</span> print_cost<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Arguments:
+    X -- dataset of shape (2, number of examples)
+    Y -- labels of shape (1, number of examples)
+    n_h -- size of the hidden layer
+    num_iterations -- Number of iterations in gradient descent loop
+    print_cost -- if True, print the cost every 1000 iterations
+    
+    Returns:
+    parameters -- parameters learnt by the model. They can then be used to predict.
+    &quot;&quot;&quot;</span>
+    
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">)</span>
+    n_x <span class="token operator">=</span> layer_sizes<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+    n_y <span class="token operator">=</span> layer_sizes<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span>
+    
+    <span class="token comment"># &#x521D;&#x59CB;&#x5316; parameters, &#x5E76;&#x83B7;&#x53D6; W1, b1, W2, b2. Inputs: &quot;n_x, n_h, n_y&quot;. Outputs = &quot;W1, b1, W2, b2, parameters&quot;.</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 5 lines of code)</span>
+    n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y <span class="token operator">=</span> layer_sizes<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+    parameters <span class="token operator">=</span> initialize_parameters<span class="token punctuation">(</span>n_x<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> n_y<span class="token punctuation">)</span>
+    W1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W1&apos;</span><span class="token punctuation">]</span>
+    b1 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b1&apos;</span><span class="token punctuation">]</span>
+    W2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;W2&apos;</span><span class="token punctuation">]</span>
+    b2 <span class="token operator">=</span> parameters<span class="token punctuation">[</span><span class="token string">&apos;b2&apos;</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># Loop (gradient descent)</span>
+
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> num_iterations<span class="token punctuation">)</span><span class="token punctuation">:</span>
+         
+        <span class="token comment">### START CODE HERE ### (&#x2248; 4 lines of code)</span>
+        <span class="token comment"># &#x6B63;&#x5411;&#x4F20;&#x64AD;. Inputs: &quot;X, parameters&quot;. Outputs: &quot;A2, cache&quot;.</span>
+        A2<span class="token punctuation">,</span> cache <span class="token operator">=</span> forward_propagation<span class="token punctuation">(</span>X<span class="token punctuation">,</span> parameters<span class="token punctuation">)</span>
+        
+        <span class="token comment"># &#x6210;&#x672C;&#x51FD;&#x6570;. Inputs: &quot;A2, Y, parameters&quot;. Outputs: &quot;cost&quot;.</span>
+        cost <span class="token operator">=</span> compute_cost<span class="token punctuation">(</span>A2<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> parameters<span class="token punctuation">)</span>
+ 
+        <span class="token comment"># &#x53CD;&#x5411;&#x4F20;&#x64AD;. Inputs: &quot;parameters, cache, X, Y&quot;. Outputs: &quot;grads&quot;.</span>
+        grads <span class="token operator">=</span> backward_propagation<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> cache<span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+ 
+        <span class="token comment"># &#x68AF;&#x5EA6;&#x4E0B;&#x964D;&#x5E76;&#x66F4;&#x65B0;. Inputs: &quot;parameters, grads&quot;. Outputs: &quot;parameters&quot;.</span>
+        parameters <span class="token operator">=</span> update_parameters<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> grads<span class="token punctuation">)</span>
+        
+        <span class="token comment">### END CODE HERE ###</span>
+        
+        <span class="token comment"># &#x6BCF;1000&#x6B21;&#x5FAA;&#x73AF;&#x6253;&#x5370;&#x4E00;&#x6B21;</span>
+        <span class="token keyword">if</span> print_cost <span class="token keyword">and</span> i <span class="token operator">%</span> <span class="token number">1000</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">:</span>
+            <span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&quot;Cost after iteration %i: %f&quot;</span> <span class="token operator">%</span><span class="token punctuation">(</span>i<span class="token punctuation">,</span> cost<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token keyword">return</span> parameters
+</pre><h3 class="mume-header" id="%E9%A2%84%E6%B5%8B">&#x9884;&#x6D4B;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: predict</span>
+
+<span class="token keyword">def</span> <span class="token function">predict</span><span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> X<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Using the learned parameters, predicts a class for each example in X
+    
+    Arguments:
+    parameters -- python dictionary containing your parameters 
+    X -- input data of size (n_x, m)
+    
+    Returns
+    predictions -- vector of predictions of our model (red: 0 / blue: 1)
+    &quot;&quot;&quot;</span>
+    
+    <span class="token comment"># Computes probabilities using forward propagation, and classifies to 0/1 using 0.5 as the threshold.</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 2 lines of code)</span>
+    A2<span class="token punctuation">,</span> cache <span class="token operator">=</span> forward_propagation<span class="token punctuation">(</span>X<span class="token punctuation">,</span> parameters<span class="token punctuation">)</span>
+    predictions <span class="token operator">=</span> np<span class="token punctuation">.</span>array<span class="token punctuation">(</span> <span class="token punctuation">[</span><span class="token number">1</span> <span class="token keyword">if</span> x <span class="token operator">&gt;</span><span class="token number">0.5</span> <span class="token keyword">else</span> <span class="token number">0</span> <span class="token keyword">for</span> x <span class="token keyword">in</span> A2<span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">]</span> <span class="token punctuation">)</span><span class="token punctuation">.</span>reshape<span class="token punctuation">(</span>A2<span class="token punctuation">.</span>shape<span class="token punctuation">)</span> <span class="token comment"># &#x8FD9;&#x4E00;&#x884C;&#x4EE3;&#x7801;&#x7684;&#x4F5C;&#x7528;&#x8BE6;&#x89C1;&#x4E0B;&#x9762;&#x4EE3;&#x7801;&#x793A;&#x4F8B;</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token keyword">return</span> predictions
+</pre><h3 class="mume-header" id="%E5%88%86%E7%B1%BB%E8%BF%90%E7%AE%97%E7%94%BB%E5%9B%BE">&#x5206;&#x7C7B;&#x8FD0;&#x7B97;&#x753B;&#x56FE;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x6709;&#x4E00;&#x4E2A; n_h-&#x7EF4;&#x9690;&#x85CF;&#x5C42;&#x7684;&#x6A21;&#x578B;</span>
+parameters <span class="token operator">=</span> nn_model<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> n_h <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">,</span> num_iterations <span class="token operator">=</span> <span class="token number">10000</span><span class="token punctuation">,</span> print_cost<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Plot &#x5206;&#x754C;&#x7EBF;</span>
+plot_decision_boundary<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> predict<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> x<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">&quot;Decision Boundary for hidden layer size &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-4">&#x7ED3;&#x679C;</h4>
+
+<img src="img/QQ&#x622A;&#x56FE;20200813214501.jpg" style="zoom:67%;">
+<h3 class="mume-header" id="%E5%87%86%E7%A1%AE%E7%8E%87">&#x51C6;&#x786E;&#x7387;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x6253;&#x5370;&#x51C6;&#x786E;&#x7387;</span>
+predictions <span class="token operator">=</span> predict<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> X<span class="token punctuation">)</span>
+<span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&apos;Accuracy: %d&apos;</span> <span class="token operator">%</span> <span class="token builtin">float</span><span class="token punctuation">(</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>Y<span class="token punctuation">,</span>predictions<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>Y<span class="token punctuation">,</span><span class="token number">1</span><span class="token operator">-</span>predictions<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token builtin">float</span><span class="token punctuation">(</span>Y<span class="token punctuation">.</span>size<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">100</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">&apos;%&apos;</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-5">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>Accuracy: 90%
+</code></pre><h3 class="mume-header" id="%E4%B8%8D%E5%90%8C%E7%9A%84%E9%9A%90%E8%97%8F%E5%B1%82%E5%A4%A7%E5%B0%8F%E5%BD%B1%E5%93%8D">&#x4E0D;&#x540C;&#x7684;&#x9690;&#x85CF;&#x5C42;&#x5927;&#x5C0F;&#x5F71;&#x54CD;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+hidden_layer_sizes <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">]</span>
+<span class="token keyword">for</span> i<span class="token punctuation">,</span> n_h <span class="token keyword">in</span> <span class="token builtin">enumerate</span><span class="token punctuation">(</span>hidden_layer_sizes<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span><span class="token string">&apos;Hidden Layer of size %d&apos;</span> <span class="token operator">%</span> n_h<span class="token punctuation">)</span>
+    parameters <span class="token operator">=</span> nn_model<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> n_h<span class="token punctuation">,</span> num_iterations <span class="token operator">=</span> <span class="token number">5000</span><span class="token punctuation">)</span>
+    plot_decision_boundary<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> predict<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> x<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+    predictions <span class="token operator">=</span> predict<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> X<span class="token punctuation">)</span>
+    accuracy <span class="token operator">=</span> <span class="token builtin">float</span><span class="token punctuation">(</span><span class="token punctuation">(</span>np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span>Y<span class="token punctuation">,</span>predictions<span class="token punctuation">.</span>T<span class="token punctuation">)</span> <span class="token operator">+</span> np<span class="token punctuation">.</span>dot<span class="token punctuation">(</span><span class="token number">1</span><span class="token operator">-</span>Y<span class="token punctuation">,</span><span class="token number">1</span><span class="token operator">-</span>predictions<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token operator">/</span><span class="token builtin">float</span><span class="token punctuation">(</span>Y<span class="token punctuation">.</span>size<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">100</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span> <span class="token punctuation">(</span><span class="token string">&quot;Accuracy for {} hidden units: {} %&quot;</span><span class="token punctuation">.</span><span class="token builtin">format</span><span class="token punctuation">(</span>n_h<span class="token punctuation">,</span> accuracy<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E8%A7%A3%E8%AF%BB"><strong>&#x89E3;&#x8BFB;</strong>&#xFF1A;</h4>
+
+<ul>
+<li>&#x8F83;&#x5927;&#x7684;&#x6A21;&#x578B;&#xFF08;&#x5177;&#x6709;&#x66F4;&#x591A;&#x7684;&#x9690;&#x85CF;&#x5355;&#x5143;&#xFF09;&#x80FD;&#x591F;&#x66F4;&#x597D;&#x5730;&#x9002;&#x5E94;&#x8BAD;&#x7EC3;&#x96C6;&#xFF0C;&#x76F4;&#x5230;&#x6700;&#x7EC8;&#x7684;&#x6700;&#x5927;&#x6A21;&#x578B;&#x8FC7;&#x5EA6;&#x62DF;&#x5408;&#x6570;&#x636E;&#x3002;</li>
+<li>&#x6700;&#x597D;&#x7684;&#x9690;&#x85CF;&#x5C42;&#x5927;&#x5C0F;&#x4F3C;&#x4E4E;&#x5728;n_h = 5&#x5DE6;&#x53F3;&#x3002;&#x4E8B;&#x5B9E;&#x4E0A;&#xFF0C;&#x8FD9;&#x91CC;&#x7684;&#x4E00;&#x4E2A;&#x503C;&#x4F3C;&#x4E4E;&#x5F88;&#x9002;&#x5408;&#x6570;&#x636E;&#xFF0C;&#x800C;&#x4E14;&#x4E0D;&#x4F1A;&#x5F15;&#x8D77;&#x663E;&#x7740;&#x7684;&#x8FC7;&#x5EA6;&#x62DF;&#x5408;&#x3002;</li>
+<li>&#x60A8;&#x8FD8;&#x5C06;&#x5B66;&#x4E60;&#x6709;&#x5173;&#x6B63;&#x5219;&#x5316;&#x7684;&#x5185;&#x5BB9;&#xFF0C;&#x8FD9;&#x53EF;&#x4EE5;&#x8BA9;&#x60A8;&#x4F7F;&#x7528;&#x975E;&#x5E38;&#x5927;&#x7684;&#x6A21;&#x578B;&#xFF08;&#x5982;n_h = 50&#xFF09;&#xFF0C;&#x800C;&#x4E0D;&#x4F1A;&#x51FA;&#x73B0;&#x592A;&#x591A;&#x7684;&#x8FC7;&#x5EA6;&#x62DF;&#x5408;&#x3002;</li>
+</ul>
+<h3 class="mume-header" id="%E5%85%B6%E4%BB%96%E6%95%B0%E6%8D%AE%E9%9B%86%E6%B5%8B%E8%AF%95">&#x5176;&#x4ED6;&#x6570;&#x636E;&#x96C6;&#x6D4B;&#x8BD5;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># Datasets</span>
+noisy_circles<span class="token punctuation">,</span> noisy_moons<span class="token punctuation">,</span> blobs<span class="token punctuation">,</span> gaussian_quantiles<span class="token punctuation">,</span> no_structure <span class="token operator">=</span> load_extra_datasets<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+datasets <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;noisy_circles&quot;</span><span class="token punctuation">:</span> noisy_circles<span class="token punctuation">,</span>
+            <span class="token string">&quot;noisy_moons&quot;</span><span class="token punctuation">:</span> noisy_moons<span class="token punctuation">,</span>
+            <span class="token string">&quot;blobs&quot;</span><span class="token punctuation">:</span> blobs<span class="token punctuation">,</span>
+            <span class="token string">&quot;gaussian_quantiles&quot;</span><span class="token punctuation">:</span> gaussian_quantiles<span class="token punctuation">}</span>
+
+
+
+<span class="token comment">### START CODE HERE ### (choose your dataset)</span>
+i <span class="token operator">=</span> <span class="token number">0</span>
+plt<span class="token punctuation">.</span>figure<span class="token punctuation">(</span>figsize<span class="token operator">=</span><span class="token punctuation">(</span><span class="token number">8</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token keyword">for</span> dataset <span class="token keyword">in</span> datasets<span class="token punctuation">:</span>
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span>
+    i <span class="token operator">+=</span> <span class="token number">1</span>
+    plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span>dataset<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+
+    X<span class="token punctuation">,</span> Y <span class="token operator">=</span> datasets<span class="token punctuation">[</span>dataset<span class="token punctuation">]</span>
+    X<span class="token punctuation">,</span> Y <span class="token operator">=</span> X<span class="token punctuation">.</span>T<span class="token punctuation">,</span> Y<span class="token punctuation">.</span>reshape<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> Y<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># make blobs binary</span>
+    <span class="token keyword">if</span> dataset <span class="token operator">==</span> <span class="token string">&quot;blobs&quot;</span><span class="token punctuation">:</span>
+        Y <span class="token operator">=</span> Y<span class="token operator">%</span><span class="token number">2</span>
+
+    <span class="token comment"># Visualize the data</span>
+    plt<span class="token punctuation">.</span>scatter<span class="token punctuation">(</span>X<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> X<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">,</span> c<span class="token operator">=</span>Y<span class="token punctuation">,</span> s<span class="token operator">=</span><span class="token number">40</span><span class="token punctuation">,</span> cmap<span class="token operator">=</span>plt<span class="token punctuation">.</span>cm<span class="token punctuation">.</span>Spectral<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    
+    
+    <span class="token comment"># Build a model with a n_h-dimensional hidden layer</span>
+    parameters <span class="token operator">=</span> nn_model<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> n_h <span class="token operator">=</span> <span class="token number">4</span><span class="token punctuation">,</span> num_iterations <span class="token operator">=</span> <span class="token number">10000</span><span class="token punctuation">,</span> print_cost<span class="token operator">=</span><span class="token boolean">False</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># Plot the decision boundary</span>
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> i<span class="token operator">+</span><span class="token number">1</span><span class="token punctuation">)</span>
+    i <span class="token operator">+=</span> <span class="token number">1</span>
+    plot_decision_boundary<span class="token punctuation">(</span><span class="token keyword">lambda</span> x<span class="token punctuation">:</span> predict<span class="token punctuation">(</span>parameters<span class="token punctuation">,</span> x<span class="token punctuation">.</span>T<span class="token punctuation">)</span><span class="token punctuation">,</span> X<span class="token punctuation">,</span> Y<span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>title<span class="token punctuation">(</span>dataset <span class="token operator">+</span> <span class="token string">&apos;Classifier&apos;</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-6">&#x7ED3;&#x679C;&#xFF1A;</h4>
+
+<img src="img/QQ&#x622A;&#x56FE;20200813215349.jpg" style="zoom:80%;">
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

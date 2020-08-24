@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Emojify</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({"extensions":["tex2jax.js"],"jax":["input/TeX","output/HTML-CSS"],"messageStyle":"none","tex2jax":{"processEnvironments":false,"processEscapes":true,"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"TeX":{"extensions":["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]},"HTML-CSS":{"availableFonts":["TeX"]}});
+        </script>
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
+        <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/css/bootstrap.min.css">
+        <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://cdn.staticfile.org/twitter-bootstrap/4.3.1/js/bootstrap.min.js"></script>
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top">
+        <!-- Brand -->
+        <img src="../logo.jpg">
+      
+        <!-- Links -->
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="../index.html">主页</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="../PyTorch.html">Pytorch</a>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link" href="../DeepLearning/DeepNetwork.html">人工智能</a>
+          </li>
+        </ul>
+      </nav>
+      <br>
+      <br>
+      <br>
+      <div class="container-fluid">
+        <div class="row">
+          <nav class="col-md-2 d-none d-md-block bg-light sidebar fixed-bottom">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">
+                  序列模型
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">
+                  定向搜索
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#homework">
+                  作业
+                </a>
+              </li>
+            </ul>
+            <br><br><br><br><br><br><br><br><br><br>
+            <br><br><br><br><br><br><br><br><br><br>
+          </div>
+          </nav>
+          <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <div class="mume markdown-preview  ">
+              <h1 class="mume-header" id="%E5%BA%8F%E5%88%97%E6%A8%A1%E5%9E%8B%E4%B8%8E%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%9C%BA%E5%88%B6">&#x5E8F;&#x5217;&#x6A21;&#x578B;&#x4E0E;&#x6CE8;&#x610F;&#x529B;&#x673A;&#x5236;</h1>
+        
+        <h2 class="mume-header" id="%E5%9F%BA%E7%A1%80%E6%A8%A1%E5%9E%8B">&#x57FA;&#x7840;&#x6A21;&#x578B;</h2>
+        
+        <p>Sequence to sequence(Seq2Seq)&#x6A21;&#x578B;&#x5728;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x548C;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x65B9;&#x9762;&#x90FD;&#x6709;&#x7740;&#x5E7F;&#x6CDB;&#x7684;&#x5E94;&#x7528;&#x3002;&#x4E0B;&#x9762;&#xFF0C;&#x6211;&#x4EEC;&#x6765;&#x770B;&#x4E00;&#x4E2A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x7B80;&#x5355;&#x4F8B;&#x5B50;&#xFF1A;</p>
+        <p><img src="img/28.jpg" alt></p>
+        <p>&#x9488;&#x5BF9;&#x8BE5;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x201C;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#xFF08;encoder network&#xFF09;&#x201D;+&#x201C;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#xFF08;decoder network&#xFF09;&#x201D;&#x4E24;&#x4E2A;RNN&#x6A21;&#x578B;&#x7EC4;&#x5408;&#x7684;&#x5F62;&#x5F0F;&#x6765;&#x89E3;&#x51B3;&#x3002;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#x5C06;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#x7F16;&#x7801;&#x4E3A;&#x4E00;&#x4E2A;&#x7279;&#x5F81;&#x5411;&#x91CF;&#xFF0C;&#x4F20;&#x9012;&#x7ED9;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#xFF0C;&#x5B8C;&#x6210;&#x7FFB;&#x8BD1;&#x3002;&#x5177;&#x4F53;&#x6A21;&#x578B;&#x7ED3;&#x6784;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+        <p><img src="img/29.jpg" alt></p>
+        <p>&#x5176;&#x4E2D;&#xFF0C;&#x5D4C;&#x5165;&#x5411;&#x91CF;&#x4EE3;&#x8868;&#x4E86;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#x7684;&#x7F16;&#x7801;&#x7279;&#x5F81;&#x3002;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#x548C;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x90FD;&#x662F;RNN&#x6A21;&#x578B;&#xFF0C;&#x53EF;&#x4F7F;&#x7528;GRU&#x6216;LSTM&#x5355;&#x5143;&#x3002;&#x8FD9;&#x79CD;&#x201C;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#xFF08;encoder network&#xFF09;&#x201D;+&#x201C;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#xFF08;decoder network&#xFF09;&#x201D;&#x7684;&#x6A21;&#x578B;&#xFF0C;&#x5728;&#x5B9E;&#x9645;&#x7684;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x5E94;&#x7528;&#x4E2D;&#x6709;&#x7740;&#x4E0D;&#x9519;&#x7684;&#x6548;&#x679C;&#x3002;</p>
+        <p>&#x8FD9;&#x79CD;&#x6A21;&#x578B;&#x4E5F;&#x53EF;&#x4EE5;&#x5E94;&#x7528;&#x5230;&#x56FE;&#x50CF;&#x6355;&#x6349;&#x9886;&#x57DF;&#x3002;&#x56FE;&#x50CF;&#x6355;&#x6349;&#xFF0C;&#x5373;&#x6355;&#x6349;&#x56FE;&#x50CF;&#x4E2D;&#x4E3B;&#x4F53;&#x52A8;&#x4F5C;&#x548C;&#x884C;&#x4E3A;&#xFF0C;&#x63CF;&#x8FF0;&#x56FE;&#x50CF;&#x5185;&#x5BB9;&#x3002;&#x4F8B;&#x5982;&#x4E0B;&#x9762;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#xFF0C;&#x6839;&#x636E;&#x56FE;&#x50CF;&#xFF0C;&#x6355;&#x6349;&#x56FE;&#x50CF;&#x5185;&#x5BB9;&#x3002;</p>
+        <p><img src="img/30.jpg" alt></p>
+        <p>&#x9996;&#x5148;&#xFF0C;&#x53EF;&#x4EE5;&#x5C06;&#x56FE;&#x7247;&#x8F93;&#x5165;&#x5230;CNN&#xFF0C;&#x4F8B;&#x5982;&#x4F7F;&#x7528;&#x9884;&#x8BAD;&#x7EC3;&#x597D;&#x7684;AlexNet&#xFF0C;&#x5220;&#x53BB;&#x6700;&#x540E;&#x7684;softmax&#x5C42;&#xFF0C;&#x4FDD;&#x7559;&#x81F3;&#x6700;&#x540E;&#x7684;&#x5168;&#x8FDE;&#x63A5;&#x5C42;&#x3002;&#x5219;&#x8BE5;&#x5168;&#x8FDE;&#x63A5;&#x5C42;&#x5C31;&#x6784;&#x6210;&#x4E86;&#x4E00;&#x4E2A;&#x56FE;&#x7247;&#x7684;&#x7279;&#x5F81;&#x5411;&#x91CF;&#xFF08;&#x7F16;&#x7801;&#x5411;&#x91CF;&#xFF09;&#xFF0C;&#x8868;&#x5F81;&#x4E86;&#x56FE;&#x7247;&#x7279;&#x5F81;&#x4FE1;&#x606F;&#x3002;</p>
+        <p><img src="img/31.jpg" alt></p>
+        <p>&#x7136;&#x540E;&#xFF0C;&#x5C06;&#x7F16;&#x7801;&#x5411;&#x91CF;&#x8F93;&#x5165;&#x81F3;RNN&#xFF0C;&#x5373;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x4E2D;&#xFF0C;&#x8FDB;&#x884C;&#x89E3;&#x7801;&#x7FFB;&#x8BD1;&#x3002;</p>
+        <p><img src="img/32.jpg" alt></p>
+        <h2 class="mume-header" id="%E9%80%89%E6%8B%A9%E6%9C%80%E5%8F%AF%E8%83%BD%E7%9A%84%E5%8F%A5%E5%AD%90">&#x9009;&#x62E9;&#x6700;&#x53EF;&#x80FD;&#x7684;&#x53E5;&#x5B50;</h2>
+        
+        <p>Seq2Seq &#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x6A21;&#x578B;&#x4E0E;&#x6211;&#x4EEC;&#x7B2C;&#x4E00;&#x8282;&#x8BFE;&#x4ECB;&#x7ECD;&#x7684;&#x8BED;&#x8A00;&#x6A21;&#x578B;&#x6709;&#x4E00;&#x4E9B;&#x76F8;&#x4F3C;&#xFF0C;&#x4F46;&#x4E5F;&#x5B58;&#x5728;&#x4E0D;&#x540C;&#x4E4B;&#x5904;&#x3002;&#x4E8C;&#x8005;&#x6A21;&#x578B;&#x7ED3;&#x6784;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+        <p><img src="img/33.jpg" alt></p>
+        <p>&#x8BED;&#x8A00;&#x6A21;&#x578B;&#x662F;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x4E00;&#x6761;&#x5B8C;&#x6574;&#x8BED;&#x53E5;&#xFF0C;&#x8BED;&#x53E5;&#x662F;&#x968F;&#x673A;&#x7684;&#x3002;</p>
+        <p>&#x800C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x6A21;&#x578B;&#x662F;&#x6839;&#x636E;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#xFF0C;&#x8FDB;&#x884C;&#x7FFB;&#x8BD1;&#xFF0C;&#x751F;&#x6210;&#x53E6;&#x5916;&#x4E00;&#x6761;&#x5B8C;&#x6574;&#x8BED;&#x53E5;&#x3002;&#x4E0A;&#x56FE;&#x4E2D;&#xFF0C;&#x7EFF;&#x8272;&#x90E8;&#x5206;&#x8868;&#x793A;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#xFF0C;&#x7D2B;&#x8272;&#x90E8;&#x5206;&#x8868;&#x793A;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x3002;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x4E0E;&#x8BED;&#x8A00;&#x6A21;&#x578B;&#x662F;&#x76F8;&#x4F3C;&#x7684;&#xFF0C;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#x53EF;&#x4EE5;&#x770B;&#x6210;&#x662F;&#x8BED;&#x8A00;&#x6A21;&#x578B;&#x7684;<span class="mathjax-exps">$a^{&lt;0&gt;}$</span>&#xFF0C;&#x662F;&#x6A21;&#x578B;&#x7684;&#x4E00;&#x4E2A;&#x6761;&#x4EF6;&#x3002;</p>
+        <p>&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x5728;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#x7684;&#x6761;&#x4EF6;&#x4E0B;&#xFF0C;&#x751F;&#x6210;&#x6B63;&#x786E;&#x7684;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x53EF;&#x4EE5;&#x770B;&#x6210;&#x662F;&#x6761;&#x4EF6;&#x8BED;&#x8A00;&#x6A21;&#x578B;&#xFF08;conditional language model&#xFF09;&#x3002;&#x8FD9;&#x5C31;&#x662F;&#x4E8C;&#x8005;&#x4E4B;&#x95F4;&#x7684;&#x533A;&#x522B;&#x4E0E;&#x8054;&#x7CFB;&#x3002;</p>
+        <p>&#x6240;&#x4EE5;&#xFF0C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x76EE;&#x6807;&#x5C31;&#x662F;&#x6839;&#x636E;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#xFF0C;&#x4F5C;&#x4E3A;&#x6761;&#x4EF6;&#xFF0C;&#x627E;&#x5230;&#x6700;&#x4F73;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#xFF0C;&#x4F7F;&#x5176;&#x6982;&#x7387;&#x6700;&#x5927;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$max\ P(y^{&lt;1&gt;},y^{&lt;2&gt;},\cdots,y^{&lt;T_y&gt;}|x^{&lt;1&gt;},x^{&lt;2&gt;},\cdots,x^{&lt;T_x&gt;})$$</div><br>
+        &#x4F8B;&#x5982;&#xFF0C;&#x672C;&#x8282;&#x7B14;&#x8BB0;&#x5F00;&#x59CB;&#x4ECB;&#x7ECD;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x5217;&#x4E3E;&#x51E0;&#x4E2A;&#x6A21;&#x578B;&#x53EF;&#x80FD;&#x5F97;&#x5230;&#x7684;&#x7FFB;&#x8BD1;&#xFF1A;<p></p>
+        <p><img src="img/34.jpg" alt></p>
+        <p>&#x663E;&#x7136;&#xFF0C;&#x7B2C;&#x4E00;&#x6761;&#x7FFB;&#x8BD1;&#x201C;Jane is visiting Africa in September.&#x201D;&#x6700;&#x4E3A;&#x51C6;&#x786E;&#x3002;&#x90A3;&#x6211;&#x4EEC;&#x7684;&#x4F18;&#x5316;&#x76EE;&#x6807;&#x5C31;&#x662F;&#x8981;&#x8BA9;&#x8FD9;&#x6761;&#x7FFB;&#x8BD1;&#x5BF9;&#x5E94;&#x7684;<span class="mathjax-exps">$P(y^{&lt;1&gt;},\cdots,y^{&lt;T_y&gt;}|x)$</span>&#x6700;&#x5927;&#x5316;&#x3002;</p>
+        <p>&#x5B9E;&#x73B0;&#x4F18;&#x5316;&#x76EE;&#x6807;&#x7684;&#x65B9;&#x6CD5;&#x4E4B;&#x4E00;&#x662F;&#x4F7F;&#x7528;&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#xFF08;greedy search&#xFF09;&#x3002;&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x6839;&#x636E;&#x6761;&#x4EF6;&#xFF0C;&#x6BCF;&#x6B21;&#x53EA;&#x5BFB;&#x627E;&#x4E00;&#x4E2A;&#x6700;&#x4F73;&#x5355;&#x8BCD;&#x4F5C;&#x4E3A;&#x7FFB;&#x8BD1;&#x8F93;&#x51FA;&#xFF0C;&#x529B;&#x6C42;&#x628A;&#x6BCF;&#x4E2A;&#x5355;&#x8BCD;&#x90FD;&#x7FFB;&#x8BD1;&#x51C6;&#x786E;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x9996;&#x5148;&#x6839;&#x636E;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#xFF0C;&#x627E;&#x5230;&#x7B2C;&#x4E00;&#x4E2A;&#x7FFB;&#x8BD1;&#x7684;&#x5355;&#x8BCD;&#x201C;Jane&#x201D;&#xFF0C;&#x7136;&#x540E;&#x518D;&#x627E;&#x7B2C;&#x4E8C;&#x4E2A;&#x5355;&#x8BCD;&#x201C;is&#x201D;&#xFF0C;&#x518D;&#x7EE7;&#x7EED;&#x627E;&#x7B2C;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x201C;visiting&#x201D;&#xFF0C;&#x4EE5;&#x6B64;&#x7C7B;&#x63A8;&#x3002;&#x8FD9;&#x4E5F;&#x662F;&#x5176;&#x201C;&#x8D2A;&#x5FC3;&#x201D;&#x540D;&#x79F0;&#x7684;&#x7531;&#x6765;&#x3002;</p>
+        <p>&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x5B58;&#x5728;&#x4E00;&#x4E9B;&#x7F3A;&#x70B9;&#x3002;&#x9996;&#x5148;&#xFF0C;&#x56E0;&#x4E3A;&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x6BCF;&#x6B21;&#x53EA;&#x641C;&#x7D22;&#x4E00;&#x4E2A;&#x5355;&#x8BCD;&#xFF0C;&#x6CA1;&#x6709;&#x8003;&#x8651;&#x8BE5;&#x5355;&#x8BCD;&#x524D;&#x540E;&#x5173;&#x7CFB;&#xFF0C;&#x6982;&#x7387;&#x9009;&#x62E9;&#x4E0A;&#x6709;&#x53EF;&#x80FD;&#x4F1A;&#x51FA;&#x9519;&#x3002;</p>
+        <p>&#x4F8B;&#x5982;&#xFF0C;&#x4E0A;&#x9762;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x4E2D;&#xFF0C;&#x7B2C;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x201C;going&#x201D;&#x6BD4;&#x201C;visiting&#x201D;&#x66F4;&#x5E38;&#x89C1;&#xFF0C;&#x6A21;&#x578B;&#x5F88;&#x53EF;&#x80FD;&#x4F1A;&#x9519;&#x8BEF;&#x5730;&#x9009;&#x62E9;&#x4E86;&#x201C;going&#x201D;&#xFF0C;&#x800C;&#x9519;&#x5931;&#x6700;&#x4F73;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x3002;&#x5176;&#x6B21;&#xFF0C;&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x5927;&#x5927;&#x589E;&#x52A0;&#x4E86;&#x8FD0;&#x7B97;&#x6210;&#x672C;&#xFF0C;&#x964D;&#x4F4E;&#x8FD0;&#x7B97;&#x901F;&#x5EA6;&#x3002;</p>
+        <p>&#x56E0;&#x6B64;&#xFF0C;&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x5E76;&#x4E0D;&#x662F;&#x6700;&#x4F73;&#x7684;&#x65B9;&#x6CD5;&#x3002;&#x4E0B;&#x4E00;&#x5C0F;&#x8282;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x4ECB;&#x7ECD;&#x5B9A;&#x5411;&#x641C;&#x7D22;(Beam Search)&#xFF0C;&#x4F7F;&#x7528;<strong>&#x8FD1;&#x4F3C;&#x6700;&#x4F18;</strong>&#x7684;&#x67E5;&#x627E;&#x65B9;&#x5F0F;&#xFF0C;&#x6700;&#x5927;&#x5316;&#x8F93;&#x51FA;&#x6982;&#x7387;&#xFF0C;&#x5BFB;&#x627E;&#x6700;&#x4F73;&#x7684;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x3002;</p>
+        <h2 class="mume-header" id="%E5%AE%9A%E5%90%91%E6%90%9C%E7%B4%A2beam-search">&#x5B9A;&#x5411;&#x641C;&#x7D22;(Beam Search)</h2>
+        
+        <p>&#x8D2A;&#x5FC3;&#x641C;&#x7D22;&#x6BCF;&#x6B21;&#x662F;&#x627E;&#x51FA;&#x9884;&#x6D4B;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;&#x5355;&#x8BCD;&#xFF0C;&#x800C;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x5219;&#x662F;&#x6BCF;&#x6B21;&#x627E;&#x51FA;<strong>&#x9884;&#x6D4B;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;B&#x4E2A;&#x5355;&#x8BCD;</strong>&#x3002;&#x5176;&#x4E2D;&#xFF0C;&#x53C2;&#x6570;B&#x8868;&#x793A;&#x53D6;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;&#x5355;&#x8BCD;&#x4E2A;&#x6570;&#xFF0C;<strong>&#x53EF;&#x8C03;</strong>&#x3002;&#x672C;&#x4F8B;&#x4E2D;&#xFF0C;&#x4EE4;B=3&#x3002;</p>
+        <p>&#x6309;&#x7167;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7684;&#x641C;&#x7D22;&#x539F;&#x7406;&#xFF0C;&#x9996;&#x5148;&#xFF0C;&#x5148;&#x4ECE;&#x8BCD;&#x6C47;&#x8868;&#x4E2D;&#x627E;&#x51FA;&#x7FFB;&#x8BD1;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5355;&#x8BCD;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;B&#x4E2A;&#x9884;&#x6D4B;&#x5355;&#x8BCD;&#x3002;&#x4F8B;&#x5982;&#x4E0A;&#x9762;&#x7684;&#x4F8B;&#x5B50;&#x4E2D;&#xFF0C;&#x9884;&#x6D4B;&#x5F97;&#x5230;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5355;&#x8BCD;&#x4E3A;&#xFF1A;in&#xFF0C;jane&#xFF0C;september&#x3002;</p>
+        <p><img src="img/35.jpg" alt></p>
+        <p>&#x6982;&#x7387;&#x8868;&#x793A;&#x4E3A;&#xFF1A;P(y<sup>&lt;1&gt;|x)P(y</sup>&lt;1&gt;|x)</p>
+        <p>&#x7136;&#x540E;&#xFF0C;&#x518D;&#x5206;&#x522B;&#x4EE5;in&#xFF0C;jane&#xFF0C;september&#x4E3A;&#x6761;&#x4EF6;&#xFF0C;&#x8BA1;&#x7B97;&#x6BCF;&#x4E2A;&#x8BCD;&#x6C47;&#x8868;&#x5355;&#x8BCD;&#x4F5C;&#x4E3A;&#x9884;&#x6D4B;&#x7B2C;&#x4E8C;&#x4E2A;&#x5355;&#x8BCD;&#x7684;&#x6982;&#x7387;&#x3002;&#x4ECE;&#x4E2D;&#x9009;&#x62E9;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;3&#x4E2A;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E8C;&#x4E2A;&#x5355;&#x8BCD;&#x7684;&#x9884;&#x6D4B;&#x503C;&#xFF0C;&#x5F97;&#x5230;&#xFF1A;in september&#xFF0C;jane is&#xFF0C;jane visits&#x3002;</p>
+        <p><img src="img/36.jpg" alt></p>
+        <p>&#x6982;&#x7387;&#x8868;&#x793A;&#x4E3A;&#xFF1A;<span class="mathjax-exps">$P(\hat y^{&lt;1&gt;} | x)$</span>&#x3002;</p>
+        <p>&#x6B64;&#x65F6;&#xFF0C;&#x5F97;&#x5230;&#x7684;&#x524D;&#x4E24;&#x4E2A;&#x5355;&#x8BCD;&#x7684;3&#x79CD;&#x60C5;&#x51B5;&#x7684;&#x6982;&#x7387;&#x4E3A;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$P(\hat y^{&lt;1&gt;},\hat y^{&lt;2&gt;}|x)=P(\hat y^{&lt;1&gt;} | x)\cdot P(\hat y^{&lt;2&gt;}|x,\hat y^{&lt;1&gt;})$$</div><br>
+        &#x63A5;&#x7740;&#xFF0C;&#x518D;&#x9884;&#x6D4B;&#x7B2C;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x3002;&#x65B9;&#x6CD5;&#x4E00;&#x6837;&#xFF0C;&#x5206;&#x522B;&#x4EE5;in September&#xFF0C;Jane is&#xFF0C;Jane visits&#x4E3A;&#x6761;&#x4EF6;&#xFF0C;&#x8BA1;&#x7B97;&#x6BCF;&#x4E2A;&#x8BCD;&#x6C47;&#x8868;&#x5355;&#x8BCD;&#x4F5C;&#x4E3A;&#x9884;&#x6D4B;&#x7B2C;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x7684;&#x6982;&#x7387;&#x3002;&#x4ECE;&#x4E2D;&#x9009;&#x62E9;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;3&#x4E2A;&#x4F5C;&#x4E3A;&#x7B2C;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x7684;&#x9884;&#x6D4B;&#x503C;&#xFF0C;&#x5F97;&#x5230;&#xFF1A;in September Jane&#xFF0C;Jane is visiting&#xFF0C;Jane visits Africa&#x3002;<p></p>
+        <p><img src="img/37.jpg" alt></p>
+        <p>&#x6982;&#x7387;&#x8868;&#x793A;&#x4E3A;&#xFF1A;<span class="mathjax-exps">$P(\hat y^{&lt;3&gt;}|x,\hat y^{&lt;1&gt;},\hat y^{&lt;2&gt;})$</span>&#x3002;</p>
+        <p>&#x6B64;&#x65F6;&#xFF0C;&#x5F97;&#x5230;&#x7684;&#x524D;&#x4E09;&#x4E2A;&#x5355;&#x8BCD;&#x7684;3&#x79CD;&#x60C5;&#x51B5;&#x7684;&#x6982;&#x7387;&#x4E3A;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$P(\hat y^{&lt;1&gt;},\hat y^{&lt;2&gt;},\hat y^{&lt;3&gt;}|x)=P(\hat y^{&lt;1&gt;} | x)\cdot P(\hat y^{&lt;2&gt;}|x,\hat y^{&lt;1&gt;})\cdot P(\hat y^{&lt;3&gt;}|x,\hat y^{&lt;1&gt;},\hat y^{&lt;2&gt;})$$</div><br>
+        &#x4EE5;&#x6B64;&#x7C7B;&#x63A8;&#xFF0C;&#x6BCF;&#x6B21;&#x90FD;&#x53D6;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;&#x4E09;&#x79CD;&#x9884;&#x6D4B;&#x3002;&#x6700;&#x540E;&#xFF0C;&#x9009;&#x62E9;&#x6982;&#x7387;&#x6700;&#x5927;&#x7684;&#x90A3;&#x4E00;&#x7EC4;&#x4F5C;&#x4E3A;&#x6700;&#x7EC8;&#x7684;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x3002;<p></p>
+        <p><strong>Jane is visiting Africa in September.</strong></p>
+        <p>&#x503C;&#x5F97;&#x6CE8;&#x610F;&#x7684;&#x662F;&#xFF0C;&#x5982;&#x679C;&#x53C2;&#x6570;B=1&#xFF0C;&#x5219;&#x5C31;&#x7B49;&#x540C;&#x4E8E;greedy search&#x3002;&#x5B9E;&#x9645;&#x5E94;&#x7528;&#x4E2D;&#xFF0C;&#x53EF;&#x4EE5;&#x6839;&#x636E;&#x4E0D;&#x540C;&#x7684;&#x9700;&#x8981;&#x8BBE;&#x7F6E;B&#x4E3A;&#x4E0D;&#x540C;&#x7684;&#x503C;&#x3002;&#x4E00;&#x822C;B&#x8D8A;&#x5927;&#xFF0C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8D8A;&#x51C6;&#x786E;&#xFF0C;&#x4F46;&#x540C;&#x65F6;&#x4E5F;&#x4F1A;&#x589E;&#x52A0;&#x8BA1;&#x7B97;&#x590D;&#x6742;&#x5EA6;&#x3002;</p>
+        <h2 class="mume-header" id="%E6%94%B9%E8%BF%9B%E5%AE%9A%E5%90%91%E6%90%9C%E7%B4%A2">&#x6539;&#x8FDB;&#x5B9A;&#x5411;&#x641C;&#x7D22;</h2>
+        
+        <p>&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x4E2D;&#xFF0C;&#x6700;&#x7EC8;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x6982;&#x7387;&#x662F;&#x4E58;&#x79EF;&#x7684;&#x5F62;&#x5F0F;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$arg\ max\prod_{t=1}^{T_y} P(\hat y^{&lt;t&gt;}|x,\hat y^{&lt;1&gt;},\cdots,\hat y^{&lt;t-1&gt;})$$</div><br>
+        &#x591A;&#x4E2A;&#x6982;&#x7387;&#x76F8;&#x4E58;&#x53EF;&#x80FD;&#x4F1A;&#x4F7F;&#x4E58;&#x79EF;&#x7ED3;&#x679C;&#x5F88;&#x5C0F;&#xFF0C;&#x8FDC;&#x5C0F;&#x4E8E;1&#xFF0C;&#x9020;&#x6210;&#x6570;&#x503C;&#x4E0B;&#x6EA2;&#x3002;&#x4E3A;&#x4E86;&#x89E3;&#x51B3;&#x8FD9;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x53EF;&#x4EE5;&#x5BF9;&#x4E0A;&#x8FF0;&#x4E58;&#x79EF;&#x5F62;&#x5F0F;&#x8FDB;&#x884C;&#x53D6;&#x5BF9;&#x6570;log&#x8FD0;&#x7B97;&#xFF0C;&#x5373;&#xFF1A;<p></p>
+        <p></p><div class="mathjax-exps">$$arg\ max\sum_{t=1}^{T_y} P(\hat y^{&lt;t&gt;}|x,\hat y^{&lt;1&gt;},\cdots,\hat y^{&lt;t-1&gt;})$$</div><br>
+        &#x56E0;&#x4E3A;&#x53D6;&#x5BF9;&#x6570;&#x8FD0;&#x7B97;&#xFF0C;&#x5C06;&#x4E58;&#x79EF;&#x8F6C;&#x5316;&#x4E3A;&#x6C42;&#x548C;&#x5F62;&#x5F0F;&#xFF0C;<strong>&#x907F;&#x514D;&#x4E86;&#x6570;&#x503C;&#x4E0B;&#x6EA2;</strong>&#xFF0C;&#x4F7F;&#x5F97;&#x6570;&#x636E;&#x66F4;&#x52A0;&#x7A33;&#x5B9A;&#x6709;&#x6548;&#x3002;<p></p>
+        <p>&#x8FD9;&#x79CD;&#x6982;&#x7387;&#x8868;&#x8FBE;&#x5F0F;&#x8FD8;&#x5B58;&#x5728;&#x4E00;&#x4E2A;&#x95EE;&#x9898;&#xFF0C;&#x5C31;&#x662F;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x5355;&#x8BCD;&#x8D8A;&#x591A;&#xFF0C;&#x4E58;&#x79EF;&#x5F62;&#x5F0F;&#x6216;&#x6C42;&#x548C;&#x5F62;&#x5F0F;&#x5F97;&#x5230;&#x7684;&#x6982;&#x7387;&#x5C31;&#x8D8A;&#x5C0F;&#xFF0C;&#x8FD9;&#x6837;&#x4F1A;&#x9020;&#x6210;&#x6A21;&#x578B;&#x503E;&#x5411;&#x4E8E;&#x9009;&#x62E9;&#x5355;&#x8BCD;&#x6570;&#x66F4;&#x5C11;&#x7684;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#xFF0C;&#x4F7F;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x53D7;&#x5355;&#x8BCD;&#x6570;&#x76EE;&#x7684;&#x5F71;&#x54CD;&#xFF0C;&#x8FD9;&#x663E;&#x7136;&#x662F;&#x4E0D;&#x592A;&#x5408;&#x9002;&#x7684;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x4E00;&#x79CD;&#x6539;&#x8FDB;&#x65B9;&#x5F0F;&#x662F;&#x8FDB;&#x884C;&#x957F;&#x5EA6;&#x5F52;&#x4E00;&#x5316;&#xFF0C;&#x6D88;&#x9664;&#x8BED;&#x53E5;&#x957F;&#x5EA6;&#x5F71;&#x54CD;&#x3002;</p>
+        <p></p><div class="mathjax-exps">$$arg\ max\ \frac{1}{T_y}\sum_{t=1}^{T_y} P(\hat y^{&lt;t&gt;}|x,\hat y^{&lt;1&gt;},\cdots,\hat y^{&lt;t-1&gt;})$$</div><br>
+        &#x5B9E;&#x9645;&#x5E94;&#x7528;&#x4E2D;&#xFF0C;&#x901A;&#x5E38;&#x4F1A;&#x5F15;&#x5165;&#x5F52;&#x4E00;&#x5316;&#x56E0;&#x5B50;<span class="mathjax-exps">$\alpha$</span>&#xFF1A;<p></p>
+        <p></p><div class="mathjax-exps">$$arg\ max\ \frac{1}{T_y^{\alpha}}\sum_{t=1}^{T_y} P(\hat y^{&lt;t&gt;}|x,\hat y^{&lt;1&gt;},\cdots,\hat y^{&lt;t-1&gt;})$$</div><br>
+        &#x82E5;<span class="mathjax-exps">$\alpha=1$</span>&#xFF0C;&#x5219;&#x5B8C;&#x5168;&#x8FDB;&#x884C;&#x957F;&#x5EA6;&#x5F52;&#x4E00;&#x5316;&#xFF1B;&#x82E5;<span class="mathjax-exps">$\alpha=0$</span>&#xFF0C;&#x5219;&#x4E0D;&#x8FDB;&#x884C;&#x957F;&#x5EA6;&#x5F52;&#x4E00;&#x5316;&#x3002;&#x4E00;&#x822C;&#x4EE4;<span class="mathjax-exps">$\alpha=0.7$</span>&#xFF0C;&#x6548;&#x679C;&#x4E0D;&#x9519;&#x3002;<p></p>
+        <p>&#x503C;&#x5F97;&#x4E00;&#x63D0;&#x7684;&#x662F;&#xFF0C;&#x4E0E;BFS (Breadth First Search) &#x3001;DFS (Depth First Search)&#x7B97;&#x6CD5;&#x4E0D;&#x540C;&#xFF0C;<strong>beam search&#x8FD0;&#x7B97;&#x901F;&#x5EA6;&#x66F4;&#x5FEB;&#xFF0C;&#x4F46;&#x662F;&#x5E76;&#x4E0D;&#x4FDD;&#x8BC1;&#x4E00;&#x5B9A;&#x80FD;&#x627E;&#x5230;&#x6B63;&#x786E;&#x7684;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x3002;</strong></p>
+        <h2 class="mume-header" id="%E5%AE%9A%E5%90%91%E6%90%9C%E7%B4%A2%E7%9A%84%E8%AF%AF%E5%B7%AE%E5%88%86%E6%9E%90">&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7684;&#x8BEF;&#x5DEE;&#x5206;&#x6790;</h2>
+        
+        <p>&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x662F;&#x4E00;&#x79CD;&#x8FD1;&#x4F3C;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x3002;&#x5B9E;&#x9645;&#x5E94;&#x7528;&#x4E2D;&#xFF0C;&#x5982;&#x679C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x6548;&#x679C;&#x4E0D;&#x597D;&#xFF0C;&#x9700;&#x8981;&#x901A;&#x8FC7;&#x9519;&#x8BEF;&#x5206;&#x6790;&#xFF0C;&#x5224;&#x65AD;&#x662F;RNN&#x6A21;&#x578B;&#x95EE;&#x9898;&#x8FD8;&#x662F;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x95EE;&#x9898;&#x3002;</p>
+        <p>&#x4E00;&#x822C;&#x6765;&#x8BF4;&#xFF0C;&#x589E;&#x52A0;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x3001;&#x589E;&#x5927;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x53C2;&#x6570;B&#x90FD;&#x80FD;&#x63D0;&#x9AD8;&#x51C6;&#x786E;&#x7387;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x8FD9;&#x79CD;&#x505A;&#x6CD5;&#x5E76;&#x4E0D;&#x80FD;&#x5F97;&#x5230;&#x6211;&#x4EEC;&#x671F;&#x5F85;&#x7684;&#x6027;&#x80FD;&#xFF0C;&#x4E14;&#x5E76;&#x4E0D;&#x5B9E;&#x9645;&#x3002;</p>
+        <p>&#x9996;&#x5148;&#xFF0C;&#x4E3A;&#x5F85;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x5EFA;&#x7ACB;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#xFF0C;&#x8BB0;&#x4E3A;<span class="mathjax-exps">$y^*$</span>&#x3002;&#x5728;RNN&#x6A21;&#x578B;&#x4E0A;&#x4F7F;&#x7528;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#xFF0C;&#x5F97;&#x5230;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#xFF0C;&#x8BB0;&#x4E3A;<span class="mathjax-exps">$\hat y$</span>&#x3002;&#x663E;&#x7136;&#xFF0C;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;<span class="mathjax-exps">$y^*$</span>&#x6700;&#x4E3A;&#x51C6;&#x786E;&#x3002;</p>
+        <p><strong>Jane visite l&#x2019;Afrique en septembre.</strong></p>
+        <p><strong>Human: Jane visits Africa in September.</strong>  <span class="mathjax-exps">$y^*$</span></p>
+        <p><strong>Algorithm: Jane visited Africa last September.</strong>  <span class="mathjax-exps">$\hat y$</span></p>
+        <p>&#x8FD9;&#x6837;&#xFF0C;&#x6574;&#x4E2A;&#x6A21;&#x578B;&#x5305;&#x542B;&#x4E24;&#x90E8;&#x5206;&#xFF1A;RNN&#x548C;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x3002;</p>
+        <p>&#x7136;&#x540E;&#xFF0C;&#x5C06;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#x8F93;&#x5165;&#x5230;RNN&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x5206;&#x522B;&#x8BA1;&#x7B97;&#x8F93;&#x51FA;&#x662F;<span class="mathjax-exps">$y^*$</span>&#x7684;&#x6982;&#x7387;<span class="mathjax-exps">$P(y^*|x)$</span>&#x548C;<span class="mathjax-exps">$\hat y$</span>&#x7684;&#x6982;&#x7387;<span class="mathjax-exps">$P(\hat y|x)$</span>&#x3002;</p>
+        <p>&#x63A5;&#x4E0B;&#x6765;&#x5C31;&#x662F;&#x6BD4;&#x8F83;<span class="mathjax-exps">$P(y^*|x)$</span>&#x548C;<span class="mathjax-exps">$P(\hat y|x)$</span>&#x7684;&#x5927;&#x5C0F;&#x3002;</p>
+        <ul>
+        <li><span class="mathjax-exps">$P(y^*|x)&gt;P(\hat y|x)$</span>&#xFF1A;Beam search&#x7B97;&#x6CD5;&#x6709;&#x8BEF;</li>
+        <li><span class="mathjax-exps">$P(y^*|x)&lt;P(\hat y|x)$</span>&#xFF1A;RNN&#x6A21;&#x578B;&#x6709;&#x8BEF;</li>
+        </ul>
+        <p>&#x5982;&#x679C;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7B97;&#x6CD5;&#x8868;&#x73B0;&#x4E0D;&#x4F73;&#xFF0C;&#x53EF;&#x4EE5;&#x8C03;&#x8BD5;&#x53C2;&#x6570;B&#xFF1B;&#x82E5;RNN&#x6A21;&#x578B;&#x4E0D;&#x597D;&#xFF0C;&#x5219;&#x53EF;&#x4EE5;&#x589E;&#x52A0;&#x7F51;&#x7EDC;&#x5C42;&#x6570;&#xFF0C;&#x4F7F;&#x7528;&#x6B63;&#x5219;&#x5316;&#xFF0C;&#x589E;&#x52A0;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x6570;&#x76EE;&#x7B49;&#x65B9;&#x6CD5;&#x6765;&#x4F18;&#x5316;&#x3002;&#x66F4;&#x591A;&#x9519;&#x8BEF;&#x5206;&#x6790;&#x65B9;&#x6CD5;&#xFF0C;&#x53EF;&#x4EE5;&#x53C2;&#x7167;&#x4E4B;&#x524D;&#x7684;&#x7B14;&#x8BB0; &#x673A;&#x5668;&#x5B66;&#x4E60;&#x7B56;&#x7565;&#xFF08;&#x4E0B;&#xFF09;</p>
+        <h2 class="mume-header" id="bleu%E5%BE%97%E5%88%86%E9%80%89%E4%BF%AE">Bleu&#x5F97;&#x5206;(&#x9009;&#x4FEE;)</h2>
+        
+        <p>&#x4F7F;&#x7528;bleu&#x5F97;&#x5206;&#xFF0C;&#x5BF9;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8FDB;&#x884C;&#x6253;&#x5206;&#x3002;</p>
+        <p>&#x9996;&#x5148;&#xFF0C;&#x5BF9;&#x539F;&#x8BED;&#x53E5;&#x5EFA;&#x7ACB;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#x53C2;&#x8003;&#xFF0C;&#x4E00;&#x822C;&#x6709;&#x591A;&#x4E2A;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#xFF08;&#x5229;&#x7528;&#x9A8C;&#x8BC1;&#x96C6;&#x706B;&#x6D4B;&#x8BD5;&#x96C6;&#xFF09;&#x3002;&#x4F8B;&#x5982;&#x4E0B;&#x9762;&#x8FD9;&#x4E2A;&#x4F8B;&#x5B50;&#xFF1A;</p>
+        <p><strong>French: Le chat est sur le tapis.</strong></p>
+        <p><strong>Reference 1: The cat is on the mat.</strong></p>
+        <p><strong>Reference 2: There is a cat on the mat.</strong></p>
+        <p>&#x4E0A;&#x8FF0;&#x4E24;&#x4E2A;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#x90FD;&#x662F;&#x6B63;&#x786E;&#x7684;&#xFF0C;&#x4F5C;&#x4E3A;&#x53C2;&#x8003;&#x3002;&#x76F8;&#x5E94;&#x7684;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x5982;&#x4E0B;&#x6240;&#x793A;&#xFF1A;</p>
+        <p><strong>French: Le chat est sur le tapis.</strong></p>
+        <p><strong>Reference 1: The cat is on the mat.</strong></p>
+        <p><strong>Reference 2: There is a cat on the mat.</strong></p>
+        <p><strong>MT output: the the the the the the the.</strong></p>
+        <p>&#x5982;&#x4E0A;&#x6240;&#x793A;&#xFF0C;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x4E3A;&#x201C;the the the the the the the.&#x201D;&#xFF0C;&#x6548;&#x679C;&#x5F88;&#x5DEE;&#x3002;Bleu&#x5F97;&#x5206;&#x7684;&#x5B97;&#x65E8;&#x662F;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8D8A;&#x63A5;&#x8FD1;&#x53C2;&#x8003;&#x7684;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#xFF0C;&#x5176;&#x5F97;&#x5206;&#x8D8A;&#x9AD8;&#xFF0C;&#x65B9;&#x6CD5;&#x539F;&#x7406;&#x5C31;&#x662F;&#x770B;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x5404;&#x4E2A;&#x5355;&#x8BCD;&#x662F;&#x5426;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x4E2D;&#x3002;</p>
+        <p>&#x6700;&#x7B80;&#x5355;&#x7684;<strong>&#x51C6;&#x786E;&#x5EA6;&#x8BC4;&#x4EF7;&#x65B9;&#x6CD5;</strong>&#x662F;&#x770B;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x6BCF;&#x4E2A;&#x5355;&#x8BCD;&#x662F;&#x5426;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x4E2D;&#x3002;&#x663E;&#x7136;&#xFF0C;&#x4E0A;&#x8FF0;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x6BCF;&#x4E2A;&#x5355;&#x8BCD;&#x90FD;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x91CC;&#xFF0C;&#x51C6;&#x786E;&#x7387;&#x4E3A;<span class="mathjax-exps">$\frac 7 7 =1$</span>&#xFF0C;&#x5176;&#x4E2D;&#xFF0C;&#x5206;&#x6BCD;&#x4E3A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x5355;&#x8BCD;&#x6570;&#x76EE;&#xFF0C;&#x5206;&#x5B50;&#x4E3A;&#x76F8;&#x5E94;&#x5355;&#x8BCD;&#x662F;&#x5426;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x4E2D;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x5F88;&#x4E0D;&#x79D1;&#x5B66;&#xFF0C;&#x5E76;&#x4E0D;&#x53EF;&#x53D6;&#x3002;</p>
+        <p>&#x53E6;&#x5916;&#x4E00;&#x79CD;&#x8BC4;&#x4EF7;&#x65B9;&#x6CD5;&#x662F;<strong>&#x770B;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x5355;&#x8BCD;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x5355;&#x4E2A;&#x8BED;&#x53E5;&#x4E2D;&#x7684;&#x6B21;&#x6570;</strong>&#xFF0C;&#x53D6;&#x6700;&#x5927;&#x6B21;&#x6570;&#x3002;&#x4E0A;&#x8FF0;&#x4F8B;&#x5B50;&#x5BF9;&#x5E94;&#x7684;&#x51C6;&#x786E;&#x7387;&#x4E3A;<span class="mathjax-exps">$\frac 2 7$</span>&#xFF0C;&#x5176;&#x4E2D;&#xFF0C;&#x5206;&#x6BCD;&#x4E3A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x5355;&#x8BCD;&#x6570;&#x76EE;&#xFF0C;&#x5206;&#x5B50;&#x4E3A;&#x76F8;&#x5E94;&#x5355;&#x8BCD;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x4E2D;&#x7684;&#x6B21;&#x6570;&#xFF08;&#x5206;&#x5B50;&#x4E3A;2&#x662F;&#x56E0;&#x4E3A;&#x201C;the&#x201D;&#x5728;&#x53C2;&#x8003;1&#x4E2D;&#x51FA;&#x73B0;&#x4E86;&#x4E24;&#x6B21;&#xFF09;&#x3002;&#x8FD9;&#x79CD;&#x8BC4;&#x4EF7;&#x65B9;&#x6CD5;&#x8F83;&#x4E3A;&#x51C6;&#x786E;&#x3002;</p>
+        <p>&#x4E0A;&#x8FF0;&#x4E24;&#x79CD;&#x65B9;&#x6CD5;&#x90FD;&#x662F;&#x5BF9;&#x5355;&#x4E2A;&#x5355;&#x8BCD;&#x8FDB;&#x884C;&#x8BC4;&#x4EF7;&#x3002;&#x6309;&#x7167;&#x5B9A;&#x5411;&#x641C;&#x7D22;&#x7684;&#x601D;&#x60F3;&#xFF0C;&#x53E6;&#x5916;&#x4E00;&#x79CD;&#x66F4;&#x79D1;&#x5B66;&#x7684;&#x6253;&#x5206;&#x65B9;&#x6CD5;&#x662F;&#x53CC;&#x5B57;&#x6BCD;&#x7EC4;bleu&#x5F97;&#x5206;(bleu score on bigrams)&#xFF0C;&#x5373;&#x540C;&#x65F6;&#x5BF9;&#x4E24;&#x4E2A;&#x8FDE;&#x7EED;&#x5355;&#x8BCD;&#x8FDB;&#x884C;&#x6253;&#x5206;&#x3002;&#x4ECD;&#x7136;&#x662F;&#x4E0A;&#x9762;&#x90A3;&#x4E2A;&#x7FFB;&#x8BD1;&#x4F8B;&#x5B50;&#xFF1A;</p>
+        <p><strong>French: Le chat est sur le tapis.</strong></p>
+        <p><strong>Reference 1: The cat is on the mat.</strong></p>
+        <p><strong>Reference 2: There is a cat on the mat.</strong></p>
+        <p><strong>MT output: The cat the cat on the mat.</strong></p>
+        <p>&#x5BF9;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8F93;&#x51FA;&#x8FDB;&#x884C;&#x5206;&#x89E3;&#xFF0C;&#x5F97;&#x5230;&#x7684;&#x53CC;&#x5B57;&#x6BCD;&#x7EC4;&#x53CA;&#x5176;&#x51FA;&#x73B0;&#x5728;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8F93;&#x51FA;&#x4E2D;&#x7684;&#x6B21;&#x6570;count&#x4E3A;&#xFF1A;</p>
+        <p><strong>the cat: 2</strong></p>
+        <p><strong>cat the: 1</strong></p>
+        <p><strong>cat on: 1</strong></p>
+        <p><strong>on the: 1</strong></p>
+        <p><strong>the mat: 1</strong></p>
+        <p>&#x7136;&#x540E;&#xFF0C;&#x7EDF;&#x8BA1;&#x4E0A;&#x8FF0;&#x53CC;&#x5B57;&#x6BCD;&#x7EC4;&#x51FA;&#x73B0;&#x5728;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x5355;&#x4E2A;&#x8BED;&#x53E5;&#x4E2D;&#x7684;&#x6B21;&#x6570;&#xFF08;&#x53D6;&#x6700;&#x5927;&#x6B21;&#x6570;&#xFF09;<span class="mathjax-exps">$count_{clip}$</span>&#x4E3A;&#xFF1A;</p>
+        <p><strong>the cat: 1</strong></p>
+        <p><strong>cat the: 0</strong></p>
+        <p><strong>cat on: 1</strong></p>
+        <p><strong>on the: 1</strong></p>
+        <p><strong>the mat: 1</strong></p>
+        <p>&#x76F8;&#x5E94;&#x7684;&#x53CC;&#x5B57;&#x6BCD;&#x7EC4;&#x7CBE;&#x5EA6;&#x4E3A;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$\frac{count_{clip}}{count}=\frac{1+0+1+1+1}{2+1+1+1+1}=\frac46=\frac23$$</div><br>
+        &#x5982;&#x679C;&#x53EA;&#x770B;&#x5355;&#x4E2A;&#x5355;&#x8BCD;&#xFF0C;&#x76F8;&#x5E94;&#x7684;&#x8054;&#x5408;&#x5B57;&#x6BCD;&#x7EC4;(unigrams)&#x7CBE;&#x5EA6;&#x4E3A;&#xFF1A;<p></p>
+        <p><img src="img/38.jpg" alt></p>
+        <p>&#x5982;&#x679C;&#x662F;n&#x4E2A;&#x8FDE;&#x7EED;&#x5355;&#x8BCD;&#xFF0C;&#x76F8;&#x5E94;&#x7684;n&#x4E2A;&#x5B57;&#x6BCD;&#x7EC4;(n-grams)&#x7CBE;&#x5EA6;&#x4E3A;&#xFF1A;</p>
+        <p><img src="img/39.jpg" alt="&#x8FD9;&#x91CC;&#x5199;&#x56FE;&#x7247;&#x63CF;&#x8FF0;"></p>
+        <p>&#x603B;&#x7ED3;&#x4E00;&#x4E0B;&#xFF0C;&#x53EF;&#x4EE5;&#x540C;&#x65F6;&#x8BA1;&#x7B97;<span class="mathjax-exps">$p_1,\cdots,p_n$</span>&#xFF0C;&#x518D;&#x5BF9;&#x5176;&#x6C42;&#x5E73;&#x5747;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$p=\frac1n\sum_{i=1}^np_i$$</div><br>
+        &#x901A;&#x5E38;&#xFF0C;&#x5BF9;&#x4E0A;&#x5F0F;&#x8FDB;&#x884C;&#x6307;&#x6570;&#x5904;&#x7406;&#xFF0C;&#x5E76;&#x5F15;&#x5165;&#x53C2;&#x6570;&#x56E0;&#x5B50;&#x8FC7;&#x77ED;&#x60E9;&#x7F5A;&#x56E0;&#x5B50;(brevity penalty)&#xFF0C;&#x8BB0;&#x4E3A;BP&#x3002;&#x987E;&#x540D;&#x601D;&#x4E49;&#xFF0C;BP&#x662F;&#x4E3A;&#x4E86;&#x201C;&#x60E9;&#x7F5A;&#x201D;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x8BED;&#x53E5;&#x8FC7;&#x77ED;&#x800C;&#x9020;&#x6210;&#x7684;&#x5F97;&#x5206;&#x201C;&#x865A;&#x9AD8;&#x201D;&#x7684;&#x60C5;&#x51B5;&#x3002;<p></p>
+        <p></p><div class="mathjax-exps">$$p=BP\cdot exp(\frac1n\sum_{i=1}^np_i)$$</div><p></p>
+        <p>&#x5176;&#x4E2D;&#xFF0C;BP&#x503C;&#x7531;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x957F;&#x5EA6;&#x548C;&#x53C2;&#x8003;&#x7FFB;&#x8BD1;&#x957F;&#x5EA6;&#x5171;&#x540C;&#x51B3;&#x5B9A;&#x3002;</p>
+        <p><img src="img/40.jpg" alt></p>
+        <h2 class="mume-header" id="%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%A8%A1%E5%9E%8B%E7%9B%B4%E8%A7%82%E7%90%86%E8%A7%A3">&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#x76F4;&#x89C2;&#x7406;&#x89E3;</h2>
+        
+        <p>&#x5982;&#x679C;&#x539F;&#x8BED;&#x53E5;&#x5F88;&#x957F;&#xFF0C;&#x8981;&#x5BF9;&#x6574;&#x4E2A;&#x8BED;&#x53E5;&#x8F93;&#x5165;RNN&#x7684;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#x548C;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x8FDB;&#x884C;&#x7FFB;&#x8BD1;&#xFF0C;&#x5219;&#x6548;&#x679C;&#x4E0D;&#x4F73;&#x3002;&#x76F8;&#x5E94;&#x7684;bleu&#x5F97;&#x5206;&#x4F1A;&#x968F;&#x7740;&#x5355;&#x8BCD;&#x6570;&#x76EE;&#x589E;&#x52A0;&#x800C;&#x9010;&#x6E10;&#x964D;&#x4F4E;&#x3002;</p>
+        <p><img src="img/41.jpg" alt></p>
+        <p>&#x5BF9;&#x5F85;&#x957F;&#x8BED;&#x53E5;&#xFF0C;&#x6B63;&#x786E;&#x7684;&#x7FFB;&#x8BD1;&#x65B9;&#x6CD5;&#x662F;&#x5C06;&#x957F;&#x8BED;&#x53E5;&#x5206;&#x6BB5;&#xFF0C;&#x6BCF;&#x6B21;&#x53EA;&#x5BF9;&#x957F;&#x8BED;&#x53E5;&#x7684;&#x4E00;&#x90E8;&#x5206;&#x8FDB;&#x884C;&#x7FFB;&#x8BD1;&#x3002;&#x4EBA;&#x5DE5;&#x7FFB;&#x8BD1;&#x4E5F;&#x662F;&#x91C7;&#x7528;&#x8FD9;&#x6837;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x9AD8;&#x6548;&#x51C6;&#x786E;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x6BCF;&#x6B21;&#x7FFB;&#x8BD1;&#x53EA;&#x6CE8;&#x91CD;&#x4E00;&#x90E8;&#x5206;&#x533A;&#x57DF;&#xFF0C;&#x8FD9;&#x79CD;&#x65B9;&#x6CD5;&#x4F7F;&#x5F97;bleu&#x5F97;&#x5206;&#x4E0D;&#x592A;&#x53D7;&#x8BED;&#x53E5;&#x957F;&#x5EA6;&#x7684;&#x5F71;&#x54CD;&#x3002;</p>
+        <p><img src="img/42.jpg" alt></p>
+        <p>&#x6839;&#x636E;&#x8FD9;&#x79CD;&#x201C;<strong>&#x5C40;&#x90E8;&#x805A;&#x7126;</strong>&#x201D;&#x7684;&#x601D;&#x60F3;&#xFF0C;&#x5EFA;&#x7ACB;&#x76F8;&#x5E94;&#x7684;&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#xFF08;attention model&#xFF09;&#x3002;</p>
+        <p><img src="img/43.jpg" alt></p>
+        <p>&#x5982;&#x4E0A;&#x56FE;&#x6240;&#x793A;&#xFF0C;&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#x4ECD;&#x7531;&#x7C7B;&#x4F3C;&#x7684;&#x7F16;&#x7801;&#x7F51;&#x7EDC;&#xFF08;&#x4E0B;&#xFF09;&#x548C;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#xFF08;&#x4E0A;&#xFF09;&#x6784;&#x6210;&#x3002;&#x5176;&#x4E2D;&#xFF0C;<span class="mathjax-exps">$S^{&lt;t&gt;}$</span>&#x7531;&#x539F;&#x8BED;&#x53E5;&#x9644;&#x8FD1;&#x5355;&#x5143;&#x5171;&#x540C;&#x51B3;&#x5B9A;&#xFF0C;&#x539F;&#x5219;&#x4E0A;&#x8BF4;&#xFF0C;&#x79BB;&#x5F97;&#x8D8A;&#x8FD1;&#xFF0C;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#xFF08;attention weights&#xFF09;&#x8D8A;&#x5927;&#xFF0C;&#x76F8;&#x5F53;&#x4E8E;&#x5728;&#x4F60;&#x5F53;&#x524D;&#x7684;&#x6CE8;&#x610F;&#x529B;&#x533A;&#x57DF;&#x6709;&#x4E2A;&#x6ED1;&#x52A8;&#x7A97;&#x3002;</p>
+        <h2 class="mume-header" id="%E6%B3%A8%E6%84%8F%E5%8A%9B%E6%A8%A1%E5%9E%8B">&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;</h2>
+        
+        <p>&#x6CE8;&#x610F;&#x529B;&#x4E2D;&#x9009;&#x62E9;&#x53CC;&#x5411;RNN&#xFF0C;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;GRU&#x5355;&#x5143;&#x6216;&#x8005;LSTM&#x3002;&#x7531;&#x4E8E;&#x662F;&#x53CC;&#x5411;RNN&#xFF0C;&#x6BCF;&#x4E2A;<span class="mathjax-exps">$a^{&lt;t&apos;&gt;}$</span>&#x8868;&#x793A;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$a^{&lt;t&apos;&gt;}=(a^{\rightarrow &lt;t&apos;&gt;},a^{\leftarrow &lt;t&apos;&gt;})$$</div><br>
+        RNN&#x7F16;&#x7801;&#x751F;&#x6210;&#x7279;&#x5F81;&#xFF0C;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x7528;<span class="mathjax-exps">$\alpha$</span>&#x8868;&#x793A;&#xFF0C;C&#x662F;&#x5404;&#x4E2A;RNN&#x795E;&#x7ECF;&#x5143;&#x7ECF;&#x8FC7;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x5F97;&#x5230;&#x7684;&#x53C2;&#x6570;&#x503C;&#x3002;&#x4F8B;&#x5982;&#xFF0C;<span class="mathjax-exps">$\alpha^{&lt;1,t&#x2032;&gt;}$</span>&#x8868;&#x793A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5355;&#x8BCD;&#x201C;jane&#x201D;&#x5BF9;&#x5E94;&#x7684;&#x7B2C;t&#x2019;&#x4E2A;RNN&#x795E;&#x7ECF;&#x5143;&#xFF0C;<span class="mathjax-exps">$C^{&lt;1&gt;}$</span>&#x8868;&#x793A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x7B2C;&#x4E00;&#x4E2A;&#x5355;&#x8BCD;&#x201C;jane&#x201D;&#x5BF9;&#x5E94;&#x7684;&#x89E3;&#x7801;&#x7F51;&#x7EDC;&#x8F93;&#x5165;&#x53C2;&#x6570;&#x3002;&#x6EE1;&#x8DB3;&#xFF1A;<p></p>
+        <p></p><div class="mathjax-exps">$$\sum_{t&apos;}\alpha^{&lt;1,t&apos;&gt;}=1$$</div><p></p>
+        <p></p><div class="mathjax-exps">$$C^{&lt;1&gt;}=\sum_{t&apos;}\alpha^{&lt;1,t&apos;&gt;}\cdot a^{&lt;t&apos;&gt;}$$</div><p></p>
+        <p>&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;<span class="mathjax-exps">$\alpha^{&lt;t,t&#x2032;&gt;}$</span>&#x8868;&#x793A;&#x8F93;&#x51FA;<span class="mathjax-exps">$\hat y^{&lt;t&gt;}$</span>&#x5BF9;RNN&#x5355;&#x5143;<span class="mathjax-exps">$\alpha^{&lt;t&#x2032;&gt;}$</span>&#x7684;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x56E0;&#x5B50;&#x3002;</p>
+        <p>&#x4E3A;&#x4E86;&#x8BA9;<span class="mathjax-exps">$\alpha^{&lt;t,t&#x2032;&gt;}$</span>&#x4E4B;&#x548C;&#x4E3A;1&#xFF0C;&#x5229;&#x7528;softamx&#x601D;&#x60F3;&#xFF0C;&#x5F15;&#x5165;&#x53C2;&#x6570;<span class="mathjax-exps">$e^{&lt;t,t&#x2032;&gt;}$</span>&#xFF0C;&#x4F7F;&#x5F97;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$\alpha^{&lt;t,t&apos;&gt;}=\frac{e^{&lt;t,t&apos;&gt;}}{\sum_{t&apos;}^{Tx}e^{&lt;t,t&apos;&gt;}}$$</div><br>
+        &#x8FD9;&#x6837;&#xFF0C;&#x53EA;&#x8981;&#x6C42;&#x51FA;<span class="mathjax-exps">$e^{&lt;t,t&#x2032;&gt;}$</span>&#xFF0C;&#x5C31;&#x80FD;&#x5F97;&#x5230;<span class="mathjax-exps">$\alpha^{&lt;t,t&#x2032;&gt;}$</span>&#x3002;<p></p>
+        <p>&#x5982;&#x4F55;&#x6C42;&#x51FA;<span class="mathjax-exps">$e^{&lt;t,t&#x2032;&gt;}$</span>&#x5462;&#xFF1F;&#x65B9;&#x6CD5;&#x662F;&#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x7B80;&#x5355;&#x7684;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#xFF0C;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#x3002;&#x8F93;&#x5165;&#x662F;<span class="mathjax-exps">$S^{&lt;t-1&gt;}$</span>&#x548C;<span class="mathjax-exps">$a^{&lt;t&#x2032;&gt;}$</span>,&#x8F93;&#x51FA;&#x662F;<span class="mathjax-exps">$e^{&lt;t,t&#x2032;&gt;}$</span>&#x3002;</p>
+        <p><img src="img/44.jpg" alt></p>
+        <p>&#x7136;&#x540E;&#xFF0C;&#x5229;&#x7528;&#x68AF;&#x5EA6;&#x4E0B;&#x964D;&#x7B97;&#x6CD5;&#x8FED;&#x4EE3;&#x4F18;&#x5316;&#xFF0C;&#x8BA1;&#x7B97;&#x5F97;&#x5230;<span class="mathjax-exps">$e^{&lt;t,t&#x2032;&gt;}$</span>&#x548C;<span class="mathjax-exps">$\alpha^{&lt;t,t&#x2032;&gt;}$</span>&#x3002;</p>
+        <p>&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#x7684;&#x4E00;&#x4E2A;&#x7F3A;&#x70B9;&#x662F;&#x5176;&#x8BA1;&#x7B97;&#x91CF;&#x8F83;&#x5927;&#xFF0C;&#x82E5;&#x8F93;&#x5165;&#x53E5;&#x5B50;&#x957F;&#x5EA6;&#x4E3A;<span class="mathjax-exps">$T_x$</span>&#xFF0C;&#x8F93;&#x51FA;&#x53E5;&#x5B50;&#x957F;&#x5EA6;&#x4E3A;<span class="mathjax-exps">$T_y$</span>&#xFF0C;&#x5219;&#x8BA1;&#x7B97;&#x65F6;&#x95F4;&#x7EA6;&#x4E3A;<span class="mathjax-exps">$T_x&#x2217;T_y$</span>&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x5176;&#x6027;&#x80FD;&#x63D0;&#x5347;&#x5F88;&#x591A;&#xFF0C;&#x8BA1;&#x7B97;&#x91CF;&#x5927;&#x4E00;&#x4E9B;&#x4E5F;&#x662F;&#x53EF;&#x4EE5;&#x63A5;&#x53D7;&#x7684;&#x3002;</p>
+        <p>&#x6709;&#x8DA3;&#x7684;&#x662F;&#xFF0C;&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#x5728;&#x56FE;&#x50CF;&#x6355;&#x6349;&#x65B9;&#x9762;&#x4E5F;&#x6709;&#x5E94;&#x7528;&#x3002;</p>
+        <p>&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#x80FD;&#x6709;&#x6548;&#x5904;&#x7406;&#x5F88;&#x591A;&#x673A;&#x5668;&#x7FFB;&#x8BD1;&#x95EE;&#x9898;&#xFF0C;&#x4F8B;&#x5982;&#x4E0B;&#x9762;&#x7684;&#x65F6;&#x95F4;&#x683C;&#x5F0F;&#x5F52;&#x4E00;&#x5316;&#xFF1A;</p>
+        <p><img src="img/45.jpg" alt></p>
+        <p>&#x4E0B;&#x56FE;&#x5C06;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x53EF;&#x89C6;&#x5316;&#xFF1A;</p>
+        <p><img src="img/46.jpg" alt></p>
+        <p>&#x4E0A;&#x56FE;&#x4E2D;&#xFF0C;&#x989C;&#x8272;&#x8D8A;&#x767D;&#x8868;&#x793A;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x8D8A;&#x5927;&#xFF0C;&#x989C;&#x8272;&#x8D8A;&#x6DF1;&#x8868;&#x793A;&#x6743;&#x91CD;&#x8D8A;&#x5C0F;&#x3002;&#x53EF;&#x89C1;&#xFF0C;&#x8F93;&#x51FA;&#x8BED;&#x53E5;&#x5355;&#x8BCD;&#x4E0E;&#x5176;&#x8F93;&#x5165;&#x8BED;&#x53E5;&#x5355;&#x8BCD;&#x5BF9;&#x5E94;&#x4F4D;&#x7F6E;&#x7684;&#x6CE8;&#x610F;&#x529B;&#x6743;&#x91CD;&#x8F83;&#x5927;&#xFF0C;&#x5373;&#x5BF9;&#x89D2;&#x7EBF;&#x9644;&#x8FD1;&#x3002;</p>
+        <h2 class="mume-header" id="%E8%AF%AD%E9%9F%B3%E8%AF%86%E5%88%AB">&#x8BED;&#x97F3;&#x8BC6;&#x522B;</h2>
+        
+        <p>&#x6DF1;&#x5EA6;&#x5B66;&#x4E60;&#x4E2D;&#xFF0C;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x7684;&#x8F93;&#x5165;&#x662F;&#x58F0;&#x97F3;&#xFF0C;&#x91CF;&#x5316;&#x6210;&#x65F6;&#x95F4;&#x5E8F;&#x5217;&#x3002;&#x66F4;&#x4E00;&#x822C;&#x5730;&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x4FE1;&#x53F7;&#x8F6C;&#x5316;&#x4E3A;&#x9891;&#x57DF;&#x4FE1;&#x53F7;&#xFF0C;&#x5373;&#x58F0;&#x8C31;&#x56FE;&#xFF08;spectrogram&#xFF09;&#xFF0C;&#x518D;&#x8FDB;&#x5165;RNN&#x6A21;&#x578B;&#x8FDB;&#x884C;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x3002;</p>
+        <p><img src="img/47.jpg" alt></p>
+        <p>&#x4E4B;&#x524D;&#xFF0C;&#x8BED;&#x8A00;&#x5B66;&#x5BB6;&#x4EEC;&#x4F1A;&#x5C06;&#x8BED;&#x97F3;&#x4E2D;&#x6BCF;&#x4E2A;&#x5355;&#x8BCD;&#x5206;&#x89E3;&#x6210;&#x591A;&#x4E2A;&#x97F3;&#x7D20;&#xFF08;phoneme&#xFF09;&#xFF0C;&#x6784;&#x5EFA;&#x66F4;&#x7CBE;&#x51C6;&#x7684;&#x4F20;&#x7EDF;&#x8BC6;&#x522B;&#x7B97;&#x6CD5;&#x3002;&#x4F46;&#x5728;&#x7AEF;&#x5230;&#x7AEF;&#x6DF1;&#x5EA6;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x6A21;&#x578B;&#x4E2D;&#xFF0C;&#x4E00;&#x822C;&#x4E0D;&#x9700;&#x8981;&#x8FD9;&#x4E48;&#x505A;&#x4E5F;&#x80FD;&#x5F97;&#x5230;&#x5F88;&#x597D;&#x7684;&#x8BC6;&#x522B;&#x6548;&#x679C;&#x3002;&#x901A;&#x5E38;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x5F88;&#x5927;&#xFF0C;&#x9700;&#x8981;&#x4E0A;&#x5343;&#x4E0A;&#x4E07;&#x4E2A;&#x5C0F;&#x65F6;&#x7684;&#x8BED;&#x97F3;&#x7D20;&#x6750;&#x3002;</p>
+        <p>&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x7684;&#x6CE8;&#x610F;&#x529B;&#x6A21;&#x578B;&#xFF08;attention model&#xFF09;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF1A;</p>
+        <p><img src="img/48.jpg" alt></p>
+        <p>&#x4E00;&#x822C;&#x6765;&#x8BF4;&#xFF0C;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x7684;&#x8F93;&#x5165;&#x65F6;&#x95F4;&#x5E8F;&#x5217;&#x90FD;&#x6BD4;&#x8F83;&#x957F;&#xFF0C;&#x4F8B;&#x5982;&#x662F;10s&#x8BED;&#x97F3;&#x4FE1;&#x53F7;&#xFF0C;&#x91C7;&#x6837;&#x7387;&#x4E3A;100Hz&#xFF0C;&#x5219;&#x8BED;&#x97F3;&#x957F;&#x5EA6;&#x4E3A;1000&#x3002;&#x800C;&#x7FFB;&#x8BD1;&#x7684;&#x8BED;&#x53E5;&#x901A;&#x5E38;&#x5F88;&#x77ED;&#xFF0C;&#x4F8B;&#x5982;&#x201C;the quick brown fox&#x201D;&#xFF0C;&#x5305;&#x542B;19&#x4E2A;&#x5B57;&#x7B26;&#x3002;&#x8FD9;&#x65F6;&#x5019;&#xFF0C;<span class="mathjax-exps">$T_x$</span>&#x4E0E;<span class="mathjax-exps">$T_y$</span>&#x5DEE;&#x522B;&#x5F88;&#x5927;&#x3002;&#x4E3A;&#x4E86;&#x8BA9;<span class="mathjax-exps">$T_x=T_y$</span>&#xFF0C;&#x53EF;&#x4EE5;&#x628A;&#x8F93;&#x51FA;&#x76F8;&#x5E94;&#x5B57;&#x7B26;&#x91CD;&#x590D;&#x5E76;&#x52A0;&#x5165;&#x7A7A;&#x767D;&#xFF08;blank&#xFF09;&#xFF0C;&#x5F62;&#x5982;&#xFF1A;</p>
+        <p></p><div class="mathjax-exps">$$ttt \_ h\_eee\_ \_ \_ \sqcup\_ \_ \_ qqq\_ \_ \cdots$$</div><br>
+        &#x5176;&#x4E2D;&#xFF0C;&#x4E0B;&#x5212;&#x7EBF;&#x201D;_&#x201C;&#x8868;&#x793A;&#x7A7A;&#x767D;&#xFF0C;&#x201D;&#x2294;&#x201C;&#x8868;&#x793A;&#x4E24;&#x4E2A;&#x5355;&#x8BCD;&#x4E4B;&#x95F4;&#x7684;&#x7A7A;&#x5B57;&#x7B26;&#x3002;&#x8FD9;&#x79CD;&#x5199;&#x6CD5;&#x7684;&#x4E00;&#x4E2A;&#x57FA;&#x672C;&#x51C6;&#x5219;&#x662F;&#x6CA1;&#x6709;&#x88AB;&#x7A7A;&#x767D;&#x7B26;&#x201D;_&#x201C;&#x5206;&#x5272;&#x7684;&#x91CD;&#x590D;&#x5B57;&#x7B26;&#x5C06;&#x88AB;&#x6298;&#x53E0;&#x5230;&#x4E00;&#x8D77;&#xFF0C;&#x5373;&#x8868;&#x793A;&#x4E00;&#x4E2A;&#x5B57;&#x7B26;&#x3002;<p></p>
+        <p>&#x8FD9;&#x6837;&#xFF0C;&#x52A0;&#x5165;&#x4E86;&#x91CD;&#x590D;&#x5B57;&#x7B26;&#x548C;&#x7A7A;&#x767D;&#x7B26;&#x3001;&#x7A7A;&#x5B57;&#x7B26;&#xFF0C;&#x53EF;&#x4EE5;&#x8BA9;&#x8F93;&#x51FA;&#x957F;&#x5EA6;&#x4E5F;&#x8FBE;&#x5230;1000&#xFF0C;&#x5373;<span class="mathjax-exps">$T_x=T_y$</span>&#x3002;&#x8FD9;&#x79CD;&#x6A21;&#x578B;&#x88AB;&#x79F0;&#x4E3A;CTC&#xFF08;Connectionist temporal classification&#xFF09;&#x3010;&#x8FDE;&#x63A5;&#x5F0F;&#x65F6;&#x95F4;&#x5206;&#x7C7B;&#x3011;&#x3002;</p>
+        <p><img src="img/49.jpg" alt></p>
+        <h2 class="mume-header" id="%E8%A7%A6%E5%8F%91%E5%AD%97%E6%A3%80%E6%B5%8B">&#x89E6;&#x53D1;&#x5B57;&#x68C0;&#x6D4B;</h2>
+        
+        <p>&#x89E6;&#x53D1;&#x5B57;&#x68C0;&#x6D4B;&#xFF08;Trigger Word Detection&#xFF09;&#x5728;&#x5F88;&#x591A;&#x4EA7;&#x54C1;&#x4E2D;&#x90FD;&#x6709;&#x5E94;&#x7528;&#xFF0C;&#x64CD;&#x4F5C;&#x65B9;&#x6CD5;&#x5C31;&#x662F;&#x8BF4;&#x51FA;&#x89E6;&#x53D1;&#x5B57;&#x901A;&#x8FC7;&#x8BED;&#x97F3;&#x6765;&#x542F;&#x52A8;&#x76F8;&#x5E94;&#x7684;&#x8BBE;&#x5907;&#x3002;&#x4F8B;&#x5982;Amazon Echo&#x7684;&#x89E6;&#x53D1;&#x5B57;&#x662F;&#x201D;Alexa&#x201C;&#xFF0C;&#x767E;&#x5EA6;DuerOS&#x7684;&#x89E6;&#x53D1;&#x5B57;&#x662F;&#x201D;&#x5C0F;&#x5EA6;&#x4F60;&#x597D;&#x201C;&#xFF0C;Apple Siri&#x7684;&#x89E6;&#x53D1;&#x5B57;&#x662F;&#x201D;Hey Siri&#x201C;&#xFF0C;Google Home&#x7684;&#x89E6;&#x53D1;&#x5B57;&#x662F;&#x201D;Okay Google&#x201C;&#x3002;</p>
+        <p><img src="img/50.jpg" alt></p>
+        <p>&#x89E6;&#x53D1;&#x5B57;&#x68C0;&#x6D4B;&#x7CFB;&#x7EDF;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;RNN&#x6A21;&#x578B;&#x6765;&#x5EFA;&#x7ACB;&#x3002;&#x5982;&#x4E0B;&#x56FE;&#x6240;&#x793A;&#xFF0C;&#x8F93;&#x5165;&#x8BED;&#x97F3;&#x4E2D;&#x5305;&#x542B;&#x4E00;&#x4E9B;&#x89E6;&#x53D1;&#x5B57;&#xFF0C;&#x5176;&#x4F59;&#x90FD;&#x662F;&#x975E;&#x89E6;&#x53D1;&#x5B57;&#x3002;RNN&#x68C0;&#x6D4B;&#x5230;&#x89E6;&#x53D1;&#x5B57;&#x540E;&#x8F93;&#x51FA;1&#xFF0C;&#x975E;&#x89E6;&#x53D1;&#x5B57;&#x8F93;&#x51FA;0&#x3002;&#x8FD9;&#x6837;&#x8BAD;&#x7EC3;&#x7684;RNN&#x6A21;&#x578B;&#x5C31;&#x80FD;&#x5B9E;&#x73B0;&#x89E6;&#x53D1;&#x5B57;&#x68C0;&#x6D4B;&#x3002;</p>
+        <p><img src="img/51.jpg" alt></p>
+        <p>&#x4F46;&#x662F;&#x8FD9;&#x79CD;&#x6A21;&#x578B;&#x6709;&#x4E00;&#x4E2A;&#x7F3A;&#x70B9;&#xFF0C;&#x5C31;&#x662F;&#x901A;&#x5E38;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x8BED;&#x97F3;&#x4E2D;&#x7684;&#x89E6;&#x53D1;&#x5B57;&#x8F83;&#x975E;&#x89E6;&#x53D1;&#x5B57;&#x6570;&#x76EE;&#x5C11;&#x5F97;&#x591A;&#xFF0C;&#x5373;&#x6B63;&#x8D1F;&#x6837;&#x672C;&#x5206;&#x5E03;&#x4E0D;&#x5747;&#x3002;&#x4E00;&#x79CD;&#x89E3;&#x51B3;&#x529E;&#x6CD5;&#x662F;&#x5728;&#x51FA;&#x73B0;&#x4E00;&#x4E2A;&#x89E6;&#x53D1;&#x5B57;&#x65F6;&#xFF0C;&#x5C06;&#x5176;&#x9644;&#x8FD1;&#x7684;RNN&#x90FD;&#x8F93;&#x51FA;1&#x3002;&#x8FD9;&#x6837;&#x5C31;&#x7B80;&#x5355;&#x7C97;&#x66B4;&#x5730;&#x589E;&#x52A0;&#x4E86;&#x6B63;&#x6837;&#x672C;&#x3002;</p>
+        <p><img src="img/52.jpg" alt></p>
+        <div id="homework"></div>
+        <h2>作业</h2>
+        <p><a href="NeuralMachineTranslation.html">机器翻译</p>
+        <p><a href="TriggerWordDetection.html">触发词检测</p>
+              </div>
+          </main>
+        </div>
+      </div>
+
+    </body></html>
+    

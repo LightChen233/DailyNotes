@@ -1,0 +1,877 @@
+<!DOCTYPE html><html><head>
+      <title>TriggerWordDetection</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      
+        <script type="text/x-mathjax-config">
+          MathJax.Hub.Config({"extensions":["tex2jax.js"],"jax":["input/TeX","output/HTML-CSS"],"messageStyle":"none","tex2jax":{"processEnvironments":false,"processEscapes":true,"inlineMath":[["$","$"],["\\(","\\)"]],"displayMath":[["$$","$$"],["\\[","\\]"]]},"TeX":{"extensions":["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]},"HTML-CSS":{"availableFonts":["TeX"]}});
+        </script>
+        <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js"></script>
+        
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <h1 class="mume-header" id="%E8%A7%A6%E5%8F%91%E8%AF%8D%E6%A3%80%E6%B5%8B">&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;</h1>
+
+<p>&#x6B22;&#x8FCE;&#x6765;&#x5230;&#x8FD9;&#x4E2A;&#x4E13;&#x4E1A;&#x7684;&#x6700;&#x7EC8;&#x7F16;&#x7A0B;&#x4EFB;&#x52A1;!</p>
+<p>&#x5728;&#x8FD9;&#x5468;&#x7684;&#x89C6;&#x9891;&#x4E2D;&#xFF0C;&#x4F60;&#x5B66;&#x4E60;&#x4E86;&#x5982;&#x4F55;&#x5C06;&#x6DF1;&#x5EA6;&#x5B66;&#x4E60;&#x5E94;&#x7528;&#x5230;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x4E2D;&#x3002;&#x5728;&#x8FD9;&#x4E2A;&#x4F5C;&#x4E1A;&#x4E2D;&#xFF0C;&#x60A8;&#x5C06;&#x6784;&#x5EFA;&#x4E00;&#x4E2A;&#x8BED;&#x97F3;&#x6570;&#x636E;&#x96C6;&#xFF0C;&#x5E76;&#x5B9E;&#x73B0;&#x4E00;&#x4E2A;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x7B97;&#x6CD5;(&#x6709;&#x65F6;&#x4E5F;&#x79F0;&#x4E3A;&#x5173;&#x952E;&#x5B57;&#x68C0;&#x6D4B;&#xFF0C;&#x6216;&#x5524;&#x9192;&#x5B57;&#x68C0;&#x6D4B;)&#x3002;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x6280;&#x672F;&#x53EF;&#x4EE5;&#x8BA9;&#x4E9A;&#x9A6C;&#x900A;Alexa&#x3001;&#x8C37;&#x6B4C;Home&#x3001;&#x82F9;&#x679C;Siri&#x548C;&#x767E;&#x5EA6;DuerOS&#x7B49;&#x8BBE;&#x5907;&#x5728;&#x542C;&#x5230;&#x67D0;&#x4E2A;&#x7279;&#x5B9A;&#x5355;&#x8BCD;&#x540E;&#x81EA;&#x52A8;&#x5524;&#x9192;&#x3002;</p>
+<p>&#x5728;&#x8FD9;&#x4E2A;&#x7EC3;&#x4E60;&#x4E2D;&#xFF0C;&#x6211;&#x4EEC;&#x7684;&#x89E6;&#x53D1;&#x8BCD;&#x5C06;&#x662F;&#x201C;Activate&#x201D;&#x3002;&#x6BCF;&#x6B21;&#x5B83;&#x542C;&#x5230;&#x4F60;&#x8BF4;&quot;activate&quot;&#xFF0C;&#x5B83;&#x5C31;&#x4F1A;&#x53D1;&#x51FA;&quot;chiming&quot;&#x3002;&#x5728;&#x8FD9;&#x4E2A;&#x4F5C;&#x4E1A;&#x7ED3;&#x675F;&#x65F6;&#xFF0C;&#x4F60;&#x5C06;&#x80FD;&#x591F;&#x5F55;&#x5236;&#x4E00;&#x6BB5;&#x4F60;&#x81EA;&#x5DF1;&#x8BF4;&#x8BDD;&#x7684;&#x7247;&#x6BB5;&#xFF0C;&#x5E76;&#x8BA9;&#x7B97;&#x6CD5;&#x5728;&#x68C0;&#x6D4B;&#x5230;&#x4F60;&#x8BF4;&quot;activate&quot;&#x65F6;&#x89E6;&#x53D1;&#x94C3;&#x58F0;&#x3002;</p>
+<p>&#x5B8C;&#x6210;&#x8FD9;&#x4E2A;&#x4EFB;&#x52A1;&#x540E;&#xFF0C;&#x4E5F;&#x8BB8;&#x4F60;&#x8FD8;&#x53EF;&#x4EE5;&#x628A;&#x5B83;&#x6269;&#x5C55;&#x5230;&#x4F60;&#x7684;&#x7B14;&#x8BB0;&#x672C;&#x7535;&#x8111;&#x4E0A;&#xFF0C;&#x8FD9;&#x6837;&#x6BCF;&#x5F53;&#x4F60;&#x8BF4;&quot;activate&quot;&#x65F6;&#xFF0C;&#x5B83;&#x5C31;&#x4F1A;&#x542F;&#x52A8;&#x4F60;&#x6700;&#x559C;&#x6B22;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#xFF0C;&#x6216;&#x8005;&#x6253;&#x5F00;&#x4F60;&#x5BB6;&#x91CC;&#x7684;&#x8054;&#x7F51;&#x706F;&#xFF0C;&#x6216;&#x8005;&#x89E6;&#x53D1;&#x5176;&#x4ED6;&#x4E8B;&#x4EF6;?</p>
+<p>&#x5728;&#x8FD9;&#x4E2A;&#x4F5C;&#x4E1A;&#x4E2D;&#xFF0C;&#x4F60;&#x5C06;&#x5B66;&#x4F1A;:</p>
+<ul>
+<li>
+<p>&#x6784;&#x9020;&#x4E00;&#x4E2A;&#x8BED;&#x97F3;&#x8BC6;&#x522B;&#x9879;&#x76EE;</p>
+</li>
+<li>
+<p>&#x5408;&#x6210;&#x548C;&#x5904;&#x7406;&#x97F3;&#x9891;&#x8BB0;&#x5F55;&#xFF0C;&#x4EE5;&#x521B;&#x5EFA;&#x8BAD;&#x7EC3;/&#x5F00;&#x53D1;&#x6570;&#x636E;&#x96C6;</p>
+</li>
+<li>
+<p>&#x8BAD;&#x7EC3;&#x4E00;&#x4E2A;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x6A21;&#x578B;&#x5E76;&#x505A;&#x51FA;&#x9884;&#x6D4B;</p>
+</li>
+</ul>
+<h2 class="mume-header" id="%E5%AF%BC%E5%8C%85">&#x5BFC;&#x5305;</h2>
+
+<p>&#x8BA9;&#x6211;&#x4EEC;&#x5F00;&#x59CB;&#x5427;!&#x8FD0;&#x884C;&#x4EE5;&#x4E0B;&#x5355;&#x5143;&#x683C;&#x4EE5;&#x52A0;&#x8F7D;&#x5C06;&#x8981;&#x4F7F;&#x7528;&#x7684;&#x5305;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">import</span> numpy <span class="token keyword">as</span> np
+<span class="token keyword">from</span> pydub <span class="token keyword">import</span> AudioSegment
+<span class="token keyword">import</span> random
+<span class="token keyword">import</span> sys
+<span class="token keyword">import</span> io
+<span class="token keyword">import</span> os
+<span class="token keyword">import</span> glob
+<span class="token keyword">import</span> IPython
+<span class="token keyword">from</span> td_utils <span class="token keyword">import</span> <span class="token operator">*</span>
+<span class="token operator">%</span>matplotlib inline
+</pre><h2 class="mume-header" id="%E6%95%B0%E6%8D%AE%E5%90%88%E6%88%90%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%AF%AD%E9%9F%B3%E6%95%B0%E6%8D%AE%E9%9B%86">&#x6570;&#x636E;&#x5408;&#x6210;:&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x8BED;&#x97F3;&#x6570;&#x636E;&#x96C6;</h2>
+
+<p>&#x8BA9;&#x6211;&#x4EEC;&#x9996;&#x5148;&#x4E3A;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x7B97;&#x6CD5;&#x6784;&#x5EFA;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x96C6;&#x3002;&#x7406;&#x60F3;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x8BED;&#x97F3;&#x6570;&#x636E;&#x96C6;&#x5E94;&#x8BE5;&#x5C3D;&#x53EF;&#x80FD;&#x63A5;&#x8FD1;&#x60A8;&#x5E0C;&#x671B;&#x5728;&#x5176;&#x4E0A;&#x8FD0;&#x884C;&#x7684;&#x5E94;&#x7528;&#x7A0B;&#x5E8F;&#x3002;&#x5728;&#x8FD9;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4F60;&#x4F1A;&#x5728;&#x5DE5;&#x4F5C;&#x73AF;&#x5883;(&#x56FE;&#x4E66;&#x9986;&#x3001;&#x5BB6;&#x91CC;&#x3001;&#x529E;&#x516C;&#x5BA4;&#x3001;&#x5F00;&#x653E;&#x7A7A;&#x95F4;&#x2026;&#x2026;)&#x4E2D;&#x53D1;&#x73B0;&quot;activate&quot;&#x8FD9;&#x4E2A;&#x8BCD;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x4F60;&#x9700;&#x8981;&#x5728;&#x4E0D;&#x540C;&#x7684;&#x80CC;&#x666F;&#x58F0;&#x97F3;&#x4E2D;&#x521B;&#x5EFA;&#x4E00;&#x6BB5;&#x5F55;&#x97F3;&#xFF0C;&#x5176;&#x4E2D;&#x5305;&#x542B;&#x79EF;&#x6781;&#x8BCD;&#x6C47;(&quot;activate&quot;)&#x548C;&#x6D88;&#x6781;&#x8BCD;&#x6C47;(&#x9664;&#x4E86;&quot;activate&quot;&#x4E4B;&#x5916;&#x7684;&#x968F;&#x673A;&#x8BCD;&#x6C47;)&#x3002;&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x770B;&#x5982;&#x4F55;&#x521B;&#x5EFA;&#x8FD9;&#x6837;&#x7684;&#x6570;&#x636E;&#x96C6;&#x3002;</p>
+<h3 class="mume-header" id="%E5%90%AC%E6%95%B0%E6%8D%AE">&#x542C;&#x6570;&#x636E;</h3>
+
+<p>&#x4F60;&#x7684;&#x4E00;&#x4E2A;&#x670B;&#x53CB;&#x6B63;&#x5728;&#x5E2E;&#x4F60;&#x505A;&#x8FD9;&#x4E2A;&#x9879;&#x76EE;&#xFF0C;&#x4ED6;&#x4EEC;&#x5230;&#x56FE;&#x4E66;&#x9986;&#x3001;&#x5496;&#x5561;&#x9986;&#x3001;&#x9910;&#x9986;&#x3001;&#x5BB6;&#x91CC;&#x548C;&#x529E;&#x516C;&#x5BA4;&#x53BB;&#x8BB0;&#x5F55;&#x80CC;&#x666F;&#x566A;&#x97F3;&#xFF0C;&#x4EE5;&#x53CA;&#x4EBA;&#x4EEC;&#x8BF4;&#x79EF;&#x6781;/&#x6D88;&#x6781;&#x8BCD;&#x6C47;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x3002;&#x8FD9;&#x4E2A;&#x6570;&#x636E;&#x96C6;&#x5305;&#x62EC;&#x7528;&#x5404;&#x79CD;&#x53E3;&#x97F3;&#x8BF4;&#x8BDD;&#x7684;&#x4EBA;&#x3002;</p>
+<p>&#x5728;raw_data&#x76EE;&#x5F55;&#x4E2D;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x627E;&#x5230;&#x5305;&#x542B;&#x79EF;&#x6781;&#x8BCD;&#x3001;&#x6D88;&#x6781;&#x8BCD;&#x548C;&#x80CC;&#x666F;&#x566A;&#x58F0;&#x7684;&#x539F;&#x59CB;&#x97F3;&#x9891;&#x6587;&#x4EF6;&#x7684;&#x5B50;&#x96C6;&#x3002;&#x60A8;&#x5C06;&#x4F7F;&#x7528;&#x8FD9;&#x4E9B;&#x97F3;&#x9891;&#x6587;&#x4EF6;&#x6765;&#x5408;&#x6210;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x96C6;&#x6765;&#x8BAD;&#x7EC3;&#x6A21;&#x578B;&#x3002;&quot;activate&quot;&#x76EE;&#x5F55;&#x5305;&#x542B;&#x4E86;&#x4EBA;&#x4EEC;&#x8BF4;&quot;activate&quot;&#x8FD9;&#x4E2A;&#x8BCD;&#x7684;&#x79EF;&#x6781;&#x4F8B;&#x5B50;&#x3002;&quot;negatives&quot;&#x76EE;&#x5F55;&#x5305;&#x542B;&#x6D88;&#x6781;&#x7684;&#x4F8B;&#x5B50;&#xFF0C;&#x4EBA;&#x4EEC;&#x8BF4;&#x968F;&#x673A;&#x5355;&#x8BCD;&#x800C;&#x4E0D;&#x662F;&quot;activate&quot;&#x3002;&#x6BCF;&#x6BB5;&#x5F55;&#x97F3;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x8BCD;&#x3002;&quot;backgrounds&quot;&#x76EE;&#x5F55;&#x5305;&#x542B;&#x4E86;10&#x79D2;&#x7684;&#x4E0D;&#x540C;&#x73AF;&#x5883;&#x4E0B;&#x7684;&#x80CC;&#x666F;&#x566A;&#x97F3;&#x526A;&#x8F91;&#x3002;</p>
+<p>&#x8FD0;&#x884C;&#x4E0B;&#x9762;&#x7684;&#x5355;&#x5143;&#x683C;&#x6765;&#x542C;&#x4E00;&#x4E9B;&#x793A;&#x4F8B;&#x3002;</p>
+<p>A</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./raw_data/activates/1.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>B</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./raw_data/negatives/4.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>C</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./raw_data/backgrounds/1.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>&#x60A8;&#x5C06;&#x4F7F;&#x7528;&#x8FD9;&#x4E09;&#x79CD;&#x7C7B;&#x578B;&#x7684;&#x8BB0;&#x5F55;(positives/negatives/backgrounds)&#x6765;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x6807;&#x8BB0;&#x6570;&#x636E;&#x96C6;&#x3002;</p>
+<h2 class="mume-header" id="12-%E4%BB%8E%E5%BD%95%E9%9F%B3%E5%88%B0%E5%A3%B0%E8%B0%B1%E5%9B%BE">1.2 -&#x4ECE;&#x5F55;&#x97F3;&#x5230;&#x58F0;&#x8C31;&#x56FE;</h2>
+
+<p>&#x4EC0;&#x4E48;&#x662F;&#x771F;&#x6B63;&#x7684;&#x5F55;&#x97F3;?&#x9EA6;&#x514B;&#x98CE;&#x4F1A;&#x8BB0;&#x5F55;&#x4E0B;&#x6C14;&#x538B;&#x968F;&#x65F6;&#x95F4;&#x7684;&#x5FAE;&#x5C0F;&#x53D8;&#x5316;&#xFF0C;&#x800C;&#x6B63;&#x662F;&#x8FD9;&#x4E9B;&#x6C14;&#x538B;&#x7684;&#x5FAE;&#x5C0F;&#x53D8;&#x5316;&#xFF0C;&#x4F60;&#x7684;&#x8033;&#x6735;&#x4E5F;&#x4F1A;&#x611F;&#x77E5;&#x5230;&#x58F0;&#x97F3;&#x3002;&#x4F60;&#x53EF;&#x4EE5;&#x628A;&#x97F3;&#x9891;&#x5F55;&#x97F3;&#x60F3;&#x8C61;&#x6210;&#x4E00;&#x4E2A;&#x957F;&#x957F;&#x7684;&#x6570;&#x5B57;&#x5217;&#x8868;&#xFF0C;&#x7528;&#x6765;&#x6D4B;&#x91CF;&#x7531;&#x9EA6;&#x514B;&#x98CE;&#x68C0;&#x6D4B;&#x5230;&#x7684;&#x5FAE;&#x5C0F;&#x6C14;&#x538B;&#x53D8;&#x5316;&#x3002;&#x6211;&#x4EEC;&#x5C06;&#x4F7F;&#x7528;44100Hz&#x91C7;&#x6837;&#x7684;&#x97F3;&#x9891;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x9EA6;&#x514B;&#x98CE;&#x6BCF;&#x79D2;&#x7ED9;&#x6211;&#x4EEC;44100&#x4E2A;&#x6570;&#x5B57;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x7528;441000(= <span class="mathjax-exps">$10 \times 44100$</span>)&#x4E2A;&#x6570;&#x8868;&#x793A;&#x3002;</p>
+<p>&#x5F88;&#x96BE;&#x4ECE;&#x8FD9;&#x4E9B;&#x201C;&#x539F;&#x59CB;&#x201D;&#x7684;&#x97F3;&#x9891;&#x5448;&#x73B0;&#x4E2D;&#x5224;&#x65AD;&#x662F;&#x5426;&#x8BF4;&#x4E86;&quot;activate&quot;&#x8FD9;&#x4E2A;&#x8BCD;&#x3002;&#x4E3A;&#x4E86;&#x5E2E;&#x52A9;&#x60A8;&#x7684;&#x5E8F;&#x5217;&#x6A21;&#x578B;&#x66F4;&#x5BB9;&#x6613;&#x5730;&#x5B66;&#x4E60;&#x68C0;&#x6D4B;&#x89E6;&#x53D1;&#x8BCD;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x8BA1;&#x7B97;&#x97F3;&#x9891;&#x7684;&#x58F0;&#x8C31;&#x56FE;&#x3002;&#x58F0;&#x8C31;&#x56FE;&#x544A;&#x8BC9;&#x6211;&#x4EEC;&#x4E00;&#x4E2A;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x5728;&#x67D0;&#x4E00;&#x65F6;&#x523B;&#x6709;&#x591A;&#x5C11;&#x4E0D;&#x540C;&#x7684;&#x9891;&#x7387;&#x3002;</p>
+<p>(&#x5982;&#x679C;&#x4F60;&#x66FE;&#x7ECF;&#x4E0A;&#x8FC7;&#x5173;&#x4E8E;&#x4FE1;&#x53F7;&#x5904;&#x7406;&#x6216;&#x5085;&#x91CC;&#x53F6;&#x53D8;&#x6362;&#x7684;&#x9AD8;&#x7EA7;&#x8BFE;&#x7A0B;&#xFF0C;&#x58F0;&#x8C31;&#x56FE;&#x662F;&#x901A;&#x8FC7;&#x5728;&#x539F;&#x59CB;&#x97F3;&#x9891;&#x4FE1;&#x53F7;&#x4E0A;&#x6ED1;&#x52A8;&#x4E00;&#x4E2A;&#x7A97;&#x53E3;&#x6765;&#x8BA1;&#x7B97;&#x7684;&#xFF0C;&#x7136;&#x540E;&#x4F7F;&#x7528;&#x5085;&#x91CC;&#x53F6;&#x53D8;&#x6362;&#x6765;&#x8BA1;&#x7B97;&#x6BCF;&#x4E2A;&#x7A97;&#x53E3;&#x4E2D;&#x6700;&#x6D3B;&#x8DC3;&#x7684;&#x9891;&#x7387;&#x3002;&#x5982;&#x679C;&#x4F60;&#x4E0D;&#x660E;&#x767D;&#x524D;&#x9762;&#x7684;&#x53E5;&#x5B50;&#xFF0C;&#x4E0D;&#x8981;&#x62C5;&#x5FC3;&#x3002;)</p>
+<p>&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x4E00;&#x4E2A;&#x4F8B;&#x5B50;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;audio_examples/example_train.wav&quot;</span><span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E7%BB%98%E5%9B%BE">&#x7ED8;&#x56FE;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">x <span class="token operator">=</span> graph_spectrogram<span class="token punctuation">(</span><span class="token string">&quot;audio_examples/example_train.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p><img src="img/b2.jpg" alt></p>
+<p>&#x4E0A;&#x9762;&#x7684;&#x56FE;&#x8868;&#x8868;&#x793A;&#x6BCF;&#x4E2A;&#x9891;&#x7387;(y&#x8F74;)&#x5728;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;(time-step)&#x5185;(x&#x8F74;)&#x7684;&#x6D3B;&#x8DC3;&#x7A0B;&#x5EA6;&#x3002;</p>
+<h3 class="mume-header" id="%E6%9F%A5%E7%9C%8Bshape">&#x67E5;&#x770B;shape</h3>
+
+<p>&#x8F93;&#x51FA;&#x8C31;&#x56FE;&#x7684;&#x5C3A;&#x5BF8;&#x53D6;&#x51B3;&#x4E8E;&#x8C31;&#x56FE;&#x8F6F;&#x4EF6;&#x7684;&#x8D85;&#x53C2;&#x6570;&#x548C;&#x8F93;&#x5165;&#x8C31;&#x56FE;&#x7684;&#x957F;&#x5EA6;&#x3002;&#x5728;&#x8FD9;&#x91CC;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x4F7F;&#x7528;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x4F5C;&#x4E3A;&#x6211;&#x4EEC;&#x7684;&#x8BAD;&#x7EC3;&#x4F8B;&#x5B50;&#x7684;&#x201C;&#x6807;&#x51C6;&#x957F;&#x5EA6;&#x201D;&#x3002;&#x8C31;&#x56FE;&#x7684;time-step&#x5C06;&#x4E3A;5511&#x3002;&#x7A0D;&#x540E;&#x60A8;&#x5C06;&#x770B;&#x5230;&#xFF0C;&#x58F0;&#x8C31;&#x56FE;&#x5C06;&#x662F;&#x7F51;&#x7EDC;&#x7684;&#x8F93;&#x5165;<span class="mathjax-exps">$x$</span>&#xFF0C;&#x56E0;&#x6B64;<span class="mathjax-exps">$T_x = 5511$</span>&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">_<span class="token punctuation">,</span> data <span class="token operator">=</span> wavfile<span class="token punctuation">.</span>read<span class="token punctuation">(</span><span class="token string">&quot;audio_examples/example_train.wav&quot;</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Time steps in audio recording before spectrogram&quot;</span><span class="token punctuation">,</span> data<span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Time steps in input after spectrogram&quot;</span><span class="token punctuation">,</span> x<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>Time steps in audio recording before spectrogram (441000,)
+Time steps in input after spectrogram (101, 5511)
+</code></pre><p>&#x73B0;&#x5728;&#x4F60;&#x53EF;&#x4EE5;&#x5B9A;&#x4E49;:</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">Tx <span class="token operator">=</span> <span class="token number">5511</span> <span class="token comment"># The number of time steps input to the model from the spectrogram</span>
+n_freq <span class="token operator">=</span> <span class="token number">101</span> <span class="token comment"># Number of frequencies input to the model at each time step of the spectrogram</span>
+</pre><p>&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x5373;&#x4F7F;&#x6211;&#x4EEC;&#x7684;&#x9ED8;&#x8BA4;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;&#x957F;&#x5EA6;&#x662F;10&#x79D2;&#xFF0C;10&#x79D2;&#x7684;&#x65F6;&#x95F4;&#x4E5F;&#x53EF;&#x4EE5;&#x88AB;&#x79BB;&#x6563;&#x6210;&#x4E0D;&#x540C;&#x6570;&#x91CF;&#x7684;&#x503C;&#x3002;&#x60A8;&#x5DF2;&#x7ECF;&#x770B;&#x5230;&#x4E86;441000(&#x539F;&#x59CB;&#x97F3;&#x9891;)&#x548C;5511(&#x58F0;&#x8C31;&#x56FE;)&#x3002;&#x5728;&#x524D;&#x4E00;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6BCF;&#x6B65;&#x8868;&#x793A; <span class="mathjax-exps">$10/441000 \approx 0.000023$</span> &#x79D2;&#x3002;&#x5728;&#x7B2C;&#x4E8C;&#x79CD;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x6BCF;&#x4E2A;&#x6B65;&#x9AA4;&#x8868;&#x793A; <span class="mathjax-exps">$10/5511 \approx 0.0018$</span> &#x79D2;&#x3002;</p>
+<p>&#x5BF9;&#x4E8E;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#xFF0C;&#x4F60;&#x5C06;&#x5728;&#x8FD9;&#x4E2A;&#x4EFB;&#x52A1;&#x4E2D;&#x770B;&#x5230;&#x7684;&#x5173;&#x952E;&#x503C;&#x662F;:</p>
+<ul>
+<li><span class="mathjax-exps">$441000$</span> (&#x539F;&#x59CB;&#x97F3;&#x9891;)</li>
+<li><span class="mathjax-exps">$5511 = T_x$</span>(&#x58F0;&#x8C31;&#x56FE;&#x8F93;&#x51FA;&#x548C;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x7684;&#x8F93;&#x5165;&#x7EF4;&#x6570;)</li>
+<li><span class="mathjax-exps">$10000$</span> (&#x7528;&#x4E8E;<code>pydub</code>&#x6A21;&#x5757;&#x5408;&#x6210;&#x97F3;&#x9891;)</li>
+<li><span class="mathjax-exps">$1375 = T_y$</span> (&#x60A8;&#x5C06;&#x6784;&#x5EFA;&#x7684;GRU&#x8F93;&#x51FA;&#x4E2D;&#x7684;&#x6B65;&#x9AA4;&#x6570;).</li>
+</ul>
+<p>&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x6BCF;&#x4E00;&#x79CD;&#x8868;&#x793A;&#x90FD;&#x6070;&#x597D;&#x5BF9;&#x5E94;10&#x79D2;&#x7684;&#x65F6;&#x95F4;&#x3002;&#x53EA;&#x662F;&#x5B83;&#x4EEC;&#x5728;&#x4E0D;&#x540C;&#x7A0B;&#x5EA6;&#x4E0A;&#x79BB;&#x6563;&#x4E86;&#x5B83;&#x4EEC;&#x3002;&#x6240;&#x6709;&#x8FD9;&#x4E9B;&#x90FD;&#x662F;&#x8D85;&#x53C2;&#x6570;&#xFF0C;&#x5E76;&#x4E14;&#x53EF;&#x4EE5;&#x66F4;&#x6539;(441000&#x9664;&#x5916;&#xFF0C;&#x5B83;&#x662F;&#x9EA6;&#x514B;&#x98CE;&#x7684;&#x4E00;&#x4E2A;&#x529F;&#x80FD;)&#x3002;&#x6211;&#x4EEC;&#x9009;&#x62E9;&#x4E86;&#x8BED;&#x97F3;&#x7CFB;&#x7EDF;&#x4F7F;&#x7528;&#x7684;&#x6807;&#x51C6;&#x8303;&#x56F4;&#x5185;&#x7684;&#x503C;&#x3002;</p>
+<p>&#x8003;&#x8651;&#x4E0A;&#x9762;&#x7684;<span class="mathjax-exps">$T_y = 1375$</span>&#x6570;&#x5B57;&#x3002;&#x8FD9;&#x610F;&#x5473;&#x7740;&#x5BF9;&#x4E8E;&#x6A21;&#x578B;&#x7684;&#x8F93;&#x51FA;&#xFF0C;&#x6211;&#x4EEC;&#x5C06;10&#x79BB;&#x6563;&#x4E3A;1375&#x4E2A;<strong>&#x65F6;&#x95F4;&#x95F4;&#x9694;</strong>(&#x6BCF;&#x4E2A;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#x7684;&#x957F;&#x5EA6;&#x4E3A;<span class="mathjax-exps">$10/1375 \approx 0.0072$</span>s)&#xFF0C;&#x5E76;&#x5C1D;&#x8BD5;&#x9884;&#x6D4B;&#x6BCF;&#x4E2A;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#x662F;&#x5426;&#x6709;&#x4EBA;&#x6700;&#x8FD1;&#x8BF4;&#x8FC7;&#x201C;activate&#x201D;&#x3002;</p>
+<p>&#x518D;&#x8003;&#x8651;&#x4E00;&#x4E0B;&#x4E0A;&#x9762;&#x7684;10000&#x4E2A;&#x6570;&#x5B57;&#x3002;&#x8FD9;&#x76F8;&#x5F53;&#x4E8E;&#x5C06;10&#x79D2;&#x526A;&#x8F91;&#x79BB;&#x6563;&#x4E3A;10/10000 = 0.001s&#x8FED;&#x4EE3;&#x3002;0.001s&#x4E5F;&#x53EB;1ms&#xFF0C;&#x6216;1ms&#x3002;&#x5F53;&#x6211;&#x4EEC;&#x8BF4;&#x6309;&#x7167;1ms&#x7684;&#x95F4;&#x9694;&#x8FDB;&#x884C;&#x79BB;&#x6563;&#x5316;&#x65F6;&#xFF0C;&#x610F;&#x5473;&#x7740;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x4E86;10000&#x6B65;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">Ty <span class="token operator">=</span> <span class="token number">1375</span> <span class="token comment"># The number of time steps in the output of our model</span>
+</pre><h2 class="mume-header" id="13-%E7%94%9F%E6%88%90%E4%B8%80%E4%B8%AA%E5%8D%95%E4%B8%80%E7%9A%84%E8%AE%AD%E7%BB%83%E7%A4%BA%E4%BE%8B">1.3 -&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x5355;&#x4E00;&#x7684;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;</h2>
+
+<p>&#x56E0;&#x4E3A;&#x8BED;&#x97F3;&#x6570;&#x636E;&#x5F88;&#x96BE;&#x83B7;&#x53D6;&#x548C;&#x6807;&#x8BB0;&#xFF0C;&#x4F60;&#x5C06;&#x4F7F;&#x7528;activates, negatives &#x548C; backgrounds&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x6765;&#x5408;&#x6210;&#x4F60;&#x7684;&#x8BAD;&#x7EC3;&#x6570;&#x636E;&#x3002;&#x8BB0;&#x5F55;&#x8BB8;&#x591A;10&#x79D2;&#x5E26;&#x6709;&#x968F;&#x673A;&quot;activate&quot;&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x662F;&#x76F8;&#x5F53;&#x6162;&#x7684;&#x3002;&#x76F8;&#x53CD;&#xFF0C;&#x5B83;&#x66F4;&#x5BB9;&#x6613;&#x8BB0;&#x5F55;&#x5927;&#x91CF;&#x7684;&#x79EF;&#x6781;&#x548C;&#x6D88;&#x6781;&#x7684;&#x8BCD;&#xFF0C;&#x5E76;<strong>&#x5206;&#x522B;&#x8BB0;&#x5F55;</strong>&#x80CC;&#x666F;&#x566A;&#x97F3;(&#x6216;&#x4ECE;&#x514D;&#x8D39;&#x7684;&#x5728;&#x7EBF;&#x8D44;&#x6E90;&#x4E0B;&#x8F7D;&#x80CC;&#x666F;&#x566A;&#x97F3;)&#x3002;</p>
+<p>&#x8981;&#x5408;&#x6210;&#x4E00;&#x4E2A;&#x5355;&#x4E00;&#x7684;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;&#xFF0C;&#x60A8;&#x5C06;:</p>
+<ul>
+<li>
+<p>&#x9009;&#x62E9;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x7684;10&#x79D2;&#x80CC;&#x666F;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;</p>
+</li>
+<li>
+<p>&#x968F;&#x673A;&#x63D2;&#x5165;0-4&#x4E2A;&quot;activate&quot;&#x7247;&#x6BB5;&#x5230;&#x8FD9;&#x4E2A;10&#x79D2;&#x7684;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x4E2D;</p>
+</li>
+<li>
+<p>&#x968F;&#x673A;&#x63D2;&#x5165;0-2&#x4E2A;&#x8D1F;&#x9762;&#x8BCD;&#x7247;&#x6BB5;&#x5230;&#x8FD9;&#x4E2A;10&#x79D2;&#x7684;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x4E2D;</p>
+</li>
+</ul>
+<p>&#x56E0;&#x4E3A;&#x4F60;&#x5DF2;&#x7ECF;&#x628A;&quot;activate&quot;&#x8FD9;&#x4E2A;&#x8BCD;&#x5408;&#x6210;&#x5230;&#x80CC;&#x666F;&#x7247;&#x6BB5;&#x4E2D;&#xFF0C;&#x6240;&#x4EE5;&#x4F60;&#x77E5;&#x9053;&#x5728;10&#x79D2;&#x7684;&#x7247;&#x6BB5;&#x4E2D;&quot;activate&quot;&#x8FD9;&#x4E2A;&#x8BCD;&#x662F;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x51FA;&#x73B0;&#x7684;&#x3002;&#x7A0D;&#x540E;&#x60A8;&#x5C06;&#x53D1;&#x73B0;,&#x8FD9;&#x4F7F;&#x5F97;&#x5B83;&#x66F4;&#x5BB9;&#x6613;&#x751F;&#x6210;&#x6807;&#x7B7E;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x3002;</p>
+<h3 class="mume-header" id="%E5%8A%A0%E8%BD%BD%E9%9F%B3%E9%A2%91%E7%89%87%E6%AE%B5">&#x52A0;&#x8F7D;&#x97F3;&#x9891;&#x7247;&#x6BB5;</h3>
+
+<p>&#x60A8;&#x5C06;&#x4F7F;&#x7528;pydub&#x5305;&#x6765;&#x64CD;&#x4F5C;&#x97F3;&#x9891;&#x3002;Pydub&#x5C06;&#x539F;&#x59CB;&#x97F3;&#x9891;&#x6587;&#x4EF6;&#x8F6C;&#x6362;&#x4E3A;Pydub&#x6570;&#x636E;&#x7ED3;&#x6784;&#x5217;&#x8868;(&#x8FD9;&#x91CC;&#x4E86;&#x89E3;&#x7EC6;&#x8282;&#x5E76;&#x4E0D;&#x91CD;&#x8981;)&#x3002;Pydub&#x4F7F;&#x7528;1ms&#x4F5C;&#x4E3A;&#x79BB;&#x6563;&#x65F6;&#x95F4;&#x95F4;&#x9694;(1ms = 1/1000s)&#xFF0C;&#x8FD9;&#x5C31;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x526A;&#x8F91;&#x603B;&#x662F;&#x4F7F;&#x7528;10,000&#x6B65;&#x6765;&#x8868;&#x793A;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x4F7F;&#x7528;pydub&#x52A0;&#x8F7D;&#x97F3;&#x9891;&#x7247;&#x6BB5;</span>
+activates<span class="token punctuation">,</span> negatives<span class="token punctuation">,</span> backgrounds <span class="token operator">=</span> load_raw_audio<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;background len: &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>backgrounds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>    <span class="token comment"># &#x5E94;&#x8BE5;&#x662F;10000&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x662F;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x526A;&#x8F91;&#x7247;&#x6BB5;</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;activate[0] len: &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>activates<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>     <span class="token comment"># &#x5927;&#x6982;&#x5728;1000&#x5DE6;&#x53F3;&#xFF0C;&#x56E0;&#x4E3A;&#x4E00;&#x4E2A;&quot;activate&quot;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x901A;&#x5E38;&#x5728;1&#x79D2;&#x5DE6;&#x53F3; (but varies a lot)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;activate[1] len: &quot;</span> <span class="token operator">+</span> <span class="token builtin">str</span><span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>activates<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span>     <span class="token comment"># &#x4E0D;&#x540C;&#x7684;&quot;activate&quot;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x53EF;&#x4EE5;&#x6709;&#x4E0D;&#x540C;&#x7684;&#x957F;&#x5EA6;</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-1">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>background len: 10000
+activate[0] len: 916
+activate[1] len: 1579
+</code></pre><h3 class="mume-header" id="%E9%9A%8F%E6%9C%BA%E7%94%9F%E6%88%90%E7%89%87%E6%AE%B5">&#x968F;&#x673A;&#x751F;&#x6210;&#x7247;&#x6BB5;</h3>
+
+<p><strong>&#x5728;&#x80CC;&#x666F;&#x4E0A;&#x53E0;&#x52A0;&#x79EF;&#x6781;/&#x6D88;&#x6781;&#x8BCD;&#x6C47;</strong>:</p>
+<p>&#x7ED9;&#x5B9A;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x80CC;&#x666F;&#x7247;&#x6BB5;&#x548C;&#x4E00;&#x4E2A;&#x7B80;&#x77ED;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;(&#x79EF;&#x6781;&#x6216;&#x6D88;&#x6781;&#x7684;&#x5355;&#x8BCD;)&#xFF0C;&#x60A8;&#x9700;&#x8981;&#x80FD;&#x591F;&#x201C;&#x6DFB;&#x52A0;&#x201D;&#x6216;&#x201C;&#x63D2;&#x5165;&#x201D;&#x5355;&#x8BCD;&#x7684;&#x7B80;&#x77ED;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x5230;&#x80CC;&#x666F;&#x4E2D;&#x3002;&#x4E3A;&#x4E86;&#x786E;&#x4FDD;&#x63D2;&#x5165;&#x5230;&#x80CC;&#x666F;&#x4E2D;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x4E0D;&#x4F1A;&#x91CD;&#x53E0;&#xFF0C;&#x60A8;&#x5C06;&#x8DDF;&#x8E2A;&#x4E4B;&#x524D;&#x63D2;&#x5165;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x7684;&#x65F6;&#x95F4;&#x3002;&#x4F60;&#x5C06;&#x63D2;&#x5165;&#x591A;&#x4E2A;&#x6B63;/&#x8D1F;&#x5355;&#x8BCD;&#x7684;&#x7247;&#x6BB5;&#x5230;&#x80CC;&#x666F;&#x4E0A;&#xFF0C;&#x4F60;&#x4E0D;&#x60F3;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&quot;activate&quot;&#x6216;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x7684;&#x5355;&#x8BCD;&#x5728;&#x67D0;&#x4E2A;&#x5730;&#x65B9;&#x4E0E;&#x4F60;&#x4E4B;&#x524D;&#x6DFB;&#x52A0;&#x7684;&#x53E6;&#x4E00;&#x4E2A;&#x7247;&#x6BB5;&#x91CD;&#x53E0;&#x3002;</p>
+<p>&#x4E3A;&#x4E86;&#x6E05;&#x6670;&#xFF0C;&#x5F53;&#x4F60;&#x5C06;1&#x79D2;&#x7684;&quot;activate&quot;&#x63D2;&#x5165;&#x5230;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x5496;&#x5561;&#x9986;&#x566A;&#x97F3;&#x526A;&#x8F91;&#x4E2D;&#xFF0C;&#x4F60;&#x4F1A;&#x5F97;&#x5230;&#x4E00;&#x4E2A;10&#x79D2;&#x7684;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#xFF0C;&#x542C;&#x8D77;&#x6765;&#x50CF;&#x662F;&#x6709;&#x4EBA;&#x5728;&#x5496;&#x5561;&#x9986;&#x91CC;&#x8BF4;&#x4E86;&quot;activate&quot;&#xFF0C;&#x800C;&quot;activate&quot;&#x662F;&#x5728;&#x80CC;&#x666F;&#x566A;&#x97F3;&#x4E2D;&#x53E0;&#x52A0;&#x7684;&#x3002;&#x4F60;&#x4E0D;&#x4F1A;&#x4EE5;11&#x79D2;&#x7684;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x7ED3;&#x675F;&#x3002;&#x7A0D;&#x540E;&#x60A8;&#x5C06;&#x770B;&#x5230;pydub&#x662F;&#x5982;&#x4F55;&#x5141;&#x8BB8;&#x60A8;&#x8FD9;&#x6837;&#x505A;&#x7684;&#x3002;</p>
+<p><strong>&#x521B;&#x5EFA;&#x6807;&#x7B7E;&#x7684;&#x540C;&#x65F6;&#xFF0C;&#x60A8;&#x8986;&#x76D6;</strong>:</p>
+<p>&#x6807;&#x7B7E;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x8868;&#x793A;&#x662F;&#x5426;&#x6709;&#x4EBA;&#x521A;&#x521A;&#x8BF4;&#x5B8C;&quot;activate&quot;&#x3002;&#x7ED9;&#x5B9A;&#x4E00;&#x4E2A;&#x80CC;&#x666F;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x4E3A;&#x6240;&#x6709;&#x7684;<span class="mathjax-exps">$t$</span>&#x521D;&#x59CB;&#x5316;<span class="mathjax-exps">$y^{\langle t \rangle}=0$</span>&#xFF0C;&#x56E0;&#x4E3A;&#x8BE5;&#x7247;&#x6BB5;&#x4E0D;&#x5305;&#x542B;&#x4EFB;&#x4F55;&quot;activate&quot;&#x3002;</p>
+<p>&#x5F53;&#x60A8;&#x63D2;&#x5165;&#x6216;&#x8986;&#x76D6;&#x4E00;&#x4E2A;&quot;activate&quot;&#x526A;&#x8F91;&#x65F6;&#xFF0C;&#x60A8;&#x8FD8;&#x5C06;&#x66F4;&#x65B0;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x7684;&#x6807;&#x7B7E;&#xFF0C;&#x4EE5;&#x4FBF;&#x73B0;&#x5728;&#x8F93;&#x51FA;&#x7684;50&#x6B65;&#x6709;&#x76EE;&#x6807;&#x6807;&#x7B7E;1&#x3002;&#x4F60;&#x5C06;&#x8BAD;&#x7EC3;&#x4E00;&#x4E2A;GRU&#x6765;&#x68C0;&#x6D4B;&#x5F53;&#x67D0;&#x4EBA;&#x5B8C;&#x6574;&#x5730;&#x8BF4;&#x5B8C;&quot;activate&quot;&#x3002;&#x4F8B;&#x5982;&#xFF0C;&#x5047;&#x8BBE;&#x5408;&#x6210;&#x7684;&quot;activate&quot;&#x7247;&#x6BB5;&#x5728;10&#x79D2;&#x97F3;&#x9891;&#x4E2D;&#x7684;5&#x79D2;&#x6807;&#x8BB0;&#x5904;&#x7ED3;&#x675F;&#x2014;&#x2014;&#x6070;&#x597D;&#x662F;&#x7247;&#x6BB5;&#x7684;&#x4E00;&#x534A;&#x3002;&#x56DE;&#x60F3;&#x4E00;&#x4E0B;&#xFF0C;<span class="mathjax-exps">$T_y = 1375$</span>&#xFF0C;&#x6240;&#x4EE5;time-step&#x4E3A; <span class="mathjax-exps">$687 =$</span> <code>int(1375*0.5)</code>&#x5BF9;&#x5E94;&#x4E8E;&#x97F3;&#x9891;&#x8FDB;&#x5165;5&#x79D2;&#x7684;&#x65F6;&#x523B;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x60A8;&#x5C06;&#x8BBE;&#x7F6E;<span class="mathjax-exps">$y^{\langle 688 \rangle} = 1$</span>&#x3002;&#x6B64;&#x5916;&#xFF0C;&#x5982;&#x679C;GRU&#x68C0;&#x6D4B;&#x5230;&#x201C;activate&#x201D;&#x5728;&#x5F88;&#x77ED;&#x7684;&#x65F6;&#x95F4;&#x5185;(&#x6B64;&#x65F6;&#x4E4B;&#x540E;)&#x7684;&#x4EFB;&#x4F55;&#x5730;&#x65B9;&#xFF0C;&#x60A8;&#x5C06;&#x975E;&#x5E38;&#x6EE1;&#x610F;&#xFF0C;&#x56E0;&#x6B64;&#x6211;&#x4EEC;&#x5B9E;&#x9645;&#x4E0A;&#x5C06;&#x6807;&#x7B7E;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x8BBE;&#x7F6E;&#x4E3A;1&#x3002;&#x5177;&#x4F53;&#x6765;&#x8BF4;&#xFF0C;&#x6211;&#x4EEC;&#x6709; <span class="mathjax-exps">$y^{\langle 688 \rangle} = y^{\langle 689 \rangle} = \cdots = y^{\langle 737 \rangle} = 1$</span>&#x3002;</p>
+<p>&#x8FD9;&#x662F;&#x5408;&#x6210;&#x8BAD;&#x7EC3;&#x6570;&#x636E;&#x7684;&#x53E6;&#x4E00;&#x4E2A;&#x539F;&#x56E0;:&#x5982;&#x524D;&#x6240;&#x8FF0;&#xFF0C;&#x751F;&#x6210;&#x8FD9;&#x4E9B;&#x6807;&#x7B7E;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x76F8;&#x5BF9;&#x7B80;&#x5355;&#x3002;&#x76F8;&#x6BD4;&#x4E4B;&#x4E0B;&#xFF0C;&#x5982;&#x679C;&#x4F60;&#x6709;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x8BB0;&#x5F55;&#x5728;&#x9EA6;&#x514B;&#x98CE;&#x4E0A;&#xFF0C;&#x542C;&#x5B83;&#x548C;&#x624B;&#x52A8;&#x6807;&#x8BB0;&#x4EC0;&#x4E48;&#x65F6;&#x5019;&#x201C;&#x6FC0;&#x6D3B;&#x201D;&#x7ED3;&#x675F;&#x662F;&#x76F8;&#x5F53;&#x8017;&#x8D39;&#x65F6;&#x95F4;&#x7684;&#x3002;</p>
+<p>&#x8981;&#x5B9E;&#x73B0;&#x8BAD;&#x7EC3;&#x96C6;&#x5408;&#x6210;&#x8FC7;&#x7A0B;&#xFF0C;&#x60A8;&#x5C06;&#x4F7F;&#x7528;&#x4EE5;&#x4E0B;&#x8F85;&#x52A9;&#x51FD;&#x6570;&#x3002;&#x6240;&#x6709;&#x8FD9;&#x4E9B;&#x51FD;&#x6570;&#x90FD;&#x5C06;&#x4F7F;&#x7528;1ms&#x7684;&#x79BB;&#x6563;&#x65F6;&#x95F4;&#x95F4;&#x9694;&#xFF0C;&#x6240;&#x4EE5;10s&#x7684;&#x97F3;&#x9891;&#x88AB;&#x79BB;&#x6563;&#x6210;10,000&#x6B65;&#x3002;</p>
+<ol>
+<li><code>get_random_time_segment(segment_ms)</code> &#x5728;&#x6211;&#x4EEC;&#x7684;&#x80CC;&#x666F;&#x97F3;&#x9891;&#x4E2D;&#x83B7;&#x5F97;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x7684;&#x65F6;&#x95F4;&#x7247;&#x6BB5;</li>
+<li><code>is_overlapping(segment_time, existing_segments)</code> &#x68C0;&#x67E5;&#x4E00;&#x4E2A;&#x65F6;&#x95F4;&#x7247;&#x6BB5;&#x662F;&#x5426;&#x4E0E;&#x73B0;&#x6709;&#x7684;&#x6BB5;&#x91CD;&#x53E0;</li>
+<li><code>insert_audio_clip(background, audio_clip, existing_times)</code> &#x4F7F;&#x7528;<code>get_random_time_segment</code>&#x548C;<code>is_overlap</code>&#x5728;&#x6211;&#x4EEC;&#x7684;&#x80CC;&#x666F;&#x97F3;&#x9891;&#x4E2D;&#x968F;&#x673A;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x97F3;&#x9891;&#x7247;&#x6BB5;</li>
+<li><code>insert_ones(y, segment_end_ms)</code> &#x5C06;1&#x63D2;&#x5165;&#x5230;&#x5355;&#x8BCD;&#x201C;activate&#x201D;&#x540E;&#x9762;&#x7684;&#x6807;&#x7B7E;&#x5411;&#x91CF;y&#x4E2D;&#x3002;</li>
+</ol>
+<p>&#x51FD;&#x6570;<code>get_random_time_segment(segment_ms)</code>&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x7684;&#x65F6;&#x95F4;&#x6BB5;&#xFF0C;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x6301;&#x7EED;&#x65F6;&#x95F4;<code>segment_ms</code>&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">def</span> <span class="token function">get_random_time_segment</span><span class="token punctuation">(</span>segment_ms<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Gets a random time segment of duration segment_ms in a 10,000 ms audio clip.
+    
+    Arguments:
+    segment_ms -- the duration of the audio clip in ms (&quot;ms&quot; stands for &quot;milliseconds&quot;)
+    
+    Returns:
+    segment_time -- a tuple of (segment_start, segment_end) in ms
+    &quot;&quot;&quot;</span>
+    
+    segment_start <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span>low<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span> high<span class="token operator">=</span><span class="token number">10000</span><span class="token operator">-</span>segment_ms<span class="token punctuation">)</span>   <span class="token comment"># &#x786E;&#x4FDD;&#x7247;&#x6BB5;&#x6CA1;&#x6709;&#x8FD0;&#x884C;&#x8D85;&#x8FC7;10&#x79D2;&#x7684;&#x80CC;&#x666F;&#x7247;&#x6BB5;</span>
+    segment_end <span class="token operator">=</span> segment_start <span class="token operator">+</span> segment_ms <span class="token operator">-</span> <span class="token number">1</span>
+    
+    <span class="token keyword">return</span> <span class="token punctuation">(</span>segment_start<span class="token punctuation">,</span> segment_end<span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E5%88%A4%E6%96%AD%E9%87%8D%E5%8F%A0">&#x5224;&#x65AD;&#x91CD;&#x53E0;</h3>
+
+<p>&#x63A5;&#x4E0B;&#x6765;&#xFF0C;&#x5047;&#x8BBE;&#x5728;&#x7247;&#x6BB5;(1000&#x3001;1800)&#x548C;&#x7247;&#x6BB5;(3400&#x3001;4500)&#x4E0A;&#x63D2;&#x5165;&#x4E86;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x3002;&#x5373;&#x3002;&#xFF0C;&#x7B2C;&#x4E00;&#x4E2A;&#x7247;&#x6BB5;&#x4ECE;&#x6B65;&#x9AA4;1000&#x5F00;&#x59CB;&#xFF0C;&#x5230;&#x6B65;&#x9AA4;1800&#x7ED3;&#x675F;&#x3002;&#x73B0;&#x5728;&#xFF0C;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x8003;&#x8651;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;(3000,3600)&#xFF0C;&#x8FD9;&#x662F;&#x5426;&#x4E0E;&#x4E4B;&#x524D;&#x63D2;&#x5165;&#x7684;&#x7247;&#x6BB5;&#x4E4B;&#x4E00;&#x91CD;&#x53E0;?&#x5728;&#x672C;&#x4F8B;&#x4E2D;&#xFF0C;(3000,3600)&#x548C;(3400,4500)&#x662F;&#x91CD;&#x53E0;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x4E0D;&#x5E94;&#x8BE5;&#x5728;&#x8FD9;&#x91CC;&#x63D2;&#x5165;&#x4E00;&#x4E2A;&#x7247;&#x6BB5;&#x3002;</p>
+<p>&#x4E3A;&#x4E86;&#x5B9E;&#x73B0;&#x8FD9;&#x4E2A;&#x51FD;&#x6570;&#xFF0C;&#x5C06;(100,200)&#x548C;(200,250)&#x5B9A;&#x4E49;&#x4E3A;&#x91CD;&#x53E0;&#xFF0C;&#x56E0;&#x4E3A;&#x5B83;&#x4EEC;&#x5728;&#x65F6;&#x95F4;&#x6B65;&#x957F;200&#x91CD;&#x53E0;&#x3002;&#x4F46;&#x662F;(100,199)&#x548C;(200,250)&#x6CA1;&#x6709;&#x91CD;&#x53E0;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: is_overlapping</span>
+
+<span class="token keyword">def</span> <span class="token function">is_overlapping</span><span class="token punctuation">(</span>segment_time<span class="token punctuation">,</span> previous_segments<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Checks if the time of a segment overlaps with the times of existing segments.
+    
+    Arguments:
+    segment_time -- a tuple of (segment_start, segment_end) for the new segment
+    previous_segments -- a list of tuples of (segment_start, segment_end) for the existing segments
+    
+    Returns:
+    True if the time segment overlaps with any of the existing segments, False otherwise
+    &quot;&quot;&quot;</span>
+    
+    segment_start<span class="token punctuation">,</span> segment_end <span class="token operator">=</span> segment_time
+    
+    <span class="token comment">### START CODE HERE ### (&#x2248; 4 line)</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 1: &#x521D;&#x59CB;&#x5316;overlap&#x4E3A;&#x201C;False&#x201D;&#x6807;&#x5FD7;&#x3002; (&#x2248; 1 line)</span>
+    overlap <span class="token operator">=</span> <span class="token boolean">False</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 2: &#x5FAA;&#x73AF;</span>
+    <span class="token comment"># &#x6BD4;&#x8F83;&#x5F00;&#x59CB;/&#x7ED3;&#x675F;&#x65F6;&#x95F4;&#xFF0C;&#x5982;&#x679C;&#x6709;&#x91CD;&#x53E0;&#xFF0C;&#x5219;&#x5C06;overlap&#x8BBE;&#x7F6E;&#x4E3A;True(&#x2248; 3 lines)</span>
+    <span class="token keyword">for</span> previous_start<span class="token punctuation">,</span> previous_end <span class="token keyword">in</span> previous_segments<span class="token punctuation">:</span>
+        <span class="token keyword">if</span> segment_start <span class="token operator">&gt;=</span> previous_start <span class="token keyword">and</span> segment_start <span class="token operator">&lt;=</span> previous_end<span class="token punctuation">:</span>
+            overlap <span class="token operator">=</span> <span class="token boolean">True</span>
+    <span class="token comment">### END CODE HERE ###</span>
+
+    <span class="token keyword">return</span> overlap
+</pre><h4 class="mume-header" id="%E6%B5%8B%E8%AF%95">&#x6D4B;&#x8BD5;</h4>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">overlap1 <span class="token operator">=</span> is_overlapping<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">950</span><span class="token punctuation">,</span> <span class="token number">1430</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">2000</span><span class="token punctuation">,</span> <span class="token number">2550</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">260</span><span class="token punctuation">,</span> <span class="token number">949</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+overlap2 <span class="token operator">=</span> is_overlapping<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">2305</span><span class="token punctuation">,</span> <span class="token number">2950</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">824</span><span class="token punctuation">,</span> <span class="token number">1532</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">1900</span><span class="token punctuation">,</span> <span class="token number">2305</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token number">3424</span><span class="token punctuation">,</span> <span class="token number">3656</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Overlap 1 = &quot;</span><span class="token punctuation">,</span> overlap1<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Overlap 2 = &quot;</span><span class="token punctuation">,</span> overlap2<span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-2">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>Overlap 1 =  False
+Overlap 2 =  True
+</code></pre><h3 class="mume-header" id="%E6%8F%92%E5%85%A5%E7%89%87%E6%AE%B5">&#x63D2;&#x5165;&#x7247;&#x6BB5;</h3>
+
+<p>&#x73B0;&#x5728;&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x524D;&#x9762;&#x7684;helper&#x51FD;&#x6570;&#x5728;&#x968F;&#x673A;&#x7684;&#x65F6;&#x95F4;&#x5C06;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x63D2;&#x5165;&#x5230;10&#x79D2;&#x7684;&#x80CC;&#x666F;&#x4E2D;&#xFF0C;&#x4F46;&#x662F;&#x8981;&#x786E;&#x4FDD;&#x4EFB;&#x4F55;&#x65B0;&#x63D2;&#x5165;&#x7684;&#x7247;&#x6BB5;&#x4E0D;&#x4F1A;&#x4E0E;&#x524D;&#x9762;&#x7684;&#x7247;&#x6BB5;&#x91CD;&#x53E0;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: insert_audio_clip</span>
+
+<span class="token keyword">def</span> <span class="token function">insert_audio_clip</span><span class="token punctuation">(</span>background<span class="token punctuation">,</span> audio_clip<span class="token punctuation">,</span> previous_segments<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Insert a new audio segment over the background noise at a random time step, ensuring that the 
+    audio segment does not overlap with existing segments.
+    
+    Arguments:
+    background -- a 10 second background audio recording.  
+    audio_clip -- the audio clip to be inserted/overlaid. 
+    previous_segments -- times where audio segments have already been placed
+    
+    Returns:
+    new_background -- the updated background audio
+    &quot;&quot;&quot;</span>
+    
+    <span class="token comment"># &#x83B7;&#x53D6;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x7684;&#x6301;&#x7EED;&#x65F6;&#x95F4;(ms)</span>
+    segment_ms <span class="token operator">=</span> <span class="token builtin">len</span><span class="token punctuation">(</span>audio_clip<span class="token punctuation">)</span>
+    
+    <span class="token comment">### START CODE HERE ### </span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 1: &#x9009;&#x62E9;&#x4E00;&#x4E2A;&#x968F;&#x673A;&#x7684;&#x65F6;&#x95F4;&#x7247;&#x6BB5;&#xFF0C;&#x5C06;&#x65B0;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x63D2;&#x5165;&#x5230;&#x8BE5;&#x65F6;&#x95F4;&#x7247;&#x6BB5;&#x4E0A;&#x3002; (&#x2248; 1 line)</span>
+    segment_time <span class="token operator">=</span> get_random_time_segment<span class="token punctuation">(</span>segment_ms<span class="token punctuation">)</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 2: &#x68C0;&#x67E5;&#x65B0;&#x7684;segment_time&#x662F;&#x5426;&#x4E0E;previous_segment&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x91CD;&#x53E0;&#x3002;&#x5982;&#x679C;&#x662F;&#xFF0C;&#x7EE7;&#x7EED;&#x968F;&#x673A;&#x9009;&#x62E9;&#x65B0;&#x7684;segment_time&#xFF0C;&#x76F4;&#x5230;&#x5B83;&#x4E0D;&#x91CD;&#x53E0;&#x3002; (&#x2248; 2 lines)</span>
+    <span class="token keyword">while</span> is_overlapping<span class="token punctuation">(</span>segment_time<span class="token punctuation">,</span> previous_segments<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        segment_time <span class="token operator">=</span> get_random_time_segment<span class="token punctuation">(</span>segment_ms<span class="token punctuation">)</span>
+
+    <span class="token comment"># &#x6B65;&#x9AA4; 3: &#x5C06;&#x65B0;&#x7684;segment_time&#x6DFB;&#x52A0;&#x5230;previous_segments&#x5217;&#x8868;&#x4E2D; (&#x2248; 1 line)</span>
+    previous_segments<span class="token punctuation">.</span>append<span class="token punctuation">(</span>segment_time<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 4: &#x53E0;&#x52A0;&#x97F3;&#x9891;&#x6BB5;&#x548C;&#x80CC;&#x666F;</span>
+    new_background <span class="token operator">=</span> background<span class="token punctuation">.</span>overlay<span class="token punctuation">(</span>audio_clip<span class="token punctuation">,</span> position <span class="token operator">=</span> segment_time<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> new_background<span class="token punctuation">,</span> segment_time
+</pre><h4 class="mume-header" id="%E6%B5%8B%E8%AF%95-1">&#x6D4B;&#x8BD5;</h4>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span>
+audio_clip<span class="token punctuation">,</span> segment_time <span class="token operator">=</span> insert_audio_clip<span class="token punctuation">(</span>backgrounds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> activates<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">(</span><span class="token number">3790</span><span class="token punctuation">,</span> <span class="token number">4400</span><span class="token punctuation">)</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+audio_clip<span class="token punctuation">.</span>export<span class="token punctuation">(</span><span class="token string">&quot;insert_test.wav&quot;</span><span class="token punctuation">,</span> <span class="token builtin">format</span><span class="token operator">=</span><span class="token string">&quot;wav&quot;</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Segment Time: &quot;</span><span class="token punctuation">,</span> segment_time<span class="token punctuation">)</span>
+IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;insert_test.wav&quot;</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-3">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>Segment Time:  (2915, 3830)
+</code></pre><h3 class="mume-header" id="%E6%9B%B4%E6%96%B0%E6%A0%87%E7%AD%BE">&#x66F4;&#x65B0;&#x6807;&#x7B7E;</h3>
+
+<p>&#x6700;&#x540E;&#xFF0C;&#x5B9E;&#x73B0;&#x66F4;&#x65B0;&#x6807;&#x7B7E;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x7684;&#x4EE3;&#x7801;&#xFF0C;&#x5047;&#x8BBE;&#x60A8;&#x521A;&#x521A;&#x63D2;&#x5165;&#x4E86;&#x4E00;&#x4E2A;&#x201C;activate&#x201D;&#x3002;&#x5728;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x4E2D;&#xFF0C;&#x56E0;&#x4E3A;<span class="mathjax-exps">$T_y = 1375$</span>&#xFF0C;&#x6240;&#x4EE5;<code>y</code>&#x662F;&#x4E00;&#x4E2A;<code>(1,1375)</code>&#x7EF4;&#x5411;&#x91CF;&#x3002;</p>
+<p>&#x5982;&#x679C;&quot;activate&quot;&#x5728;time-step<span class="mathjax-exps">$t$</span>&#x7ED3;&#x675F;&#xFF0C;&#x90A3;&#x4E48;&#x8BBE;&#x7F6E;<span class="mathjax-exps">$y^{\langle t+1 \rangle} = 1$</span>&#x4EE5;&#x53CA;&#x6700;&#x591A;49&#x4E2A;&#x8FDE;&#x7EED;&#x7684;&#x503C;&#x3002;&#x4F46;&#x662F;&#xFF0C;&#x8BF7;&#x786E;&#x4FDD;&#x60A8;&#x6CA1;&#x6709;&#x8FD0;&#x884C;&#x5B8C;&#x6570;&#x7EC4;&#x7684;&#x672B;&#x5C3E;&#x5E76;&#x5C1D;&#x8BD5;&#x66F4;&#x65B0;<code>y[0][1375]</code>&#xFF0C;&#x56E0;&#x4E3A;&#x6709;&#x6548;&#x7684;&#x7D22;&#x5F15;&#x662F;<code>y[0][0]</code>&#x5230;<code>y[0][1374]</code>&#x56E0;&#x6B64;&#xFF0C;&#x5982;&#x679C;&#x201C;activate&#x201D;&#x5728;&#x7B2C;1370&#x6B65;&#x7ED3;&#x675F;&#xFF0C;&#x60A8;&#x5C06;&#x53EA;&#x5F97;&#x5230;<code>y[0][1371] = y[0][1372] = y[0][1373] = y[0][1374] = 1</code></p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: insert_ones</span>
+
+<span class="token keyword">def</span> <span class="token function">insert_ones</span><span class="token punctuation">(</span>y<span class="token punctuation">,</span> segment_end_ms<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Update the label vector y. The labels of the 50 output steps strictly after the end of the segment 
+    should be set to 1. By strictly we mean that the label of segment_end_y should be 0 while, the
+    50 followinf labels should be ones.
+    
+    
+    Arguments:
+    y -- numpy array of shape (1, Ty), the labels of the training example
+    segment_end_ms -- the end time of the segment in ms
+    
+    Returns:
+    y -- updated labels
+    &quot;&quot;&quot;</span>
+    
+    <span class="token comment"># &#x80CC;&#x666F;&#x97F3;&#x6301;&#x7EED;&#x65F6;&#x95F4; (in terms of spectrogram time-steps)</span>
+    segment_end_y <span class="token operator">=</span> <span class="token builtin">int</span><span class="token punctuation">(</span>segment_end_ms <span class="token operator">*</span> Ty <span class="token operator">/</span> <span class="token number">10000.0</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># &#x5728;&#x80CC;&#x666F;&#x6807;&#x7B7E;(y)&#x7684;&#x6B63;&#x786E;&#x7D22;&#x5F15;&#x4E2D;&#x6DFB;&#x52A0;1</span>
+    <span class="token comment">### START CODE HERE ### (&#x2248; 3 lines)</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>segment_end_y <span class="token operator">+</span> <span class="token number">1</span><span class="token punctuation">,</span> segment_end_y <span class="token operator">+</span> <span class="token number">51</span><span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token keyword">if</span> i <span class="token operator">&lt;</span> Ty<span class="token punctuation">:</span>
+            y<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> i<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">1</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token keyword">return</span> y
+</pre><h4 class="mume-header" id="%E6%B5%8B%E8%AF%95-2">&#x6D4B;&#x8BD5;</h4>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">arr1 <span class="token operator">=</span> insert_ones<span class="token punctuation">(</span>np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> Ty<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">9700</span><span class="token punctuation">)</span>
+plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>insert_ones<span class="token punctuation">(</span>arr1<span class="token punctuation">,</span> <span class="token number">4251</span><span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token punctuation">:</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;sanity checks:&quot;</span><span class="token punctuation">,</span> arr1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">1333</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arr1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">634</span><span class="token punctuation">]</span><span class="token punctuation">,</span> arr1<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">[</span><span class="token number">635</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-4">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>sanity checks: 1.0 0.0 0.0
+</code></pre><p><img src="img/b3.jpg" alt="img"></p>
+<h3 class="mume-header" id="%E5%88%9B%E5%BB%BA%E8%AE%AD%E7%BB%83%E6%A0%B7%E6%9C%AC">&#x521B;&#x5EFA;&#x8BAD;&#x7EC3;&#x6837;&#x672C;</h3>
+
+<p>&#x6700;&#x540E;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;<code>insert_audio_clip</code>&#x548C;<code>insert_ones</code>&#x6765;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x65B0;&#x7684;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: create_training_example</span>
+
+<span class="token keyword">def</span> <span class="token function">create_training_example</span><span class="token punctuation">(</span>background<span class="token punctuation">,</span> activates<span class="token punctuation">,</span> negatives<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Creates a training example with a given background, activates, and negatives.
+    
+    Arguments:
+    background -- a 10 second background audio recording
+    activates -- a list of audio segments of the word &quot;activate&quot;
+    negatives -- a list of audio segments of random words that are not &quot;activate&quot;
+    
+    Returns:
+    x -- the spectrogram of the training example
+    y -- the label at each time step of the spectrogram
+    &quot;&quot;&quot;</span>
+    
+    <span class="token comment"># &#x8BBE;&#x7F6E;&#x968F;&#x673A;&#x79CD;&#x5B50;</span>
+    np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>seed<span class="token punctuation">(</span><span class="token number">18</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># &#x8BA9;&#x80CC;&#x666F;&#x66F4;&#x5B89;&#x9759;</span>
+    background <span class="token operator">=</span> background <span class="token operator">-</span> <span class="token number">20</span>
+
+    <span class="token comment">### START CODE HERE ###</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 1: &#x96F6;&#x521D;&#x59CB;&#x5316; y (&#x6807;&#x7B7E;&#x5411;&#x91CF;) (&#x2248; 1 line)</span>
+    y <span class="token operator">=</span> np<span class="token punctuation">.</span>zeros<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> Ty<span class="token punctuation">)</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># &#x6B65;&#x9AA4; 2: &#x521D;&#x59CB;&#x5316;&#x7247;&#x6BB5;&#x65F6;&#x95F4;&#x4E3A;&#x7A7A;&#x5217;&#x8868; (&#x2248; 1 line)</span>
+    previous_segments <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x4ECE;&quot;activate&quot;&#x5F55;&#x97F3;&#x7684;&#x6574;&#x4E2A;&#x5217;&#x8868;&#x4E2D;&#x9009;&#x62E9;0-4&#x4E2A;&#x968F;&#x673A;&quot;activate&quot;&#x97F3;&#x9891;&#x526A;&#x8F91;</span>
+    number_of_activates <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span>
+    random_indices <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>activates<span class="token punctuation">)</span><span class="token punctuation">,</span> size<span class="token operator">=</span>number_of_activates<span class="token punctuation">)</span>
+    random_activates <span class="token operator">=</span> <span class="token punctuation">[</span>activates<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> random_indices<span class="token punctuation">]</span>
+    
+    <span class="token comment">### START CODE HERE ### (&#x2248; 3 lines)</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 3: &#x5FAA;&#x73AF;&#x968F;&#x673A;&#x9009;&#x62E9;&#x7684;&quot;activate&quot;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x5E76;&#x63D2;&#x5165;&#x80CC;&#x666F;</span>
+    <span class="token keyword">for</span> random_activate <span class="token keyword">in</span> random_activates<span class="token punctuation">:</span>
+        <span class="token comment"># &#x5728;&#x80CC;&#x666F;&#x97F3;&#x9891;&#x4E0A;&#x63D2;&#x5165;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;</span>
+        background<span class="token punctuation">,</span> segment_time <span class="token operator">=</span> insert_audio_clip<span class="token punctuation">(</span>background<span class="token punctuation">,</span> random_activate<span class="token punctuation">,</span> previous_segments<span class="token punctuation">)</span>
+        <span class="token comment"># &#x4ECE;segment_time&#x68C0;&#x7D22;segment_start&#x548C;segment_end</span>
+        segment_start<span class="token punctuation">,</span> segment_end <span class="token operator">=</span> segment_time
+        <span class="token comment"># &#x63D2;&#x5165;&#x5230;&#x6807;&#x7B7E;&quot;y&quot;</span>
+        y <span class="token operator">=</span> insert_ones<span class="token punctuation">(</span>y<span class="token punctuation">,</span> segment_end<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+
+    <span class="token comment"># &#x4ECE;&quot;negatives&quot;&#x5F55;&#x97F3;&#x7684;&#x6574;&#x4E2A;&#x5217;&#x8868;&#x4E2D;&#x9009;&#x62E9;0-2&#x4E2A;&#x968F;&#x673A;&#x8D1F;&#x97F3;&#x9891;&#x7247;&#x6BB5;</span>
+    number_of_negatives <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">)</span>
+    random_indices <span class="token operator">=</span> np<span class="token punctuation">.</span>random<span class="token punctuation">.</span>randint<span class="token punctuation">(</span><span class="token builtin">len</span><span class="token punctuation">(</span>negatives<span class="token punctuation">)</span><span class="token punctuation">,</span> size<span class="token operator">=</span>number_of_negatives<span class="token punctuation">)</span>
+    random_negatives <span class="token operator">=</span> <span class="token punctuation">[</span>negatives<span class="token punctuation">[</span>i<span class="token punctuation">]</span> <span class="token keyword">for</span> i <span class="token keyword">in</span> random_indices<span class="token punctuation">]</span>
+
+    <span class="token comment">### START CODE HERE ### (&#x2248; 2 lines)</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 4: &#x5FAA;&#x73AF;&#x968F;&#x673A;&#x9009;&#x62E9;&#x7684;&quot;negative&quot;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x5E76;&#x63D2;&#x5165;&#x80CC;&#x666F;</span>
+    <span class="token keyword">for</span> random_negative <span class="token keyword">in</span> random_negatives<span class="token punctuation">:</span>
+        <span class="token comment"># &#x5728;&#x80CC;&#x666F;&#x97F3;&#x9891;&#x4E0A;&#x63D2;&#x5165;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;</span>
+        background<span class="token punctuation">,</span> _ <span class="token operator">=</span> insert_audio_clip<span class="token punctuation">(</span>background<span class="token punctuation">,</span> random_negative<span class="token punctuation">,</span> previous_segments<span class="token punctuation">)</span>
+    <span class="token comment">### END CODE HERE ###</span>
+    
+    <span class="token comment"># &#x6807;&#x51C6;&#x5316;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7684;&#x97F3;&#x91CF;</span>
+    background <span class="token operator">=</span> match_target_amplitude<span class="token punctuation">(</span>background<span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">20.0</span><span class="token punctuation">)</span>
+
+    <span class="token comment"># &#x5BFC;&#x51FA;&#x65B0;&#x7684;&#x8BAD;&#x7EC3;&#x6837;&#x672C;</span>
+    file_handle <span class="token operator">=</span> background<span class="token punctuation">.</span>export<span class="token punctuation">(</span><span class="token string">&quot;train&quot;</span> <span class="token operator">+</span> <span class="token string">&quot;.wav&quot;</span><span class="token punctuation">,</span> <span class="token builtin">format</span><span class="token operator">=</span><span class="token string">&quot;wav&quot;</span><span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;File (train.wav) was saved in your directory.&quot;</span><span class="token punctuation">)</span>
+    
+    <span class="token comment"># &#x83B7;&#x53D6;&#x5E76;&#x7ED8;&#x5236;&#x65B0;&#x8BB0;&#x5F55;&#x7684;&#x58F0;&#x8C31;&#x56FE;(&#x6B63;&#x5E95;&#x7247;&#x53E0;&#x52A0;&#x80CC;&#x666F;)</span>
+    x <span class="token operator">=</span> graph_spectrogram<span class="token punctuation">(</span><span class="token string">&quot;train.wav&quot;</span><span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> x<span class="token punctuation">,</span> y
+</pre><h4 class="mume-header" id="%E7%BB%98%E5%9B%BE-1">&#x7ED8;&#x56FE;</h4>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">x<span class="token punctuation">,</span> y <span class="token operator">=</span> create_training_example<span class="token punctuation">(</span>backgrounds<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> activates<span class="token punctuation">,</span> negatives<span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-5">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>File (train.wav) was saved in your directory.
+</code></pre><p><img src="img/b4.jpg" alt></p>
+<p>&#x73B0;&#x5728;&#x60A8;&#x53EF;&#x4EE5;&#x6536;&#x542C;&#x60A8;&#x521B;&#x5EFA;&#x7684;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;&#xFF0C;&#x5E76;&#x5C06;&#x5176;&#x4E0E;&#x4E0A;&#x9762;&#x751F;&#x6210;&#x7684;&#x58F0;&#x8C31;&#x56FE;&#x8FDB;&#x884C;&#x6BD4;&#x8F83;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;train.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>&#x6700;&#x540E;&#xFF0C;&#x60A8;&#x53EF;&#x4EE5;&#x4E3A;&#x751F;&#x6210;&#x7684;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;&#x7ED8;&#x5236;&#x76F8;&#x5173;&#x7684;&#x6807;&#x7B7E;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>y<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+</pre><p><img src="img/b5.jpg" alt></p>
+<h2 class="mume-header" id="%E5%AE%8C%E6%95%B4%E8%AE%AD%E7%BB%83%E9%9B%86">&#x5B8C;&#x6574;&#x8BAD;&#x7EC3;&#x96C6;</h2>
+
+<p>&#x73B0;&#x5728;&#xFF0C;&#x60A8;&#x5DF2;&#x7ECF;&#x5B9E;&#x73B0;&#x4E86;&#x751F;&#x6210;&#x5355;&#x4E2A;&#x8BAD;&#x7EC3;&#x793A;&#x4F8B;&#x6240;&#x9700;&#x7684;&#x4EE3;&#x7801;&#x3002;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x8FC7;&#x7A0B;&#x6765;&#x751F;&#x6210;&#x4E00;&#x4E2A;&#x5927;&#x578B;&#x7684;&#x8BAD;&#x7EC3;&#x96C6;&#x3002;&#x4E3A;&#x4E86;&#x8282;&#x7701;&#x65F6;&#x95F4;&#xFF0C;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x751F;&#x6210;&#x4E86;&#x4E00;&#x7EC4;&#x8BAD;&#x7EC3;&#x6837;&#x672C;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x52A0;&#x8F7D;&#x9884;&#x5904;&#x7406;&#x7684;&#x8BAD;&#x7EC3;&#x6837;&#x672C;</span>
+X <span class="token operator">=</span> np<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">&quot;./XY_train/X.npy&quot;</span><span class="token punctuation">)</span>
+Y <span class="token operator">=</span> np<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">&quot;./XY_train/Y.npy&quot;</span><span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E5%BC%80%E5%8F%91%E9%9B%86">&#x5F00;&#x53D1;&#x96C6;</h3>
+
+<p>&#x4E3A;&#x4E86;&#x6D4B;&#x8BD5;&#x6211;&#x4EEC;&#x7684;&#x6A21;&#x578B;&#xFF0C;&#x6211;&#x4EEC;&#x8BB0;&#x5F55;&#x4E86;&#x4E00;&#x4E2A;&#x5305;&#x542B;25&#x4E2A;&#x793A;&#x4F8B;&#x7684;&#x5F00;&#x53D1;&#x96C6;&#x3002;&#x5F53;&#x6211;&#x4EEC;&#x7684;&#x8BAD;&#x7EC3;&#x6570;&#x636E;&#x88AB;&#x5408;&#x6210;&#x65F6;&#xFF0C;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x4F7F;&#x7528;&#x4E0E;&#x5B9E;&#x9645;&#x8F93;&#x5165;&#x76F8;&#x540C;&#x5206;&#x5E03;&#x7684;&#x5F00;&#x53D1;&#x96C6;&#x3002;&#x56E0;&#x6B64;&#xFF0C;&#x6211;&#x4EEC;&#x5F55;&#x5236;&#x4E86;25&#x4E2A;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#xFF0C;&#x5176;&#x4E2D;&#x4EBA;&#x4EEC;&#x8BF4;&#x4E86;&quot;activate&quot;&#x548C;&#x5176;&#x4ED6;&#x968F;&#x673A;&#x5355;&#x8BCD;&#xFF0C;&#x7136;&#x540E;&#x7528;&#x624B;&#x7ED9;&#x5B83;&#x4EEC;&#x8D34;&#x4E0A;&#x6807;&#x7B7E;&#x3002;&#x6211;&#x4EEC;&#x5E94;&#x8BE5;&#x521B;&#x5EFA;&#x5C3D;&#x53EF;&#x80FD;&#x7C7B;&#x4F3C;&#x4E8E;&#x6D4B;&#x8BD5;&#x96C6;&#x53D1;&#x884C;&#x7248;&#x7684;&#x5F00;&#x53D1;&#x96C6;;&#x8FD9;&#x5C31;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x6211;&#x4EEC;&#x7684;&#x5F00;&#x53D1;&#x96C6;&#x4F7F;&#x7528;&#x771F;&#x5B9E;&#x7684;&#x97F3;&#x9891;&#x800C;&#x4E0D;&#x662F;&#x5408;&#x6210;&#x7684;&#x97F3;&#x9891;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># &#x52A0;&#x8F7D;&#x9884;&#x5904;&#x7406;&#x7684;&#x5F00;&#x53D1;&#x6837;&#x672C;</span>
+X_dev <span class="token operator">=</span> np<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">&quot;./XY_dev/X_dev.npy&quot;</span><span class="token punctuation">)</span>
+Y_dev <span class="token operator">=</span> np<span class="token punctuation">.</span>load<span class="token punctuation">(</span><span class="token string">&quot;./XY_dev/Y_dev.npy&quot;</span><span class="token punctuation">)</span>
+</pre><h1 class="mume-header" id="%E6%A8%A1%E5%9E%8B">&#x6A21;&#x578B;</h1>
+
+<p>&#x73B0;&#x5728;&#x60A8;&#x5DF2;&#x7ECF;&#x6784;&#x5EFA;&#x4E86;&#x4E00;&#x4E2A;&#x6570;&#x636E;&#x96C6;&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x7F16;&#x5199;&#x5E76;&#x8BAD;&#x7EC3;&#x4E00;&#x4E2A;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x6A21;&#x578B;!</p>
+<p>&#x6A21;&#x578B;&#x5C06;&#x4F7F;&#x7528;1-D&#x5377;&#x79EF;&#x5C42;&#x3001;GRU&#x5C42;&#x548C;dense&#x5C42;&#x3002;&#x8BA9;&#x6211;&#x4EEC;&#x52A0;&#x8F7D;&#x5141;&#x8BB8;&#x60A8;&#x5728;Keras&#x4E2D;&#x4F7F;&#x7528;&#x8FD9;&#x4E9B;&#x5C42;&#x7684;&#x5305;&#x3002;&#x52A0;&#x8F7D;&#x53EF;&#x80FD;&#x9700;&#x8981;&#x4E00;&#x5206;&#x949F;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">from</span> keras<span class="token punctuation">.</span>callbacks <span class="token keyword">import</span> ModelCheckpoint
+<span class="token keyword">from</span> keras<span class="token punctuation">.</span>models <span class="token keyword">import</span> Model<span class="token punctuation">,</span> load_model<span class="token punctuation">,</span> Sequential
+<span class="token keyword">from</span> keras<span class="token punctuation">.</span>layers <span class="token keyword">import</span> Dense<span class="token punctuation">,</span> Activation<span class="token punctuation">,</span> Dropout<span class="token punctuation">,</span> Input<span class="token punctuation">,</span> Masking<span class="token punctuation">,</span> TimeDistributed<span class="token punctuation">,</span> LSTM<span class="token punctuation">,</span> Conv1D
+<span class="token keyword">from</span> keras<span class="token punctuation">.</span>layers <span class="token keyword">import</span> GRU<span class="token punctuation">,</span> Bidirectional<span class="token punctuation">,</span> BatchNormalization<span class="token punctuation">,</span> Reshape
+<span class="token keyword">from</span> keras<span class="token punctuation">.</span>optimizers <span class="token keyword">import</span> Adam
+Using TensorFlow backend<span class="token punctuation">.</span>
+</pre><h2 class="mume-header" id="%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B">&#x521B;&#x5EFA;&#x6A21;&#x578B;</h2>
+
+<p>&#x8BE5;&#x6A21;&#x578B;&#x7684;&#x4E00;&#x4E2A;&#x5173;&#x952E;&#x6B65;&#x9AA4;&#x662F;1D&#x5377;&#x79EF;&#xFF0C;&#x8F93;&#x5165;5511&#x6B65;&#x58F0;&#x8C31;&#x56FE;&#xFF0C;&#x8F93;&#x51FA;1375 step&#x8F93;&#x51FA;&#xFF0C;&#x518D;&#x7ECF;&#x8FC7;&#x591A;&#x5C42;&#x5904;&#x7406;&#x5F97;&#x5230;<span class="mathjax-exps">$T_y = 1375$</span> &#x6B65;&#x8F93;&#x51FA;&#x3002;&#x8FD9;&#x4E00;&#x5C42;&#x7684;&#x4F5C;&#x7528;&#x7C7B;&#x4F3C;&#x4E8E;&#x60A8;&#x5728;&#x8BFE;&#x7A0B;4&#x4E2D;&#x770B;&#x5230;&#x7684;2D&#x5377;&#x79EF;&#xFF0C;&#x5373;&#x63D0;&#x53D6;&#x4F4E;&#x7EA7;&#x7279;&#x5F81;&#xFF0C;&#x7136;&#x540E;&#x53EF;&#x80FD;&#x751F;&#x6210;&#x8F83;&#x5C0F;&#x7EF4;&#x5EA6;&#x7684;&#x8F93;&#x51FA;&#x3002;</p>
+<p>&#x5728;&#x8BA1;&#x7B97;&#x4E0A;&#xFF0C;1D&#x5377;&#x79EF;&#x5C42;&#x8FD8;&#x6709;&#x52A9;&#x4E8E;&#x52A0;&#x901F;&#x6A21;&#x578B;&#xFF0C;&#x56E0;&#x4E3A;&#x73B0;&#x5728;GRU&#x53EA;&#x9700;&#x8981;&#x5904;&#x7406;1375&#x4E2A;time-step&#xFF0C;&#x800C;&#x4E0D;&#x662F;5511&#x4E2A;time-step&#x3002;&#x8FD9;&#x4E24;&#x4E2A;GRU&#x5C42;&#x4ECE;&#x5DE6;&#x5230;&#x53F3;&#x8BFB;&#x53D6;&#x8F93;&#x5165;&#x5E8F;&#x5217;&#xFF0C;&#x7136;&#x540E;&#x6700;&#x7EC8;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;dense+sigmoid&#x5C42;&#x5BF9;<span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x8FDB;&#x884C;&#x9884;&#x6D4B;&#x3002;&#x56E0;&#x4E3A;<span class="mathjax-exps">$y$</span>&#x662F;&#x4E8C;&#x8FDB;&#x5236;&#x503C;(0&#x6216;1)&#xFF0C;&#x6211;&#x4EEC;&#x5728;&#x6700;&#x540E;&#x4E00;&#x5C42;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;sigmoid&#x8F93;&#x51FA;&#x6765;&#x4F30;&#x8BA1;&#x8F93;&#x51FA;&#x4E3A;1&#x7684;&#x6982;&#x7387;&#xFF0C;&#x5BF9;&#x5E94;&#x4E8E;&#x7528;&#x6237;&#x521A;&#x521A;&#x8BF4;&#x7684;&#x201C;activate&#x201D;&#x3002;</p>
+<p>&#x8BF7;&#x6CE8;&#x610F;&#xFF0C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x7684;&#x662F;&#x5355;&#x5411;RNN&#x800C;&#x4E0D;&#x662F;&#x53CC;&#x5411;RNN&#x3002;&#x8FD9;&#x5BF9;&#x4E8E;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x662F;&#x975E;&#x5E38;&#x91CD;&#x8981;&#x7684;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x5E0C;&#x671B;&#x80FD;&#x591F;&#x5728;&#x8BF4;&#x4E86;&#x89E6;&#x53D1;&#x8BCD;&#x4E4B;&#x540E;&#x7ACB;&#x5373;&#x68C0;&#x6D4B;&#x5230;&#x5B83;&#x3002;&#x5982;&#x679C;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x53CC;&#x5411;RNN&#xFF0C;&#x6211;&#x4EEC;&#x5C06;&#x4E0D;&#x5F97;&#x4E0D;&#x7B49;&#x5F85;&#x6574;&#x4E2A;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x8BB0;&#x5F55;&#xFF0C;&#x6211;&#x4EEC;&#x624D;&#x80FD;&#x77E5;&#x9053;&#x662F;&#x5426;&#x5728;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7684;&#x7B2C;&#x4E00;&#x79D2;&#x8BF4;&#x4E86;&#x201C;activate&#x201D;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># GRADED FUNCTION: model</span>
+
+<span class="token keyword">def</span> <span class="token function">model</span><span class="token punctuation">(</span>input_shape<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token triple-quoted-string string">&quot;&quot;&quot;
+    Function creating the model&apos;s graph in Keras.
+    
+    Argument:
+    input_shape -- shape of the model&apos;s input data (using Keras conventions)
+
+    Returns:
+    model -- Keras model instance
+    &quot;&quot;&quot;</span>
+    
+    X_input <span class="token operator">=</span> Input<span class="token punctuation">(</span>shape <span class="token operator">=</span> input_shape<span class="token punctuation">)</span>
+    
+    <span class="token comment">### START CODE HERE ###</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 1: CONV &#x5C42; (&#x2248;4 lines)</span>
+    X <span class="token operator">=</span> Conv1D<span class="token punctuation">(</span><span class="token number">196</span><span class="token punctuation">,</span> <span class="token number">15</span><span class="token punctuation">,</span> strides<span class="token operator">=</span><span class="token number">4</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X_input<span class="token punctuation">)</span>                  <span class="token comment"># CONV1D</span>
+    X <span class="token operator">=</span> BatchNormalization<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                              <span class="token comment"># Batch&#x5F52;&#x4E00;&#x5316;</span>
+    X <span class="token operator">=</span> Activation<span class="token punctuation">(</span><span class="token string">&apos;relu&apos;</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                                <span class="token comment"># ReLu&#x6FC0;&#x6D3B;&#x51FD;&#x6570;</span>
+    X <span class="token operator">=</span> Dropout<span class="token punctuation">(</span><span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                                      <span class="token comment"># dropout&#x6B63;&#x5219;&#x5316; (&#x4F7F;&#x7528; 0.8)</span>
+
+    <span class="token comment"># &#x6B65;&#x9AA4; 2: &#x7B2C;&#x4E00;&#x4E2A; GRU &#x5C42; (&#x2248;4 lines)</span>
+    X <span class="token operator">=</span> GRU<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> return_sequences<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                    <span class="token comment"># GRU (&#x4F7F;&#x7528;128&#x4E2A;&#x5355;&#x4F4D;&#x5E76;&#x8FD4;&#x56DE;&#x5E8F;&#x5217;)</span>
+    X <span class="token operator">=</span> Dropout<span class="token punctuation">(</span><span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                                       <span class="token comment"># dropout (use 0.8)</span>
+    X <span class="token operator">=</span> BatchNormalization<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                               <span class="token comment"># Batch &#x5F52;&#x4E00;&#x5316;</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 3: &#x7B2C;&#x4E8C;&#x4E2A; GRU &#x5C42; (&#x2248;4 lines)</span>
+    X <span class="token operator">=</span> GRU<span class="token punctuation">(</span><span class="token number">128</span><span class="token punctuation">,</span> return_sequences<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                    <span class="token comment"># GRU (&#x4F7F;&#x7528;128&#x4E2A;&#x5355;&#x4F4D;&#x5E76;&#x8FD4;&#x56DE;&#x5E8F;&#x5217;)</span>
+    X <span class="token operator">=</span> Dropout<span class="token punctuation">(</span><span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                                       <span class="token comment"># dropout (use 0.8)</span>
+    X <span class="token operator">=</span> BatchNormalization<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                               <span class="token comment"># Batch&#x5F52;&#x4E00;&#x5316;</span>
+    X <span class="token operator">=</span> Dropout<span class="token punctuation">(</span><span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>                                       <span class="token comment"># dropout&#x6B63;&#x5219;&#x5316; (use 0.8)</span>
+    
+    <span class="token comment"># &#x6B65;&#x9AA4; 4: &#x5206;&#x5E03;&#x5F0F;Dense&#x5C42; (&#x2248;1 line)</span>
+    X <span class="token operator">=</span> TimeDistributed<span class="token punctuation">(</span>Dense<span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> activation <span class="token operator">=</span> <span class="token string">&quot;sigmoid&quot;</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">(</span>X<span class="token punctuation">)</span>  <span class="token comment"># &#x5206;&#x5E03;&#x5F0F; (sigmoid)</span>
+
+    <span class="token comment">### END CODE HERE ###</span>
+
+    model <span class="token operator">=</span> Model<span class="token punctuation">(</span>inputs <span class="token operator">=</span> X_input<span class="token punctuation">,</span> outputs <span class="token operator">=</span> X<span class="token punctuation">)</span>
+    
+    <span class="token keyword">return</span> model  
+</pre><h3 class="mume-header" id="%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9E%8B%E5%AE%9E%E4%BE%8B">&#x521B;&#x5EFA;&#x6A21;&#x578B;&#x5B9E;&#x4F8B;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">model <span class="token operator">=</span> model<span class="token punctuation">(</span>input_shape <span class="token operator">=</span> <span class="token punctuation">(</span>Tx<span class="token punctuation">,</span> n_freq<span class="token punctuation">)</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E8%B7%9F%E8%B8%AA%E5%BD%A2%E7%8A%B6">&#x8DDF;&#x8E2A;&#x5F62;&#x72B6;</h4>
+
+<p>&#x8BA9;&#x6211;&#x4EEC;&#x6253;&#x5370;&#x6A21;&#x578B;&#x6458;&#x8981;&#x6765;&#x8DDF;&#x8E2A;&#x5F62;&#x72B6;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">model<span class="token punctuation">.</span>summary<span class="token punctuation">(</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-6">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>_________________________________________________________________
+Layer (type)                 Output Shape              Param #   
+=================================================================
+input_3 (InputLayer)         (None, 5511, 101)         0         
+_________________________________________________________________
+conv1d_3 (Conv1D)            (None, 1375, 196)         297136    
+_________________________________________________________________
+batch_normalization_4 (Batch (None, 1375, 196)         784       
+_________________________________________________________________
+activation_2 (Activation)    (None, 1375, 196)         0         
+_________________________________________________________________
+dropout_5 (Dropout)          (None, 1375, 196)         0         
+_________________________________________________________________
+gru_3 (GRU)                  (None, 1375, 128)         124800    
+_________________________________________________________________
+dropout_6 (Dropout)          (None, 1375, 128)         0         
+_________________________________________________________________
+batch_normalization_5 (Batch (None, 1375, 128)         512       
+_________________________________________________________________
+gru_4 (GRU)                  (None, 1375, 128)         98688     
+_________________________________________________________________
+dropout_7 (Dropout)          (None, 1375, 128)         0         
+_________________________________________________________________
+batch_normalization_6 (Batch (None, 1375, 128)         512       
+_________________________________________________________________
+dropout_8 (Dropout)          (None, 1375, 128)         0         
+_________________________________________________________________
+time_distributed_1 (TimeDist (None, 1375, 1)           129       
+=================================================================
+Total params: 522,561
+Trainable params: 521,657
+Non-trainable params: 904
+_________________________________________________________________
+</code></pre><p>&#x7F51;&#x7EDC;&#x7684;&#x8F93;&#x51FA;&#x662F;shape (None, 1375, 1)&#xFF0C;&#x8F93;&#x5165;&#x662F;(None, 5511, 101)&#x3002;Conv1D&#x5C06;&#x58F0;&#x8C31;&#x56FE;&#x4E0A;&#x7684;5511&#x4E2A;&#x6B65;&#x51CF;&#x5C11;&#x5230;1375&#x4E2A;&#x6B65;&#x3002;</p>
+<h2 class="mume-header" id="%E6%8B%9F%E5%90%88%E6%A8%A1%E5%9E%8B">&#x62DF;&#x5408;&#x6A21;&#x578B;</h2>
+
+<h3 class="mume-header" id="%E5%8A%A0%E8%BD%BD%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B">&#x52A0;&#x8F7D;&#x9884;&#x8BAD;&#x7EC3;&#x6A21;&#x578B;</h3>
+
+<p>&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x9700;&#x8981;&#x5F88;&#x957F;&#x65F6;&#x95F4;&#x7684;&#x8BAD;&#x7EC3;&#x3002;&#x4E3A;&#x4E86;&#x8282;&#x7701;&#x65F6;&#x95F4;&#xFF0C;&#x6211;&#x4EEC;&#x5DF2;&#x7ECF;&#x7528;&#x4F60;&#x4E0A;&#x9762;&#x6784;&#x5EFA;&#x7684;&#x67B6;&#x6784;&#x5728;GPU&#x4E0A;&#x8BAD;&#x7EC3;&#x4E86;&#x5927;&#x7EA6;3&#x4E2A;&#x5C0F;&#x65F6;&#x7684;&#x6A21;&#x578B;&#xFF0C;&#x8FD8;&#x6709;&#x5927;&#x7EA6;4000&#x4E2A;&#x4F8B;&#x5B50;&#x7684;&#x5927;&#x578B;&#x8BAD;&#x7EC3;&#x96C6;&#x3002;&#x8BA9;&#x6211;&#x4EEC;&#x52A0;&#x8F7D;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">model <span class="token operator">=</span> load_model<span class="token punctuation">(</span><span class="token string">&apos;./models/tr_model.h5&apos;</span><span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E8%BF%9B%E4%B8%80%E6%AD%A5%E8%AE%AD%E7%BB%83">&#x8FDB;&#x4E00;&#x6B65;&#x8BAD;&#x7EC3;</h3>
+
+<p>&#x53EF;&#x4EE5;&#x4F7F;&#x7528;Adam&#x4F18;&#x5316;&#x5668;&#x548C;&#x4E8C;&#x8FDB;&#x5236;&#x4EA4;&#x53C9;&#x71B5;&#x635F;&#x5931;&#x8FDB;&#x4E00;&#x6B65;&#x8BAD;&#x7EC3;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#xFF0C;&#x5982;&#x4E0B;&#x6240;&#x793A;&#x3002;&#x8FD9;&#x5C06;&#x8FD0;&#x884C;&#x5F97;&#x5F88;&#x5FEB;&#xFF0C;&#x56E0;&#x4E3A;&#x6211;&#x4EEC;&#x53EA;&#x8BAD;&#x7EC3;&#x4E86;&#x4E00;&#x4E2A;epoch&#x548C;26&#x4E2A;&#x793A;&#x4F8B;&#x7684;&#x5C0F;&#x8BAD;&#x7EC3;&#x96C6;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">opt <span class="token operator">=</span> Adam<span class="token punctuation">(</span>lr<span class="token operator">=</span><span class="token number">0.0001</span><span class="token punctuation">,</span> beta_1<span class="token operator">=</span><span class="token number">0.9</span><span class="token punctuation">,</span> beta_2<span class="token operator">=</span><span class="token number">0.999</span><span class="token punctuation">,</span> decay<span class="token operator">=</span><span class="token number">0.01</span><span class="token punctuation">)</span>
+model<span class="token punctuation">.</span><span class="token builtin">compile</span><span class="token punctuation">(</span>loss<span class="token operator">=</span><span class="token string">&apos;binary_crossentropy&apos;</span><span class="token punctuation">,</span> optimizer<span class="token operator">=</span>opt<span class="token punctuation">,</span> metrics<span class="token operator">=</span><span class="token punctuation">[</span><span class="token string">&quot;accuracy&quot;</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E6%8B%9F%E5%90%88">&#x62DF;&#x5408;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">model<span class="token punctuation">.</span>fit<span class="token punctuation">(</span>X<span class="token punctuation">,</span> Y<span class="token punctuation">,</span> batch_size <span class="token operator">=</span> <span class="token number">5</span><span class="token punctuation">,</span> epochs<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">)</span>
+</pre><h4 class="mume-header" id="%E7%BB%93%E6%9E%9C-7">&#x7ED3;&#x679C;</h4>
+
+<pre data-role="codeBlock" data-info class="language-"><code>Epoch 1/1
+26/26 [==============================] - 23s - loss: 0.0732 - acc: 0.9775    
+</code></pre><h2 class="mume-header" id="%E6%B5%8B%E8%AF%95%E6%A8%A1%E5%9E%8B">&#x6D4B;&#x8BD5;&#x6A21;&#x578B;</h2>
+
+<p>&#x6700;&#x540E;&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x770B;&#x6A21;&#x578B;&#x5728;&#x5F00;&#x53D1;&#x96C6;&#x4E0A;&#x7684;&#x8868;&#x73B0;&#x5982;&#x4F55;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">loss<span class="token punctuation">,</span> acc <span class="token operator">=</span> model<span class="token punctuation">.</span>evaluate<span class="token punctuation">(</span>X_dev<span class="token punctuation">,</span> Y_dev<span class="token punctuation">)</span>
+<span class="token keyword">print</span><span class="token punctuation">(</span><span class="token string">&quot;Dev set accuracy = &quot;</span><span class="token punctuation">,</span> acc<span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E7%BB%93%E6%9E%9C-8">&#x7ED3;&#x679C;</h3>
+
+<pre data-role="codeBlock" data-info class="language-"><code>25/25 [==============================] - 4s
+Dev set accuracy =  0.946327269077
+</code></pre><p>&#x8FD9;&#x770B;&#x8D77;&#x6765;&#x5F88;&#x4E0D;&#x9519;!&#x7136;&#x800C;&#xFF0C;&#x5BF9;&#x4E8E;&#x8FD9;&#x4E2A;&#x4EFB;&#x52A1;&#xFF0C;&#x7CBE;&#x786E;&#x5EA6;&#x5E76;&#x4E0D;&#x662F;&#x4E00;&#x4E2A;&#x5F88;&#x597D;&#x7684;&#x5EA6;&#x91CF;&#x6807;&#x51C6;&#xFF0C;&#x56E0;&#x4E3A;&#x6807;&#x7B7E;&#x4E25;&#x91CD;&#x504F;&#x5411;&#x4E8E;0&#xFF0C;&#x6240;&#x4EE5;&#x4E00;&#x4E2A;&#x53EA;&#x8F93;&#x51FA;0&#x7684;&#x795E;&#x7ECF;&#x7F51;&#x7EDC;&#x5C06;&#x83B7;&#x5F97;&#x7565;&#x9AD8;&#x4E8E;90%&#x7684;&#x7CBE;&#x5EA6;&#x3002;&#x6211;&#x4EEC;&#x53EF;&#x4EE5;&#x5B9A;&#x4E49;&#x66F4;&#x6709;&#x7528;&#x7684;&#x6307;&#x6807;&#xFF0C;&#x6BD4;&#x5982;F1&#x5F97;&#x5206;&#x6216;&#x7CBE;&#x5EA6;/&#x53EC;&#x56DE;&#x7387;&#x3002;&#x4F46;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x91CC;&#x5C31;&#x4E0D;&#x9EBB;&#x70E6;&#x4E86;&#xFF0C;&#x6211;&#x4EEC;&#x53EA;&#x662F;&#x7528;&#x7ECF;&#x9A8C;&#x6765;&#x770B;&#x770B;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#x662F;&#x600E;&#x4E48;&#x505A;&#x7684;&#x3002;</p>
+<h2 class="mume-header" id="%E9%A2%84%E6%B5%8B">&#x9884;&#x6D4B;</h2>
+
+<p>&#x73B0;&#x5728;&#x60A8;&#x5DF2;&#x7ECF;&#x6784;&#x5EFA;&#x4E86;&#x4E00;&#x4E2A;&#x7528;&#x4E8E;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x7684;&#x5DE5;&#x4F5C;&#x6A21;&#x578B;&#xFF0C;&#x8BA9;&#x6211;&#x4EEC;&#x4F7F;&#x7528;&#x5B83;&#x6765;&#x8FDB;&#x884C;&#x9884;&#x6D4B;&#x3002;&#x6B64;&#x4EE3;&#x7801;&#x7247;&#x6BB5;&#x901A;&#x8FC7;&#x7F51;&#x7EDC;&#x8FD0;&#x884C;&#x97F3;&#x9891;(&#x4FDD;&#x5B58;&#x5728;wav&#x6587;&#x4EF6;&#x4E2D;)&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token keyword">def</span> <span class="token function">detect_triggerword</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span>
+
+    x <span class="token operator">=</span> graph_spectrogram<span class="token punctuation">(</span>filename<span class="token punctuation">)</span>
+    <span class="token comment"># the spectogram outputs (freqs, Tx) and we want (Tx, freqs) to input into the model</span>
+    x  <span class="token operator">=</span> x<span class="token punctuation">.</span>swapaxes<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token number">1</span><span class="token punctuation">)</span>
+    x <span class="token operator">=</span> np<span class="token punctuation">.</span>expand_dims<span class="token punctuation">(</span>x<span class="token punctuation">,</span> axis<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+    predictions <span class="token operator">=</span> model<span class="token punctuation">.</span>predict<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+    
+    plt<span class="token punctuation">.</span>subplot<span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>plot<span class="token punctuation">(</span>predictions<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token punctuation">:</span><span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>ylabel<span class="token punctuation">(</span><span class="token string">&apos;probability&apos;</span><span class="token punctuation">)</span>
+    plt<span class="token punctuation">.</span>show<span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">return</span> predictions
+</pre><p>&#x4E00;&#x65E6;&#x60A8;&#x4F30;&#x8BA1;&#x4E86;&#x5728;&#x6BCF;&#x4E2A;&#x8F93;&#x51FA;&#x6B65;&#x9AA4;&#x4E2D;&#x68C0;&#x6D4B;&#x5230;&#x5355;&#x8BCD;&quot;activate&quot;&#x7684;&#x6982;&#x7387;&#xFF0C;&#x60A8;&#x5C31;&#x53EF;&#x4EE5;&#x5728;&#x6982;&#x7387;&#x8D85;&#x8FC7;&#x67D0;&#x4E2A;&#x9608;&#x503C;&#x65F6;&#x89E6;&#x53D1; &quot;chiming&quot;&#x58F0;&#x97F3;&#x64AD;&#x653E;&#x3002;&#x8FDB;&#x4E00;&#x6B65;, <span class="mathjax-exps">$y^{\langle t \rangle}$</span>&#x53EF;&#x80FD;&#x5728;&#x542C;&#x5230;&#x4E00;&#x6B21;&quot;activate&quot;&#x540E;&#x8FDE;&#x7EED;&#x591A;&#x4E2A;time-step&#x63A5;&#x8FD1;1&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4F1A;&#x54CD;&#x5F88;&#x591A;&#x6B21;&#xFF0C;&#x4F46;&#x6211;&#x4EEC;&#x60F3;&#x53EA;&#x54CD;&#x4E00;&#x6B21;&#x3002;&#x6240;&#x4EE5;&#x6211;&#x4EEC;&#x6BCF;75&#x6B65;&#x8F93;&#x51FA;&#x6700;&#x591A;&#x63D2;&#x5165;&#x4E00;&#x6B21;&#x62A5;&#x65F6;&#x58F0;&#x3002;&#x8FD9;&#x5C06;&#x6709;&#x52A9;&#x4E8E;&#x9632;&#x6B62;&#x6211;&#x4EEC;&#x4E3A;&#x4E00;&#x4E2A;&#x5355;&#x4E00;&#x7684;&quot;activate&quot;&#x5B9E;&#x4F8B;&#x63D2;&#x5165;&#x4E24;&#x4E2A;&#x949F;&#x58F0;&#x3002;(&#x8FD9;&#x4E0E;&#x8BA1;&#x7B97;&#x673A;&#x89C6;&#x89C9;&#x7684;&#x975E;&#x6700;&#x5927;&#x6291;&#x5236;&#x4F5C;&#x7528;&#x7C7B;&#x4F3C;&#x3002;)</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">chime_file <span class="token operator">=</span> <span class="token string">&quot;audio_examples/chime.wav&quot;</span>
+<span class="token keyword">def</span> <span class="token function">chime_on_activate</span><span class="token punctuation">(</span>filename<span class="token punctuation">,</span> predictions<span class="token punctuation">,</span> threshold<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    audio_clip <span class="token operator">=</span> AudioSegment<span class="token punctuation">.</span>from_wav<span class="token punctuation">(</span>filename<span class="token punctuation">)</span>
+    chime <span class="token operator">=</span> AudioSegment<span class="token punctuation">.</span>from_wav<span class="token punctuation">(</span>chime_file<span class="token punctuation">)</span>
+    Ty <span class="token operator">=</span> predictions<span class="token punctuation">.</span>shape<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 1: &#x5C06;&#x8FDE;&#x7EED;&#x8F93;&#x51FA;&#x6B65;&#x9AA4;&#x7684;&#x6570;&#x76EE;&#x521D;&#x59CB;&#x5316;&#x4E3A;0</span>
+    consecutive_timesteps <span class="token operator">=</span> <span class="token number">0</span>
+    <span class="token comment"># &#x6B65;&#x9AA4; 2: &#x5FAA;&#x73AF;y&#x4E2D;&#x7684;&#x8F93;&#x51FA;&#x6B65;&#x9AA4;</span>
+    <span class="token keyword">for</span> i <span class="token keyword">in</span> <span class="token builtin">range</span><span class="token punctuation">(</span>Ty<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token comment"># &#x6B65;&#x9AA4; 3: &#x81EA;&#x589E;consecutive_timesteps</span>
+        consecutive_timesteps <span class="token operator">+=</span> <span class="token number">1</span>
+        <span class="token comment"># &#x6B65;&#x9AA4; 4: &#x5982;&#x679C;&#x9884;&#x6D4B;&#x9AD8;&#x4E8E;&#x9608;&#x503C;&#xFF0C;&#x8FDE;&#x7EED;75&#x4E2A;&#x4EE5;&#x4E0A;&#x7684;&#x8F93;&#x51FA;&#x6B65;&#x9AA4;&#x5DF2;&#x7ECF;&#x901A;&#x8FC7;</span>
+        <span class="token keyword">if</span> predictions<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span>i<span class="token punctuation">,</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">&gt;</span> threshold <span class="token keyword">and</span> consecutive_timesteps <span class="token operator">&gt;</span> <span class="token number">75</span><span class="token punctuation">:</span>
+            <span class="token comment"># &#x6B65;&#x9AA4; 5: &#x4F7F;&#x7528;pydub&#x53E0;&#x52A0;&#x97F3;&#x9891;&#x548C;&#x80CC;&#x666F;</span>
+            audio_clip <span class="token operator">=</span> audio_clip<span class="token punctuation">.</span>overlay<span class="token punctuation">(</span>chime<span class="token punctuation">,</span> position <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>i <span class="token operator">/</span> Ty<span class="token punctuation">)</span> <span class="token operator">*</span> audio_clip<span class="token punctuation">.</span>duration_seconds<span class="token punctuation">)</span><span class="token operator">*</span><span class="token number">1000</span><span class="token punctuation">)</span>
+            <span class="token comment"># &#x6B65;&#x9AA4; 6: &#x5C06;&#x8FDE;&#x7EED;&#x7684;&#x8F93;&#x51FA;&#x6B65;&#x9AA4;&#x91CD;&#x7F6E;&#x4E3A;0</span>
+            consecutive_timesteps <span class="token operator">=</span> <span class="token number">0</span>
+        
+    audio_clip<span class="token punctuation">.</span>export<span class="token punctuation">(</span><span class="token string">&quot;chime_output.wav&quot;</span><span class="token punctuation">,</span> <span class="token builtin">format</span><span class="token operator">=</span><span class="token string">&apos;wav&apos;</span><span class="token punctuation">)</span>
+</pre><h2 class="mume-header" id="%E5%9C%A8%E5%BC%80%E5%8F%91%E6%A0%B7%E6%9C%AC%E4%B8%8A%E6%B5%8B%E8%AF%95">&#x5728;&#x5F00;&#x53D1;&#x6837;&#x672C;&#x4E0A;&#x6D4B;&#x8BD5;</h2>
+
+<p>&#x8BA9;&#x6211;&#x4EEC;&#x770B;&#x770B;&#x6211;&#x4EEC;&#x7684;&#x6A21;&#x578B;&#x5728;&#x5F00;&#x53D1;&#x96C6;&#x7684;&#x4E24;&#x4E2A;&#x6CA1;&#x89C1;&#x8FC7;&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x7247;&#x6BB5;&#x4E0A;&#x662F;&#x5982;&#x4F55;&#x8FD0;&#x884C;&#x7684;&#x3002;</p>
+<p>A</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./raw_data/dev/1.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>B</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./raw_data/dev/2.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p>&#x73B0;&#x5728;&#x8BA9;&#x6211;&#x4EEC;&#x5728;&#x8FD9;&#x4E9B;&#x97F3;&#x9891;&#x526A;&#x8F91;&#x4E0A;&#x8FD0;&#x884C;&#x6A21;&#x578B;&#xFF0C;&#x770B;&#x770B;&#x5B83;&#x662F;&#x5426;&#x4F1A;&#x5728;&quot;activate&quot;&#x4E4B;&#x540E;&#x6DFB;&#x52A0;&#x4E00;&#x4E2A;&#x94C3;&#x58F0;!</p>
+<pre data-role="codeBlock" data-info="python" class="language-python">filename <span class="token operator">=</span> <span class="token string">&quot;./raw_data/dev/1.wav&quot;</span>
+prediction <span class="token operator">=</span> detect_triggerword<span class="token punctuation">(</span>filename<span class="token punctuation">)</span>
+chime_on_activate<span class="token punctuation">(</span>filename<span class="token punctuation">,</span> prediction<span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">)</span>
+IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./chime_output.wav&quot;</span><span class="token punctuation">)</span>
+</pre><p><img src="img/b6.jpg" alt="img"></p>
+<pre data-role="codeBlock" data-info="python" class="language-python">filename  <span class="token operator">=</span> <span class="token string">&quot;./raw_data/dev/2.wav&quot;</span>
+prediction <span class="token operator">=</span> detect_triggerword<span class="token punctuation">(</span>filename<span class="token punctuation">)</span>
+chime_on_activate<span class="token punctuation">(</span>filename<span class="token punctuation">,</span> prediction<span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">)</span>
+IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span><span class="token string">&quot;./chime_output.wav&quot;</span><span class="token punctuation">)</span>
+</pre><h2 class="mume-header" id="%E6%81%AD%E5%96%9C">&#x606D;&#x559C;</h2>
+
+<p>&#x4F60;&#x5DF2;&#x7ECF;&#x5B8C;&#x6210;&#x4E86;&#x8FD9;&#x9879;&#x4EFB;&#x52A1;!</p>
+<p>&#x4EE5;&#x4E0B;&#x662F;&#x4F60;&#x5E94;&#x8BE5;&#x8BB0;&#x4F4F;&#x7684;:</p>
+<ul>
+<li>
+<p><strong>&#x6570;&#x636E;&#x5408;&#x6210;</strong>&#x662F;&#x4E00;&#x79CD;&#x6709;&#x6548;&#x7684;&#x65B9;&#x6CD5;&#xFF0C;&#x4E3A;&#x8BED;&#x97F3;&#x95EE;&#x9898;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5927;&#x578B;&#x8BAD;&#x7EC3;&#x96C6;&#xFF0C;&#x7279;&#x522B;&#x662F;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x3002;</p>
+</li>
+<li>
+<p>&#x5728;&#x5C06;&#x97F3;&#x9891;&#x6570;&#x636E;&#x4F20;&#x9012;&#x5230;RNN&#x3001;GRU&#x6216;LSTM&#x4E4B;&#x524D;&#xFF0C;&#x4F7F;&#x7528;&#x58F0;&#x8C31;&#x56FE;&#x548C;&#x53EF;&#x9009;&#x7684;1D conv&#x5C42;&#x662F;&#x4E00;&#x4E2A;&#x5E38;&#x89C1;&#x7684;<strong>&#x9884;&#x5904;&#x7406;&#x6B65;&#x9AA4;&#x3002;</strong></p>
+</li>
+<li>
+<p><strong>&#x7AEF;&#x5230;&#x7AEF;&#x7684;&#x6DF1;&#x5EA6;&#x5B66;&#x4E60;&#x65B9;&#x6CD5;</strong>&#x53EF;&#x4EE5;&#x7528;&#x6765;&#x5EFA;&#x7ACB;&#x4E00;&#x4E2A;&#x975E;&#x5E38;&#x6709;&#x6548;&#x7684;&#x89E6;&#x53D1;&#x8BCD;&#x68C0;&#x6D4B;&#x7CFB;&#x7EDF;&#x3002;</p>
+</li>
+</ul>
+<h2 class="mume-header" id="%E5%B0%9D%E8%AF%95%E8%87%AA%E5%B7%B1%E7%9A%84%E6%A0%B7%E6%9C%AC%E9%80%89%E5%81%9A">&#x5C1D;&#x8BD5;&#x81EA;&#x5DF1;&#x7684;&#x6837;&#x672C;(&#x9009;&#x505A;)</h2>
+
+<p>&#x60A8;&#x53EF;&#x4EE5;&#x5C1D;&#x8BD5;&#x60A8;&#x7684;&#x6A21;&#x578B;&#x5728;&#x81EA;&#x5DF1;&#x7684;&#x97F3;&#x9891;&#x526A;&#x8F91;!</p>
+<p>&#x5F55;&#x5236;&#x4E00;&#x6BB5;10&#x79D2;&#x7684;&#x89C6;&#x9891;&#xFF0C;&#x89C6;&#x9891;&#x4E2D;&#x4F60;&#x8BF4;&#x201C;activate&#x201D;&#x8FD9;&#x4E2A;&#x5355;&#x8BCD;&#x548C;&#x5176;&#x4ED6;&#x968F;&#x673A;&#x5355;&#x8BCD;&#x3002;&#x8BF7;&#x786E;&#x4FDD;&#x5C06;&#x97F3;&#x9891;&#x4E0A;&#x4F20;&#x4E3A;wav&#x6587;&#x4EF6;&#x3002;&#x5982;&#x679C;&#x4F60;&#x7684;&#x97F3;&#x9891;&#x662F;&#x7528;&#x4E0D;&#x540C;&#x7684;&#x683C;&#x5F0F;(&#x5982;mp3)&#x5F55;&#x5236;&#x7684;&#xFF0C;&#x4F60;&#x53EF;&#x4EE5;&#x5728;&#x7F51;&#x4E0A;&#x627E;&#x5230;&#x514D;&#x8D39;&#x8F6F;&#x4EF6;&#x5C06;&#x5176;&#x8F6C;&#x6362;&#x4E3A;wav&#x3002;&#x5982;&#x679C;&#x4F60;&#x7684;&#x97F3;&#x9891;&#x5F55;&#x97F3;&#x4E0D;&#x662F;10&#x79D2;&#xFF0C;&#x4E0B;&#x9762;&#x7684;&#x4EE3;&#x7801;&#x5C06;&#x4FEE;&#x526A;&#x6216;&#x57AB;&#x5B83;&#x9700;&#x8981;&#x4F7F;&#x5B83;10&#x79D2;&#x3002;</p>
+<pre data-role="codeBlock" data-info="python" class="language-python"><span class="token comment"># Preprocess the audio to the correct format</span>
+<span class="token keyword">def</span> <span class="token function">preprocess_audio</span><span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token comment"># Trim or pad audio segment to 10000ms</span>
+    padding <span class="token operator">=</span> AudioSegment<span class="token punctuation">.</span>silent<span class="token punctuation">(</span>duration<span class="token operator">=</span><span class="token number">10000</span><span class="token punctuation">)</span>
+    segment <span class="token operator">=</span> AudioSegment<span class="token punctuation">.</span>from_wav<span class="token punctuation">(</span>filename<span class="token punctuation">)</span><span class="token punctuation">[</span><span class="token punctuation">:</span><span class="token number">10000</span><span class="token punctuation">]</span>
+    segment <span class="token operator">=</span> padding<span class="token punctuation">.</span>overlay<span class="token punctuation">(</span>segment<span class="token punctuation">)</span>
+    <span class="token comment"># Set frame rate to 44100</span>
+    segment <span class="token operator">=</span> segment<span class="token punctuation">.</span>set_frame_rate<span class="token punctuation">(</span><span class="token number">44100</span><span class="token punctuation">)</span>
+    <span class="token comment"># Export as wav</span>
+    segment<span class="token punctuation">.</span>export<span class="token punctuation">(</span>filename<span class="token punctuation">,</span> <span class="token builtin">format</span><span class="token operator">=</span><span class="token string">&apos;wav&apos;</span><span class="token punctuation">)</span>
+</pre><h3 class="mume-header" id="%E5%8A%A0%E8%BD%BD%E4%BD%A0%E7%9A%84%E9%9F%B3%E9%A2%91">&#x52A0;&#x8F7D;&#x4F60;&#x7684;&#x97F3;&#x9891;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">your_filename <span class="token operator">=</span> <span class="token string">&quot;audio_examples/my_audio.wav&quot;</span>
+</pre><h3 class="mume-header" id="%E9%A2%84%E5%A4%84%E7%90%86%E4%BD%A0%E7%9A%84%E9%9F%B3%E9%A2%91">&#x9884;&#x5904;&#x7406;&#x4F60;&#x7684;&#x97F3;&#x9891;</h3>
+
+<pre data-role="codeBlock" data-info="python" class="language-python">preprocess_audio<span class="token punctuation">(</span>your_filename<span class="token punctuation">)</span>
+IPython<span class="token punctuation">.</span>display<span class="token punctuation">.</span>Audio<span class="token punctuation">(</span>your_filename<span class="token punctuation">)</span> <span class="token comment"># &#x542C;&#x542C;&#x4F60;&#x4E0A;&#x4F20;&#x7684;&#x97F3;&#x9891;</span>
+</pre><p>&#x6700;&#x540E;&#xFF0C;&#x4F7F;&#x7528;&#x8FD9;&#x4E2A;&#x6A21;&#x578B;&#x6765;&#x9884;&#x6D4B;&#x4F60;&#x5728;10&#x79D2;&#x7684;&#x97F3;&#x9891;&#x7247;&#x6BB5;&#x4E2D;&#x4F55;&#x65F6;&#x8BF4;&quot;actitvate&quot;&#xFF0C;&#x5E76;&#x89E6;&#x53D1;&#x4E00;&#x4E2A;&#x94C3;&#x58F0;&#x3002;&#x5982;&#x679C;&#x8702;&#x9E23;&#x58F0;&#x6CA1;&#x6709;&#x88AB;&#x9002;&#x5F53;&#x5730;&#x6DFB;&#x52A0;&#xFF0C;&#x5C1D;&#x8BD5;&#x8C03;&#x6574;chime_threshold&#x3002;</p>
+<pre data-role="codeBlock" data-info class="language-"><code>chime_threshold = 0.5
+prediction = detect_triggerword(your_filename)
+chime_on_activate(your_filename, prediction, chime_threshold)
+IPython.display.Audio(&quot;./chime_output.wav&quot;)
+</code></pre>
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>
