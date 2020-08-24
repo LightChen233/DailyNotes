@@ -247,11 +247,11 @@ P(w_i)=\frac{f(w_i)^{\frac34}}{\sum_j^{10000}f(w_j)^{\frac34}}
 $$
 其中，$f(w_i)$表示单词$w_i$在单词表中出现的概率。
 
-## GloVe词向量??
+## GloVe词向量
 
 GloVe算法引入了一个新的参数：
 
-- **$X_{ij}$: 表示i出现在j之前的次数，即i和j同时出现的次数。？？**
+- $X_{ij}$: 表示i出现在j之前的次数，即i和j同时出现的次数。
 
 其中，i表示context，j表示target。一般地，如果不限定context一定在target的前面，则有对称关系$X_{ij}=X_{ji}$；如果有限定先后，则$X_{ij}\neq X_{ji}$。接下来的讨论中，我们默认存在对称关系$X_{ij}=X_{ji}$。
 
@@ -336,8 +336,6 @@ $$
 $$
 bias\ direction=\frac1N ((e_{he}-e_{she})+(e_{male}-e_{female})+\cdots)
 $$
-bias direction=1N((ehe−eshe)+(emale−efemale)+⋯)bias direction=1N((ehe−eshe)+(emale−efemale)+⋯)
-
 然后，单词中立化（Neutralize）。将需要消除性别偏见的单词**投影**到非偏见方向上去，消除bias维度，例如babysitter，doctor等。
 
 ![](img/26.jpg)
